@@ -20,6 +20,7 @@ namespace ScoreboardControl
         HttpClient client = new HttpClient();
         public Form1()
         {
+            CenterToScreen();
             InitializeComponent();
             client.BaseAddress = new Uri("http://142.55.32.86:50291/");
             client.DefaultRequestHeaders.Accept.Clear();

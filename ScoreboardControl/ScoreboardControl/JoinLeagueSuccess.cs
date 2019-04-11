@@ -14,6 +14,7 @@ namespace ScoreboardControl
     {
         public JoinLeagueSuccess()
         {
+            CenterToScreen();
             InitializeComponent();
         }
 
@@ -24,6 +25,7 @@ namespace ScoreboardControl
             pbLeagueLogo.Image = image;
 
             lblLeagueName.Text = "Now Viewing Page for: " + Properties.Settings.Default.LeagueName;
+            lblLoginKey.Text = "Unique Login Key: " + Properties.Settings.Default.LoginKey;
         }
 
         private void btnBack_Click(object sender, EventArgs e)
