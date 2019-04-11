@@ -1,0 +1,49 @@
+﻿@model CapstoneTest.Models.Leagues
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Leagues</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="LeagueId" />
+            <div class="form-group">
+                <label asp-for="LeagueName" class="control-label"></label>
+                <input asp-for="LeagueName" class="form-control" />
+                <span asp-validation-for="LeagueName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Logo" class="control-label"></label>
+                <input asp-for="Logo" class="form-control" />
+                <span asp-validation-for="Logo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HashPassword" class="control-label"></label>
+                <input asp-for="HashPassword" class="form-control" />
+                <span asp-validation-for="HashPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LeagueKey" class="control-label"></label>
+                <input asp-for="LeagueKey" class="form-control" />
+                <span asp-validation-for="LeagueKey" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
