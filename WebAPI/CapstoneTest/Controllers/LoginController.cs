@@ -7,191 +7,92 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CapstoneTest.Models;
 using Newtonsoft.Json;
+using CapstoneTest.Data.Repositories.Concrete;
+using Microsoft.Extensions.Configuration;
+using CapstoneTest.Data.Entities.Concrete;
 
 namespace CapstoneTest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginController : BaseAPIController
     {
-        private readonly CapstoneContext _context;
 
-        public LoginController(CapstoneContext context)
+        protected LeagueRepository LeagueRepository { get; set; }
+        protected LoginRepository LoginRepository { get; set; }
+
+        public LoginController(IConfiguration configuration) : base(configuration)
         {
-            _context = context;
+            this.LeagueRepository = new LeagueRepository(this.ConnectionString);
+            this.LoginRepository = new LoginRepository(this.ConnectionString);
         }
 
-        //// GET: api/Login
-        //[HttpGet]
-        //public IEnumerable<Logins> GetLogins()
-        //{
-        //    return _context.Logins;
-        //}
+        [HttpGet("Test")]
+        public async Task<ActionResult> Test()
+        {
+            var teamRepo = new TeamRepository(this.ConnectionString);
+            return new OkObjectResult(await teamRepo.GetAsync(2));
+        }
 
         //GET: api/Login?leagueKey=a&hashedPassword=b
         [HttpGet]
-        public async Task<LoginObject> Login(string leagueKey, string hashedPassword)
+        public async Task<ActionResult> Login(string leagueKey, string hashedPassword)
         {
             //get the league, if not exist return notfound
-            var leagues = await _context.Leagues.FirstAsync(l => l.LeagueKey == leagueKey);
-            if (leagues == null)
+            var league = await LeagueRepository.GetAsync(leagueKey);
+            if (league == null)
             {
-                return null;
+                return new BadRequestObjectResult("failed");
             }
 
             //check hashed password matches if not return error
-            if(leagues.HashPassword != hashedPassword)
+            if (league.HashPassword != hashedPassword)
             {
-                return null;
+                return new BadRequestObjectResult("failed");
             }
 
             //generate login key, insert into db
             var token = Guid.NewGuid().ToString();
 
-            Logins login = new Logins();
-            login.LeagueLeagueId = leagues.LeagueId;
+            var login = new Login();
+            login.LeagueId = league.LeagueId;
             login.LoginTimestamp = DateTime.Now;
             login.Expiry = DateTime.Now.AddHours(1);
             login.LoginKey = token;
 
 
-            if (LoginExistsForLeague(leagues.LeagueId))
+            if (await LoginExistsForLeague(league.LeagueId))
             {
                 try
                 {
-                    Logins oldLogin = await _context.Logins.FirstAsync(l => l.LeagueLeagueId == login.LeagueLeagueId);
-                    oldLogin.LeagueLeagueId = leagues.LeagueId;
+                    var oldLogin = await this.LoginRepository.GetAsync(league.LeagueId);
                     oldLogin.LoginTimestamp = DateTime.Now;
                     oldLogin.Expiry = DateTime.Now.AddHours(1);
                     oldLogin.LoginKey = token;
 
-                    _context.Logins.Update(oldLogin);
-                    await _context.SaveChangesAsync();
+                    await this.LoginRepository.UpdateAsync(oldLogin);
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (Exception ex)
                 {
-                    if (!LoginExistsForLeague(leagues.LeagueId))
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    // handle somehow
                 }
             }
             else
             {
-                _context.Logins.Add(login);
-                await _context.SaveChangesAsync();
+                await this.LoginRepository.AddAsync(login);
             }
             // return login key
             LoginObject loginSuccess = new LoginObject(login);
-            loginSuccess.LeagueId = leagues.LeagueId;
-            loginSuccess.LeagueName = leagues.LeagueName;
-            loginSuccess.LeagueKey = leagues.LeagueKey;
-            loginSuccess.Logo = leagues.Logo;
-            return loginSuccess;
+            loginSuccess.LeagueId = league.LeagueId;
+            loginSuccess.LeagueName = league.LeagueName;
+            loginSuccess.LeagueKey = league.LeagueKey;
+            loginSuccess.Logo = league.Logo;
+            return new OkObjectResult(loginSuccess);
         }
 
-        //    // GET: api/Login/5
-        //    [HttpGet("{id}")]
-        //    public async Task<IActionResult> GetLogins([FromRoute] int id)
-        //    {
-        //        if (!ModelState.IsValid)
-        //        {
-        //            return BadRequest(ModelState);
-        //        }
-
-        //        var logins = await _context.Logins.FindAsync(id);
-
-        //        if (logins == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        return Ok(logins);
-        //    }
-
-        //    // PUT: api/Login/5
-        //    [HttpPut("{id}")]
-        //    public async Task<IActionResult> PutLogins([FromRoute] int id, [FromBody] Logins logins)
-        //    {
-        //        if (!ModelState.IsValid)
-        //        {
-        //            return BadRequest(ModelState);
-        //        }
-
-        //        if (id != logins.LoginId)
-        //        {
-        //            return BadRequest();
-        //        }
-
-        //        _context.Entry(logins).State = EntityState.Modified;
-
-        //        try
-        //        {
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!LoginsExists(id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-
-        //        return NoContent();
-        //    }
-
-        //    // POST: api/Login
-        //    [HttpPost]
-        //    public async Task<IActionResult> PostLogins([FromBody] Logins logins)
-        //    {
-        //        if (!ModelState.IsValid)
-        //        {
-        //            return BadRequest(ModelState);
-        //        }
-
-        //        _context.Logins.Add(logins);
-        //        await _context.SaveChangesAsync();
-
-        //        return CreatedAtAction("GetLogins", new { id = logins.LoginId }, logins);
-        //    }
-
-        //    // DELETE: api/Login/5
-        //    [HttpDelete("{id}")]
-        //    public async Task<IActionResult> DeleteLogins([FromRoute] int id)
-        //    {
-        //        if (!ModelState.IsValid)
-        //        {
-        //            return BadRequest(ModelState);
-        //        }
-
-        //        var logins = await _context.Logins.FindAsync(id);
-        //        if (logins == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        _context.Logins.Remove(logins);
-        //        await _context.SaveChangesAsync();
-
-        //        return Ok(logins);
-        //    }
-
-        private bool LoginsExists(int id)
+        private async Task<bool> LoginExistsForLeague(int leagueId)
         {
-            return _context.Logins.Any(e => e.LoginId == id);
-        }
-
-        private bool LoginExistsForLeague(int leaguId)
-        {
-            return _context.Logins.Any(e => e.LeagueLeagueId == leaguId);
+            return (await this.LoginRepository.GetAsync(leagueId)) != null;
         }
     }
 }
