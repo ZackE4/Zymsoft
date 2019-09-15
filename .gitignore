@@ -2,4 +2,5 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/CapstoneTest/v15/Server/sqlite3/storage.ide-wal
+/.vs/*
+/CapstoneTest/obj/*
