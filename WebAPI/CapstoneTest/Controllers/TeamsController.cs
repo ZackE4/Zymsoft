@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using CapstoneTest.Data.Repositories.Concrete;
 using CapstoneTest.Models.Request;
 using CapstoneTest.Data.Entities.Concrete;
+using CapstoneTest.Data.Repositories.Interfaces;
 
 namespace CapstoneTest.Controllers
 {
@@ -19,7 +20,7 @@ namespace CapstoneTest.Controllers
     {
         private readonly CapstoneContext _context;
 
-        protected TeamRepository TeamRepositry { get; set; }
+        protected ITeamRepository TeamRepositry { get; set; }
 
         public TeamsController(IConfiguration configuration) : base(configuration)
         {

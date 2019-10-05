@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CapstoneTest.Models;
 using Microsoft.Extensions.Configuration;
+using CapstoneTest.Data.Repositories.Interfaces;
+using CapstoneTest.Data.Repositories.Concrete;
+using CapstoneTest.Models.Request;
+using CapstoneTest.Data.Entities.Concrete;
 
 namespace CapstoneTest.Controllers
 {
@@ -16,131 +20,115 @@ namespace CapstoneTest.Controllers
     {
         private readonly CapstoneContext _context;
 
+        protected IPlayerRepository PlayerRepository { get; set; }
+        protected ITeamRepository TeamRepository { get; set; }
+
         public PlayersController(IConfiguration configuration) : base(configuration)
         {
+            this.PlayerRepository = new PlayerRepository(this.ConnectionString);
+            this.TeamRepository = new TeamRepository(this.ConnectionString);
         }
 
-        //// GET: api/Players
-        //[HttpGet]
-        //public IEnumerable<Players> GetPlayers()
-        //{
-        //    return _context.Players;
-        //}
+        [HttpGet]
+        public async Task<ActionResult> GetById(string apiToken, int id)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
 
-        //// GET: api/Players/5
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetPlayer([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+            return new OkObjectResult(await this.PlayerRepository.GetAsync(id));
+        }
 
-        //    var players = await _context.Players.FindAsync(id);
+        [HttpGet("ByTeam")]
+        public async Task<ActionResult> GetByTeam(string apiToken, int teamId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
 
-        //    if (players == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (await this.TeamRepository.GetAsync(teamId) == null)
+            {
+                return new BadRequestObjectResult("Team Not Found");
+            }
 
-        //    return Ok(players);
-        //}
+            return new OkObjectResult(await this.PlayerRepository.GetByTeamAsync(teamId));
+        }
 
-        //// GET: api/Players/5
-        //[HttpGet("PlayerStats/{id}")]
-        //public async Task<IActionResult> GetPlayerWithStats([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        [HttpPost("Add")]
+        public async Task<ActionResult> AddPlayer(AddPlayerRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
 
-        //    var players = await _context.Players.FindAsync(id);
+            string leagueId = await this.GetLeagueId(request.LeagueKey);
 
-        //    if (players == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (leagueId == null)
+            {
+                return new BadRequestObjectResult("League Not Found");
+            }
 
-        //    var playerWithStats = new PlayerStats(players, _context);
+            if(await this.TeamRepository.GetAsync(request.TeamId) == null)
+            {
+                return new BadRequestObjectResult("Team Not Found");
+            }
 
-        //    return Ok(playerWithStats);
-        //}
+            Player player = new Player
+            {
+                PlayerNum = request.PlayerNum,
+                Position = request.Position,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Picture = request.Picture,
+                TeamId = request.TeamId
+            };
 
-        //// POST: api/Players/5
-        //[HttpPost("{id}")]
-        //public async Task<IActionResult> UpdatePlayer([FromRoute] int id, [FromBody] Players players)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+            var newPlayer = await this.PlayerRepository.AddAsync(player);
 
-        //    if (id != players.PlayerId)
-        //    {
-        //        return BadRequest();
-        //    }
+            return new OkObjectResult(newPlayer);
+        }
 
-        //    _context.Entry(players).State = EntityState.Modified;
+        [HttpPost("Edit")]
+        public async Task<ActionResult> UpdatePlayer(UpdatePlayerRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!PlayersExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            string leagueId = await this.GetLeagueId(request.LeagueKey);
 
-        //    return NoContent();
-        //}
+            if (leagueId == null)
+            {
+                return new BadRequestObjectResult("League Not Found");
+            }
 
-        //// POST: api/Players
-        //[HttpPost]
-        //public async Task<IActionResult> AddPlayer([FromBody] Players players)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+            if (await this.TeamRepository.GetAsync(request.TeamId) == null)
+            {
+                return new BadRequestObjectResult("Team Not Found");
+            }
 
-        //    _context.Players.Add(players);
-        //    await _context.SaveChangesAsync();
+            var player = await this.PlayerRepository.GetAsync(request.PlayerId);
 
-        //    return CreatedAtAction("GetPlayers", new { id = players.PlayerId }, players);
-        //}
+            if (player == null)
+            {
+                return new BadRequestObjectResult("Player Not Found");
+            }
 
-        //// DELETE: api/Players/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeletePlayers([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+            player.PlayerNum = request.PlayerNum;
+            player.Position = request.Position;
+            player.FirstName = request.FirstName;
+            player.LastName = request.LastName;
+            player.Picture = request.Picture;
+            player.TeamId = request.TeamId;
 
-        //    var players = await _context.Players.FindAsync(id);
-        //    if (players == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var updatedPlayer = await this.PlayerRepository.UpdateAsync(player);
 
-        //    _context.Players.Remove(players);
-        //    await _context.SaveChangesAsync();
+            return new OkObjectResult(updatedPlayer);
+        }
 
-        //    return Ok(players);
-        //}
-
-        //private bool PlayersExists(int id)
-        //{
-        //    return _context.Players.Any(e => e.PlayerId == id);
-        //}
     }
 }
