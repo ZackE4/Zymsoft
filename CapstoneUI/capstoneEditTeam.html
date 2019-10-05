@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Edit Team</title>
+	<meta charset="utf-8">
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+<script type="css/stylesheet">
+.extendable:focus {
+    position: absolute;
+    width: 110%;
+    top: -1rem;
+}
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+
+
+img {
+  width:100px;
+  height:100px;
+  background: url(http://goo.gl/vyAs27) no-repeat scroll 0 0;
+}
+
+</script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">League: NBA</a>
+  </button>
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">League</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Teams</a>
+      </li>
+	  <li class="nav-item">
+        <a class="nav-link" href="#">Standings</a>
+      </li>
+    </ul>
+</nav>
+	<div class="addTeam">
+		<form class="form-compact" action="">
+            <div class="row paddingBottom20">
+                <div class="container col-4">
+                    <div class="row">
+                        <h1 class="text-center col-12 mb-0">Edit Team</h1>
+                        <sub class="text-right text-muted col-12"><a href="#" tabindex="-1"><i class="far fa-edit"></i></a></sub>
+                    </div>
+                    <div class="dropdown-divider mb-3"></div>
+                    <div class="form-group row">
+                        <label for="teamNameLabel" class="col-4 col-form-label-sm text-right">Team Name:</label> 
+                        <div class="col-8">
+                            <div class="input-group"> 
+                                <input id="teamName" name="text" placeholder="Raptors" type="text" class="form-control form-control-sm" readonly>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="form-group row align-items-center">
+                        <label for="coachNameLabel" class="col-4 col-form-label-sm text-right">Coach Name:</label> 
+                        <div class="col-8">
+                          <div class="input-group"> 
+                            <input id="coachName" name="text" placeholder="Matthew Erenberg" type="text" class="form-control form-control-sm">
+                          </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row align-items-center">
+                        <label for="editImage" class="col-4 col-form-label-sm text-right">Edit Image:</label> 
+                        <div class="col-8">
+							<input id="imageURL" name="text" type="text" class="form-control form-control-sm extendable">
+							
+                        </div>
+						
+						<img id="logoImage" src="logo.png" style="width:200px;display: block;margin-left: auto;margin-right: auto;"/>
+                    </div>
+					<button type="submit" id="editTeam" class="text-center col-12 mb-0">Edit</button>
+                </div>
+				
+            </div>
+        </form>
+	</div>
+		<script type="text/javascript">
+		$('document').ready(function(){
+			document.getElementById("teamName").readOnly = true;
+			document.getElementById("coachName").readOnly = true;
+			document.getElementById("imageURL").readOnly = true;
+			
+		document.getElementById("editTeam").onclick = function() {
+			document.getElementById("teamName").readOnly = false;
+			 document.getElementById("coachName").readOnly = false;
+		};
+		});
+			 
+
+
+		</script>
+</body>
+</html>
