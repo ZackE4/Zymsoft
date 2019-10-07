@@ -4,11 +4,36 @@ package com.example.myapplicationc;
 import java.util.Date;
 
 public class FoulLog {
+    private String apiToken;
+    private String leagueKey;
     private int fouldLogId;
-    private Date gameTime;
+    private String gameTime;
     private int playerId;
     private int gameId;
 
+    public FoulLog(String apiToken, String leagueKey, String gameTime, int playerId, int gameId) {
+        this.apiToken = apiToken;
+        this.leagueKey = leagueKey;
+        this.gameTime = gameTime;
+        this.playerId = playerId;
+        this.gameId = gameId;
+    }
+
+    public String getApiToken() {
+        return apiToken;
+    }
+
+    public void setApiToken(String apiToken) {
+        this.apiToken = apiToken;
+    }
+
+    public String getLeagueKey() {
+        return leagueKey;
+    }
+
+    public void setLeagueKey(String leagueKey) {
+        this.leagueKey = leagueKey;
+    }
 
     public int getFouldLogId() {
         return fouldLogId;
@@ -18,11 +43,11 @@ public class FoulLog {
         this.fouldLogId = fouldLogId;
     }
 
-    public Date getGameTime() {
+    public String getGameTime() {
         return gameTime;
     }
 
-    public void setGameTime(Date gameTime) {
+    public void setGameTime(String gameTime) {
         this.gameTime = gameTime;
     }
 

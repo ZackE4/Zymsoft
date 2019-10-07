@@ -45,7 +45,7 @@ public class AddScore extends AppCompatActivity {
                     }
                     else
                     {
-                        team1.clearCheck();
+                        team2.clearCheck();
                     }
 
                 }
@@ -69,7 +69,7 @@ public class AddScore extends AppCompatActivity {
                     }
                     else
                     {
-                        team2.clearCheck();
+                        team1.clearCheck();
                     }
                 }
                 catch (Exception ex)

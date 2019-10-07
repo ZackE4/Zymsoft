@@ -36,7 +36,11 @@ public class MainActivity extends AppCompatActivity {
     private long mtimeLeftInMills = START_TIME_IN_MILLIS;
     int minteger = 0;
     int binterger = 0;
-
+    private int foulsAway = 0;
+    private int foulsHome = 0;
+    private int scoreHome = 0;
+    private int scoreAway = 0;
+    private String APIToken = "5f0542d0-2fac-4089-9332-19c4faa74dea";
 
 
 
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 .create(TeamInfoAPI.class);
 
 
-        Call<Scoring> call = teamInfo.GetScoreOfGame("5c7cfe89-e5fc-489b-b384-bd5bb1dbe6db", 1);
+        Call<Scoring> call = teamInfo.GetScoreOfGame(APIToken, 3);
 
         call.enqueue(new Callback<Scoring>() {
             @Override
@@ -71,8 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
                 TextView homeScore = (TextView) findViewById(R.id.txtScoreHome);
                 homeScore.setText(" " + gets.getHomeTeamScore());
+                scoreHome = gets.getHomeTeamScore();
                 TextView awayScore = (TextView) findViewById(R.id.txtScoreAway);
                 awayScore.setText(" " + gets.getAwayTeamScore());
+                scoreAway = gets.getAwayTeamScore();
 //                    String content="";
 //                    content+="Id:  "+gets.getGameId() + " score1  " + gets.getAwayTeamScore() + " score2 " + gets.getHomeTeamScore();
 //                    content+= "Id: " + gets.getTeamId();
@@ -81,8 +87,6 @@ public class MainActivity extends AppCompatActivity {
 //                    content+= " Logo:  " + gets.getLogo();
 //                    content+= " League:  " + gets.getLeagueId();
 //                    Log.e("APICall", content);
-
-
             }
 
             @Override
@@ -92,7 +96,51 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        //Retrofit allows the connection to post man/webapi
+        Retrofit re = new Retrofit.Builder()
+                .baseUrl("http://142.55.32.86:50291/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        //create our api with retrofit
+        TeamInfoAPI teamI = retrofit
+                .create(TeamInfoAPI.class);
+
+
+        Call<Fouls> calls = teamInfo.GetFoulsOfGame(APIToken, 3);
+
+        calls.enqueue(new Callback<Fouls>() {
+            @Override
+            public void onResponse(Call<Fouls> call, Response<Fouls> response) {
+                if (!response.isSuccessful())
+                {
+                    Log.e("APICall", "Code: "+ response.code());
+                    return;
+                }
+
+                Fouls gets = response.body();
+
+                TextView homeFouls = (TextView) findViewById(R.id.txtFoulsHome);
+                homeFouls.setText(" " + gets.getHomeTeamFouls());
+                foulsHome = gets.getHomeTeamFouls();
+                TextView awayFouls = (TextView) findViewById(R.id.txtFoulsAway);
+                awayFouls.setText(" " + gets.getAwayTeamFouls());
+                foulsAway = gets.getAwayTeamFouls();
+//                    String content="";
+//                    content+="Id:  "+gets.getGameId() + " score1  " + gets.getAwayTeamScore() + " score2 " + gets.getHomeTeamScore();
+//                    content+= "Id: " + gets.getTeamId();
+//                    content+= " Name:  " + gets.getTeamname();
+//                    content+= " Coach:  " + gets.getCoachName();
+//                    content+= " Logo:  " + gets.getLogo();
+//                    content+= " League:  " + gets.getLeagueId();
+//                    Log.e("APICall", content);
+            }
+
+            @Override
+            public void onFailure(Call<Fouls> calls, Throwable t) {
+                Log.e("APICall", t.getMessage());
+            }
+        });
 
 
                 mtextView = findViewById(R.id.txtTimer);
@@ -216,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addScoring(int playerId, int score) {
         String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-        ScoringLog scoringLog = new ScoringLog("5c7cfe89-e5fc-489b-b384-bd5bb1dbe6db","ABC123", currentTime, score, playerId, 2);
+        final ScoringLog scoringLog = new ScoringLog(APIToken,"ABC123", currentTime, score, playerId, 3);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://142.55.32.86:50291/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -240,6 +288,19 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.e("ScoreError", scoreResponse.getGameId() + " " + scoreResponse.getScoringLogId());
 
+                if (scoringLog.getPlayerId() == 4)
+                {
+                    scoreHome+=scoreResponse.getPoints();
+                    TextView txtScoreHome = (TextView) findViewById(R.id.txtScoreHome);
+                    txtScoreHome.setText(" "  + scoreHome);
+
+                }
+                else
+                {
+                    scoreAway+=scoreResponse.getPoints();
+                    TextView txtScoreAway = (TextView) findViewById(R.id.txtScoreAway);
+                    txtScoreAway.setText(" "  + scoreAway);
+                }
             }
 
             @Override
@@ -252,6 +313,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addFouling(int playerId) {
+        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://142.55.32.86:50291/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        //create our api with retrofit
+        TeamInfoAPI teamInfo = retrofit
+                .create(TeamInfoAPI.class);
+
+
+        FoulLog foulLog = new FoulLog(APIToken, "ABC123", currentTime, playerId, 3);
+        Call<FoulLog> call = teamInfo.RecordFoul(foulLog);
+        Log.e("ScoreError", currentTime + " not working");
+        call.enqueue(new Callback<FoulLog>() {
+            @Override
+            public void onResponse(Call<FoulLog> call, Response<FoulLog> response) {
+                if(!response.isSuccessful())
+                {
+                    Log.e("ScoreError", response.code() + " not working");
+                    return;
+                }
+                FoulLog foulLog = response.body();
+
+                Log.e("ScoreError", foulLog.getGameId() + " " + foulLog.getGameTime());
+                if (foulLog.getPlayerId() == 4)
+                {
+                    foulsHome+=1;
+                    TextView txtFoul = (TextView) findViewById(R.id.txtFoulsHome);
+                    txtFoul.setText(" " + foulsHome);
+
+                }
+                else
+                {
+                    foulsAway+=1;
+                    TextView txtFou2 = (TextView) findViewById(R.id.txtFoulsAway);
+                    txtFou2.setText(" " + foulsAway);
+                }
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<FoulLog> call, Throwable t) {
+
+            }
+        });
+
+
+
 
     }
 
