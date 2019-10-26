@@ -89,7 +89,7 @@ namespace CapstoneTest.Controllers
 
             foreach(var foul in homeTeamFouls)
             {
-                switch(foul.GameTime.Minutes % 4)
+                switch((int)(foul.GameTime.Minutes / 4))
                 {
                     case 0:
                         homeTeamFoulsByQuarter[0] = homeTeamFoulsByQuarter[0] + 1;
@@ -108,7 +108,7 @@ namespace CapstoneTest.Controllers
 
             foreach (var foul in awayTeamFouls)
             {
-                switch (foul.GameTime.Minutes % 4)
+                switch ((int)(foul.GameTime.Minutes / 4))
                 {
                     case 0:
                         awayTeamFoulsByQuarter[0] = awayTeamFoulsByQuarter[0] + 1;
