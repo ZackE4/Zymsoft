@@ -84,17 +84,58 @@ namespace CapstoneTest.Controllers
             var homeTeamFouls = await this.FoulLogRepository.GetByTeamAndGameAsync(game.HomeTeamId, gameId);
             var awayTeamFouls = await this.FoulLogRepository.GetByTeamAndGameAsync(game.AwayTeamId, gameId);
 
-            var hometeamQuery = from score in homeTeamFouls
-                                group score by score.GameId into scoreGroup
-                                select scoreGroup.Count();
-            var awayTeamQuery = from score in awayTeamFouls
-                                group score by score.GameId into scoreGroup
-                                select scoreGroup.Count();
+            var homeTeamFoulsByQuarter = new int[4];
+            var awayTeamFoulsByQuarter = new int[4];
+
+            foreach(var foul in homeTeamFouls)
+            {
+                switch(foul.GameTime.Minutes % 4)
+                {
+                    case 0:
+                        homeTeamFoulsByQuarter[0] = homeTeamFoulsByQuarter[0] + 1;
+                        break;
+                    case 1:
+                        homeTeamFoulsByQuarter[1] = homeTeamFoulsByQuarter[1] + 1;
+                        break;
+                    case 2:
+                        homeTeamFoulsByQuarter[2] = homeTeamFoulsByQuarter[2] + 1;
+                        break;
+                    case 3:
+                        homeTeamFoulsByQuarter[3] = homeTeamFoulsByQuarter[3] + 1;
+                        break;
+                }
+            }
+
+            foreach (var foul in awayTeamFouls)
+            {
+                switch (foul.GameTime.Minutes % 4)
+                {
+                    case 0:
+                        awayTeamFoulsByQuarter[0] = awayTeamFoulsByQuarter[0] + 1;
+                        break;
+                    case 1:
+                        awayTeamFoulsByQuarter[1] = awayTeamFoulsByQuarter[1] + 1;
+                        break;
+                    case 2:
+                        awayTeamFoulsByQuarter[2] = awayTeamFoulsByQuarter[2] + 1;
+                        break;
+                    case 3:
+                        awayTeamFoulsByQuarter[3] = awayTeamFoulsByQuarter[3] + 1;
+                        break;
+                }
+            }
+
+            //var hometeamQuery = from score in homeTeamFouls
+            //                    group score by score.GameId into scoreGroup
+            //                    select scoreGroup.Count();
+            //var awayTeamQuery = from score in awayTeamFouls
+            //                    group score by score.GameId into scoreGroup
+            //                    select scoreGroup.Count();
 
             var resposne = new GameFoulsResponse
             {
-                HomeTeamFouls = hometeamQuery.FirstOrDefault(),
-                AwayTeamFouls = awayTeamQuery.FirstOrDefault()
+                HomeTeamFouls = homeTeamFoulsByQuarter,
+                AwayTeamFouls = awayTeamFoulsByQuarter
             };
 
             return new OkObjectResult(resposne);
@@ -173,6 +214,11 @@ namespace CapstoneTest.Controllers
             var newScoringLog = await this.FoulLogRepository.RecordFoul(log);
 
             return new OkObjectResult(newScoringLog);
+        }
+
+        public int ModGameTime(int gameTime)
+        {
+            return gameTime % 12;
         }
     }
 }

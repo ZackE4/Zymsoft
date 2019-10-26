@@ -7,7 +7,7 @@ namespace CapstoneTest.Models.Response
 {
     public class GameFoulsResponse
     {
-        public virtual int HomeTeamFouls { get; set; }
-        public virtual int AwayTeamFouls { get; set; }
+        public virtual int[] HomeTeamFouls { get; set; }
+        public virtual int[] AwayTeamFouls { get; set; }
     }
 }
