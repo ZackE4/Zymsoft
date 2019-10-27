@@ -1,0 +1,153 @@
+﻿#ScoreboardContainer {
+    min-height: 100vh;
+    padding: 0px;
+    margin: 0px;
+    /*background-color: #2a5096;*/
+    background-image: url(https://image.freepik.com/free-vector/abstract-blue-hexagon-shapes-dark-background_125759-111.jpg);
+    background-size: contain;
+    font-family: 'Russo One', sans-serif;
+    box-sizing: border-box;
+}
+
+#HomeTeamDiv {
+    height: 100% !important;
+    min-height: 100% !important;
+    box-sizing: border-box;
+}
+#AwayTeamDiv {
+    height: 100% !important;
+    min-height: 100% !important;
+    box-sizing: border-box;
+}
+
+#GameTimerDiv {
+    height: 100% !important;
+    min-height: 100% !important;
+    box-sizing: border-box;
+    top: 25%;
+}
+
+body {
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.Timer {
+    background-color: black;
+    color: #e6f542;
+    font-size: 8.75em;
+    margin-left: 10%;
+    margin-right 10%;
+    border-color: white;
+    border-width: 2px;
+    border-radius: 30%;
+    border-style: solid;
+    text-shadow: 2px 2px red;
+}
+
+.row{
+    margin-right: 0px !important;
+    padding-right: 0px !important;
+}
+
+.logoContainer {
+    height: 100% !important;
+    min-height: 100% !important;
+    margin: 25px;
+    object-fit: scale-down;
+    overflow: hidden;
+    max-height: none;
+    border-radius: 20%;
+    box-sizing: border-box;
+}
+
+    .logoContainer img {
+        height: 27vh;
+        width: 27vh;
+        border-radius: 20%;
+        box-sizing: border-box;
+        border-color: black;
+        border-width: 3px;
+        border-style: solid;
+    }
+
+.topRow {
+    height: 50vh !important;
+    min-height: 50vh !important;
+    box-sizing: border-box;
+}
+
+.logoRow {
+    height: 100% important;
+    min-height: 100% !important;
+    box-sizing: border-box;
+}
+
+.HomeAwayHeader {
+    font-size: 5em;
+    color: white;
+    text-shadow: 2px 2px black;
+}
+
+.TeamNameSpan {
+    font-size: 3.5em;
+    color: white;
+    text-shadow: 1px 1px black;
+}
+
+.ScoreSpan {
+    font-size: 11em;
+    color: red;
+    text-shadow: 1px 1px #aeb849;
+    background-color: black;
+    border-color: white;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 20%;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+}
+
+.BonusSpan{
+    font-size: 1.7em;
+    color: white;
+    text-shadow: 2px 2px red;
+}
+
+.PeriodHeader {
+    font-size: 4em;
+    color: white;
+    text-shadow: 2px 2px black;
+}
+
+.PeriodSpan {
+    background-color: black;
+    border-color: white;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 20%;
+    color: #dfeb5e;
+    text-shadow: 1px 1px red;
+    font-size: 6em;
+    padding-left: 0.2em;
+    padding-right: 0.3em;
+}
+
+.FoulsHeader {
+    font-size: 3.5em;
+    color: white;
+    text-shadow: 2px 2px black;
+}
+
+.FoulsSpan {
+    background-color: black;
+    border-color: white;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 20%;
+    color: #dfeb5e;
+    text-shadow: 1px 1px red;
+    font-size: 7em;
+    padding-left: 0.2em;
+    padding-right: 0.3em;
+}

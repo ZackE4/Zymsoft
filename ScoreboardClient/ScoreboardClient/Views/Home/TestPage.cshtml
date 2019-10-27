@@ -1,0 +1,110 @@
+﻿
+@{
+    ViewData["Title"] = "TestPage";
+    Layout = "~/Views/Shared/_LayoutScoreboard.cshtml";
+}
+
+<h2>TestPage</h2>
+<button id="startTimerbtn">Start Timer</button>
+<button id="stopTimerbtn">Stop Timer</button>
+<br />
+<button id="homeTeam2Points">Home +2</button>
+<button id="homeTeam3Points">Home +3</button>
+<button id="awayTeam2Points">Away +2</button>
+<button id="awayTeam3Points">Away +3</button>
+<br />
+<button id="homeTeamFoul">Home Foul</button>
+<button id="awayTeamFoul">Away Foul</button>
+
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script>
+
+    "use strict";
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/scoreboardHub").build();
+    document.getElementById("startTimerbtn").disabled = true;
+    document.getElementById("stopTimerbtn").disabled = true;
+
+    connection.start().then(function () {
+        document.getElementById("startTimerbtn").disabled = false;
+        document.getElementById("stopTimerbtn").disabled = false;
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    document.getElementById("startTimerbtn").addEventListener("click", function (event) {
+        var action = "start";
+        connection.invoke("ToggleTimer", action).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("stopTimerbtn").addEventListener("click", function (event) {
+        var action = "stop";
+        connection.invoke("ToggleTimer", action).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeam2Points").addEventListener("click", function (event) {
+        //var request = {};
+        //request.apiToken = "168de16b";
+        //request.gameTime = "0:5:05";
+        //request.points = 2;
+        //request.playerId = 4;
+        //request.side = "Home";
+
+        //$.ajax({
+        //    type: "POST",
+        //    url: "/api/Scoreboard/RecordScore",
+        //    data: request,
+        //    success: function (responseData) {
+        //    },
+        //    dataType: "json"
+        //});
+
+        //event.preventDefault();
+        connection.invoke("RecordScore", "0:5:05", "2", "4", "Home").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeam3Points").addEventListener("click", function (event) {
+        connection.invoke("RecordScore", "0:5:05", "3", "4", "Home").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeam2Points").addEventListener("click", function (event) {
+        connection.invoke("RecordScore", "0:5:05", "2", "3", "Away").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeam3Points").addEventListener("click", function (event) {
+        connection.invoke("RecordScore", "0:5:05", "3", "3", "Away").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeamFoul").addEventListener("click", function (event) {
+        connection.invoke("RecordFoul", "0:5:05", "4", "Home").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeamFoul").addEventListener("click", function (event) {
+        connection.invoke("RecordFoul", "0:5:05", "3", "Away").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+</script>
