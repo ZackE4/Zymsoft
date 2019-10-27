@@ -52,7 +52,7 @@ namespace ScoreboardClient.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveGameTime(int period, int minutes, int seconds)
         {
-            var GameTime = new TimeSpan(0, (period - 1) * 12 + (12 - minutes), seconds);
+            var GameTime = new TimeSpan(0, (period-1) * 12, 0) + (new TimeSpan(0, 12, 0) - new TimeSpan(0,minutes,seconds));
             await SettingsUtil.SetSetting("GameTime", GameTime.ToString());
             Connector.GameScore.GameTime = GameTime;
             return new OkObjectResult("Game Time Saved");
