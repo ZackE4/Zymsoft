@@ -17,6 +17,21 @@ namespace ScoreboardClient.Hubs
             await Clients.All.SendAsync("RecieveToggleTimer", action);
         }
 
+        public async Task ResetShotClock()
+        {
+            await Clients.All.SendAsync("RecieveResetShotClock");
+        }
+
+        public async Task SetShotClock(int value)
+        {
+            await Clients.All.SendAsync("RecieveSetShotClock", value);
+        }
+
+        public async Task PlayHorn()
+        {
+            await Clients.All.SendAsync("ReceivePlayHorn");
+        }
+
         public async Task RecordScore(string gameTime, string Points, string PlayerId, string side)
         {
             var ApiClient = new WebApiClient("http://142.55.32.86:50291/api");

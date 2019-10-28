@@ -7,6 +7,9 @@
 <h2>TestPage</h2>
 <button id="startTimerbtn">Start Timer</button>
 <button id="stopTimerbtn">Stop Timer</button>
+<button id="resetShotClockbtn">Reset Shot Clock</button>
+<button id="setShotClockbtn">Set Shot CLock 15</button>
+<button id="hornbtn">Horn</button>
 <br />
 <button id="homeTeam2Points">Home +2</button>
 <button id="homeTeam3Points">Home +3</button>
@@ -102,6 +105,27 @@
 
     document.getElementById("awayTeamFoul").addEventListener("click", function (event) {
         connection.invoke("RecordFoul", "0:5:05", "3", "Away").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("resetShotClockbtn").addEventListener("click", function (event) {
+        connection.invoke("ResetShotClock").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("setShotClockbtn").addEventListener("click", function (event) {
+        connection.invoke("SetShotClock", 15).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("hornbtn").addEventListener("click", function (event) {
+        connection.invoke("PlayHorn").catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();

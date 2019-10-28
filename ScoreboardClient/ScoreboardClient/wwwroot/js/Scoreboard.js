@@ -15,6 +15,10 @@ connection.on("RecieveToggleTimer", function (action) {
     {
         //alert("start timer!");
         if ($('#timerRunning').val() !== "true") {
+            var shotClock = parseInt($('#shotclock').html());
+            if (shotClock === 0) {
+                $('#shotclock').html(24);
+            }
             StartTimer();
         }
     }
@@ -34,6 +38,37 @@ connection.on("updateScore", function (gameScore) {
     $('#awayTeamFouls').html(gameScore.awayTeamFouls.reduce((a, b) => a + b, 0));
 });
 
+connection.on("RecieveResetShotClock", function () {
+    $('#shotclock').html(24);
+});
+
+connection.on("RecieveSetShotClock", function (value) {
+    if ($('#timerRunning').val() !== "true") {
+        $('#shotclock').html(value);
+    }
+});
+
+connection.on("ReceivePlayHorn", function () {
+    playHorn();
+});
+
+function playHorn() {
+    var audio = new Audio('/audio/buzzer.mp3');
+    audio.play();
+}
+
+function tickShotClock() {
+    var shotClock = parseInt($('#shotclock').html());
+    if (shotClock > 0) {
+        shotClock--;
+        $('#shotclock').html(shotClock);
+    }
+    if (shotClock === 0) {
+        playHorn()
+        StopTimer();
+    }
+}
+
 function tickTimer() {
     var GameSeconds = parseInt($('#TimerSeconds').html());
     var GameMinutes = parseInt($('#TimerMins').html());
@@ -41,6 +76,10 @@ function tickTimer() {
         GameSeconds--;
         var GameSecondsString = GameSeconds.toString().length > 1 ? GameSeconds : "0" + GameSeconds;
         $('#TimerSeconds').html(GameSecondsString);
+        tickShotClock();
+        if (GameMinutes === 0 && GameSeconds === 0) {
+            playHorn();
+        }
     }
     else if (GameMinutes > 0) {
         GameSeconds = 59;
@@ -48,6 +87,10 @@ function tickTimer() {
         var GameSecondsString = GameSeconds.toString().length > 1 ? GameSeconds : "0" + GameSeconds;
         $('#TimerSeconds').html(GameSecondsString);
         $('#TimerMins').html(GameMinutes);
+        tickShotClock();
+        if (GameMinutes === 0 && GameSeconds === 0) {
+            playHorn();
+        }
     }
     else {
         if (parseInt($('#period').html()) < 4) {
@@ -55,6 +98,7 @@ function tickTimer() {
             $('#TimerMins').html(12);
             var newPeriod = parseInt($('#period').html()) + 1;
             $('#period').html(newPeriod);
+            $('#shotclock').html(24);
         }
         StopTimer();
     }
