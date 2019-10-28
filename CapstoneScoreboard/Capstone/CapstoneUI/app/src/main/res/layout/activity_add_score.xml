@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".AddScore">
+
+    <RadioGroup
+        style="@style/TextColor"
+        android:id="@+id/rdTeam2"
+        android:layout_width="147dp"
+        android:layout_height="469dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/homeP1"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:tag="1"
+            android:text="3 - George Martin" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/homeP2"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_weight="1"
+            android:tag="2"
+            android:text="23 - Bob Ross" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/homeP3"
+            android:layout_width="match_parent"
+            android:layout_height="9dp"
+            android:layout_weight="1"
+            android:tag="3"
+            android:text="43 - Luke Cage" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/homeP4"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:tag="4"
+            android:text="44 - Bob Smith" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/homeP5"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:tag="5"
+            android:text="47 - Nathan Daniels" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/homeP6"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:tag="6"
+            android:text="66 - Lucas Dias" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/homeP7"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_weight="1"
+            android:tag="7"
+            android:text="81 - Sam Summers" />
+    </RadioGroup>
+
+    <RadioGroup
+        style="@style/TextAltColor"
+        android:id="@+id/rdTeam1"
+        android:layout_width="147dp"
+        android:layout_height="469dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/awayP1"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:tag="11"
+            android:text="3 - George Martin" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/awayP2"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_weight="1"
+            android:tag="12"
+            android:text="23 - Bob Ross" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/awayP3"
+            android:layout_width="match_parent"
+            android:layout_height="9dp"
+            android:layout_weight="1"
+            android:tag="13"
+            android:text="43 - Luke Cage" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/awayP4"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:tag="14"
+            android:text="44 - Bob Smith" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/awayP5"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:tag="15"
+            android:text="47 - Nathan Daniels" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/awayP6"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_weight="1"
+            android:tag="16"
+            android:text="66 - Lucas Dias" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/awayP7"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_weight="1"
+            android:tag="17"
+            android:text="81 - Sam Summers" />
+    </RadioGroup>
+
+    <TextView
+        style="@style/TextAltColor"
+        android:id="@+id/txtHomeName2"
+        android:layout_width="142dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="108dp"
+        android:layout_marginEnd="8dp"
+        android:text="Home"
+        android:textAlignment="center"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/TextAltColor"
+        android:id="@+id/txtHomeName3"
+        android:layout_width="142dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="108dp"
+        android:layout_marginEnd="8dp"
+        android:text="Away"
+        android:textAlignment="center"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="115dp"
+        android:layout_height="95dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/team1" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="110dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.976"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/team2" />
+
+    <RadioGroup
+        style="@style/TextColor"
+        android:id="@+id/rdScoring"
+        android:layout_width="72dp"
+        android:layout_height="194dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/radioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+1" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/radioButton2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+2" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/radioButton3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+3" />
+
+        <RadioButton
+            android:background="#727272"
+            style="@style/TextAltColor"
+            android:id="@+id/radioButton4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+4" />
+    </RadioGroup>
+
+    <TextView
+        style="@style/TextAltColor"
+        android:id="@+id/textView"
+        android:layout_width="143dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="Add Score"
+
+        android:textAlignment="center"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:background="@drawable/roundbutton"
+        style="@style/TextColor"
+        android:id="@+id/button"
+        android:layout_width="195dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="saveClose"
+        android:text="Save And Close"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</android.support.constraint.ConstraintLayout>
