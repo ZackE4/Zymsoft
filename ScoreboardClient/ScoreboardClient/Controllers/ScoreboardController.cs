@@ -34,7 +34,7 @@ namespace ScoreboardClient.Controllers
                 return new BadRequestObjectResult("UnAuthorized");
             }
 
-            if (!this.CheckLoginStatus())
+            if (!await this.CheckLoginStatus())
             {
                 return new BadRequestObjectResult("Unable to Login");
             }
@@ -57,7 +57,7 @@ namespace ScoreboardClient.Controllers
         [HttpPost("RecordScore")]
         public async Task<ActionResult> RecordScore(LocalRecordScoreRequest request)
         {
-            if (!this.CheckLoginStatus())
+            if (!await this.CheckLoginStatus())
             {
                 return new BadRequestObjectResult("Something Went Wrong");
             }
@@ -110,7 +110,7 @@ namespace ScoreboardClient.Controllers
         [HttpPost("RecordFoul")]
         public async Task<ActionResult> RecordFoul(LocalRecordFoulRequest request)
         {
-            if (!this.CheckLoginStatus())
+            if (!await this.CheckLoginStatus())
             {
                 return new BadRequestObjectResult("Something Went Wrong");
             }

@@ -41,8 +41,8 @@ namespace ScoreboardClient
             }
         }
 
-        public static League League { get; set; }
-        public static int SeasonId { get; set; }
+        public static ILeague League { get; set; }
+        public static ISeason Season { get; set; }
 
         public static string CurrentApiToken { get; set; }
         public static DateTime ApiTokenExpiry { get; set; }

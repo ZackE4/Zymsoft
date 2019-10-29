@@ -27,14 +27,14 @@ namespace ScoreboardClient.Controllers
             return ApiKey == Configuration["Local.API.Key"];
         }
 
-        public bool CheckLoginStatus()
+        public async Task<bool> CheckLoginStatus()
         {
             if(Connector.CurrentApiToken == null || Connector.ApiTokenExpiry < DateTime.Now.AddMinutes(-2))
             {
                 string errorMessage = "";
                 Parameter[] paramList = new Parameter[2];
-                paramList[0] = new Parameter("leagueKey", "ABC123", ParameterType.QueryString);
-                paramList[1] = new Parameter("hashedPassword", "2AC9CB7DC02B3C0083EB70898E549B63", ParameterType.QueryString);
+                paramList[0] = new Parameter("leagueKey", await SettingsUtil.GetSetting("SavedLeagueKey"), ParameterType.QueryString);
+                paramList[1] = new Parameter("hashedPassword", await SettingsUtil.GetSetting("SavedHashedLeaguePassword"), ParameterType.QueryString);
 
                 var loginResponse = this.ApiClient.Get<LoginResponse>("Login", paramList, ref errorMessage);
                 if(loginResponse != null)

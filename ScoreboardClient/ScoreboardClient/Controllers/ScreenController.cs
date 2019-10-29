@@ -18,7 +18,7 @@ namespace ScoreboardClient.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (!this.CheckLoginStatus())
+            if (!await this.CheckLoginStatus())
             {
                 RedirectToAction("Home", "Error", null);
             }
