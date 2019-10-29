@@ -1,3 +1,40 @@
 ﻿@model ScoreboardClient.Models.ViewModels.TeamsViewModel
 
 @await Html.PartialAsync("_PageMessages", Model.Messages)
+
+<div class="text-center">
+    <h1>Teams: @Model.League.LeagueName</h1>
+</div>
+<br />
+@if (Model.Teams.Count > 0)
+{
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Coach</th>
+            <th></th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    @foreach (var team in Model.Teams)
+    {
+    <tr>
+        <td>@team.TeamName</td>
+        <td>@team.CoachName</td>
+        <td></td>
+        <td><a href="/Teams/Edit?id=@team.TeamId">Edit or Add Players</a> @*| <a href="/delete?id=@team.TeamId">Delete</a>*@</td>
+    </tr>
+    }
+</table>
+}
+else
+{
+<div class="text-center">
+    <p>It looks like your league doesn't have any teams yet, click below to add some!</p>
+</div>
+}
+
+<div class="text-center">
+    <a href="/Teams/Add" class="btn btn-lg btn-primary" id="AddTeamBtn">Add Team</a>
+</div>

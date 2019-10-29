@@ -1,0 +1,34 @@
+﻿@model ScoreboardClient.Models.ViewModels.AddEditTeamViewModel;
+@await Html.PartialAsync("_AddEditTeamPartial", Model);
+
+<h3>Players</h3>
+<hr />
+@if (Model.Players == null || Model.Players.Count < 1)
+{
+    <p>This team doesn't have any players yet, click below to add some.</p>
+}
+else
+{
+ <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Number</th>
+            <th>Position</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+@foreach (var player in Model.Players)
+    {
+    <tr>
+        <td>@($"{player.FirstName} {player.LastName}")</td>
+        <td>@player.PlayerNum</td>
+        <td>@player.Position</td>
+        <td><a href="/Teams/EditPlayer?id=@player.PlayerId">Edit</a> @*| <a href="Teams/DeletePlayer?id=@team.TeamId">Delete</a>*@</td>
+    </tr>
+    }
+</table>
+}
+<div class="text-center">
+    <a href="/Teams/AddPlayer?teamId=@Model.Team.TeamId" class="btn btn-lg btn-primary" id="AddPlayerBtn">Add Player</a>
+</div>

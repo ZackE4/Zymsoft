@@ -33,7 +33,7 @@ namespace ScoreboardClient.Client
             }
             else
             {
-                errorMessage = response.ErrorMessage;
+                errorMessage = string.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
             }
 
             return content;
@@ -59,7 +59,7 @@ namespace ScoreboardClient.Client
             }
             else
             {
-                errorMessage = response.ErrorMessage;
+                errorMessage = string.IsNullOrEmpty(response.ErrorMessage) ? response.Content : response.ErrorMessage;
             }
 
             return content;

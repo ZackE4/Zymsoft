@@ -1,0 +1,34 @@
+﻿@using ScoreboardClient.Models.ViewModels
+
+@model  ScoreboardClient.Models.ViewModels.AddEditTeamViewModel
+@{ 
+    string AddEdit = "";
+    if (Model.AddEdit == AddEditTeam.Add)
+    {
+        AddEdit = "Add";
+    }
+    else
+    {
+        AddEdit = "Edit";
+    }
+}
+
+<div class="text-center">
+    <h1>@AddEdit Team</h1>
+    <form method="POST" asp-action="@AddEdit" asp-controller="Teams">
+        @if (AddEdit == "Edit")
+        {
+            <input type="hidden" name="TeamId" value="@Model.Team.TeamId" />
+        }
+        <div class="form-group">
+            <label>Team Name </label>
+            <input type="text" name="TeamName" value="@Model.Team.TeamName" class="form-control" />
+            <label>Coach Name: </label>
+            <input type="text" name="CoachName" value="@Model.Team.CoachName" class="form-control" />
+            <label>Logo Url: </label>
+            <input type="text" name="Logo" value="@Model.Team.Logo" class="form-control" />
+            <input type="hidden" name="LeagueId" value="@Model.League.LeagueId" class="form-control" />
+        </div>
+        <button class="btn btn-lg btn-primary" name="Submit" value="Submit" type="Submit">Submit</button>
+    </form>
+</div>

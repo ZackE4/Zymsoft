@@ -67,9 +67,12 @@ namespace ScoreboardClient.Controllers
 
             string errorMsg = "";
             Parameter[] parameters = new Parameter[2];
-            parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
-            parameters[1] = new Parameter("id", await SettingsUtil.GetSetting("GameId"), ParameterType.QueryString);
-            Connector.Game = this.ApiClient.Get<Game>("Game", parameters, ref errorMsg);
+            if (Connector.Game == null)
+            {
+                parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                parameters[1] = new Parameter("id", await SettingsUtil.GetSetting("GameId"), ParameterType.QueryString);
+                Connector.Game = this.ApiClient.Get<Game>("Game", parameters, ref errorMsg);
+            }
 
             parameters = new Parameter[2];
             parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
@@ -80,11 +83,6 @@ namespace ScoreboardClient.Controllers
             parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
             parameters[1] = new Parameter("id", Connector.Game.AwayTeamId, ParameterType.QueryString);
             Connector.AwayTeam = this.ApiClient.Get<Team>("Teams", parameters, ref errorMsg);
-
-            if (String.IsNullOrEmpty(await SettingsUtil.GetSetting("SeasonId")))
-            {
-                await SettingsUtil.SetSetting("SeasonId", "1");
-            }
         }
     }
 }

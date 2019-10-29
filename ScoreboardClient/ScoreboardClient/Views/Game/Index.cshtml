@@ -1,0 +1,70 @@
+﻿@using ScoreboardClient.Data.Entities.Concrete;
+
+@model ScoreboardClient.Models.ViewModels.GameViewModel
+@{
+    var gameStatus = "";
+    if (Model.gameHasStarted)
+    {
+        if (Model.Game.GameComplete)
+        {
+            gameStatus = "Comeplete";
+        }
+        else
+        {
+            gameStatus = "Started";
+        }
+    }
+    else
+    {
+        gameStatus = "Not Started";
+    }
+}
+
+@await Html.PartialAsync("_PageMessages", Model.Messages)
+
+<div class="text-center">
+    <h1>Game Menu: @Model.League.LeagueName</h1>
+    <br /><br />
+    @if (Model.Game == null)
+    {
+        <p>No Game Currently Loaded</p><hr />
+        if (Model.SavedGameAvailable)
+        {
+            <p>We found a saved game id from a previous game, would you like to load it?</p><br />
+            <a href="/Game/LoadLastSavedGamed" class="btn btn-lg btn-primary" id="AddTeamBtn">Load Last Game</a>
+            <hr />
+        }
+    }
+    else
+    {
+        <h3>Current Game:</h3>
+        <p>@Model.AwayTeam.TeamName AT @Model.HomeTeam.TeamName</p>
+        <p>Game Created: @Model.Game.Date.ToString("MMMM dd yyyy")</p>
+        <p>Game Status: @gameStatus</p>
+        <br /><br /><hr />
+    }
+    <h3>Create New Game</h3>
+    <form asp-controller="Game" asp-action="CreateGame" method="Post">
+        <div class="form-group">
+            <label>Home Team:</label>
+            <select class="form-control" id="HomeTeamId" name="HomeTeamId" required>
+                <option value=""></option>
+                @foreach (var team in Model.LeagueTeamList)
+                {
+                    <option value="@team.TeamId">@team.TeamName</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Away Team:</label>
+            <select class="form-control" id="AwayTeamId" name="AwayTeamId" required>
+                <option value=""></option>
+                @foreach (var team in Model.LeagueTeamList)
+                {
+                    <option value="@team.TeamId">@team.TeamName</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-lg btn-primary" id="AddTeamBtn">Create Game</button>
+    </form>
+</div>

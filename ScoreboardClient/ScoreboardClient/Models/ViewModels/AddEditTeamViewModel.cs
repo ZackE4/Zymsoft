@@ -7,9 +7,16 @@ using System.Threading.Tasks;
 
 namespace ScoreboardClient.Models.ViewModels
 {
-    public class TeamsViewModel : BaseAdminViewModel
+    public enum AddEditTeam
     {
+        Add,Edit
+    }
+
+    public class AddEditTeamViewModel : BaseAdminViewModel
+    {
+        public virtual ITeam Team { get; set; }
+        public virtual List<Player> Players { get; set; }
+        public virtual AddEditTeam AddEdit { get; set; }
         public virtual ILeague League { get; set; }
-        public virtual List<Team> Teams { get; set; }
     }
 }
