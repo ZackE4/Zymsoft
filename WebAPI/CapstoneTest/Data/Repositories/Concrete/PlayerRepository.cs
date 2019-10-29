@@ -81,7 +81,7 @@ namespace CapstoneTest.Data.Repositories.Concrete
         {
             string updateQuery = @"
                             UPDATE Players
-                                SET PlayerNum = @PlayerNum
+                                SET PlayerNum = @PlayerNum,
                                 Position = @Position,
                                 FirstName = @FirstName,
                                 LastName = @LastName,

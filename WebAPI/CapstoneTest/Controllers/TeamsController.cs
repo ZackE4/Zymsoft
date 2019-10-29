@@ -38,6 +38,24 @@ namespace CapstoneTest.Controllers
             return new OkObjectResult(await this.TeamRepositry.GetAsync(id));
         }
 
+        [HttpGet("ByLeague")]
+        public async Task<ActionResult> GetByLeague(string apiToken, string leagueKey)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            string leagueId = await this.GetLeagueId(leagueKey);
+
+            if (leagueId == null)
+            {
+                return new BadRequestObjectResult("League Not Found");
+            }
+
+            return new OkObjectResult(await this.TeamRepositry.GetByLeagueAsync(Convert.ToInt32(leagueId)));
+        }
+
         [HttpPost("Add")]
         public async Task<ActionResult> AddTeam(AddTeamRequest request)
         {

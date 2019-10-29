@@ -29,8 +29,8 @@ namespace CapstoneTest.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //optionsBuilder.UseSqlServer("Server=CS20\\VYMSOFT;Database=Capstone;User Id=sa;Password=Zymsoft2019!;ConnectRetryCount=0");
-                optionsBuilder.UseSqlServer("Server=DESKTOP-12MJJEK\\SQLEXPRESS;Database=Capstone;Trusted_Connection=True;ConnectRetryCount=0");
+                optionsBuilder.UseSqlServer("Server=CS20\\VYMSOFT;Database=Capstone;User Id=sa;Password=Zymsoft2019!;ConnectRetryCount=0");
+                //optionsBuilder.UseSqlServer("Server=DESKTOP-12MJJEK\\SQLEXPRESS;Database=Capstone;Trusted_Connection=True;ConnectRetryCount=0");
             }
         }
 
