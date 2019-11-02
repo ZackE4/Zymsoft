@@ -27,6 +27,11 @@ namespace ScoreboardClient.Hubs
             await Clients.All.SendAsync("RecieveSetShotClock", value);
         }
 
+        public async Task SetGameClock(int mins, int seconds)
+        {
+            await Clients.All.SendAsync("RecieveSetGameClock", mins, seconds);
+        }
+
         public async Task PlayHorn()
         {
             await Clients.All.SendAsync("ReceivePlayHorn");

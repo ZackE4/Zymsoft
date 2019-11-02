@@ -15,6 +15,18 @@
 
 <div class="text-center">
     <h1>@AddEdit Player</h1>
+    @if (String.IsNullOrEmpty(Model.Player.Picture))
+    {
+        <div id="PlayerImageDiv">
+            <img src="https://image.shutterstock.com/image-vector/basketball-player-vector-silhouette-600w-530749927.jpg" style="max-width:400px; max-height:400px;" />
+        </div>
+    }
+    else
+    {
+        <div id="PlayerImageDiv">
+            <img src="@Model.Player.Picture" style="max-width:400px; max-height:400px;" />
+        </div>
+    }
     <form method="POST" asp-action="@(AddEdit)Player" asp-controller="Teams">
         @if (AddEdit == "Edit")
         {

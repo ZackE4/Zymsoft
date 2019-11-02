@@ -42,6 +42,15 @@ connection.on("RecieveResetShotClock", function () {
     $('#shotclock').html(24);
 });
 
+connection.on("RecieveSetGameClock", function (mins, seconds) {
+    if ($('#timerRunning').val() === "false") {
+        var GameSecondsString = seconds.toString().length > 1 ? seconds.toString() : "0" + seconds;
+        $('#TimerSeconds').html(GameSecondsString);
+        $('#TimerMins').html(mins);
+        StopTimer();
+    }
+});
+
 connection.on("RecieveSetShotClock", function (value) {
     if ($('#timerRunning').val() !== "true") {
         $('#shotclock').html(value);
@@ -54,7 +63,10 @@ connection.on("ReceivePlayHorn", function () {
 
 function playHorn() {
     var audio = new Audio('/audio/buzzer.mp3');
-    audio.play();
+    var audioPromise = audio.play();
+    if (audioPromise !== null) {
+        audioPromise.catch(() => { audio.play(); })
+    }
 }
 
 function tickShotClock() {
@@ -64,7 +76,7 @@ function tickShotClock() {
         $('#shotclock').html(shotClock);
     }
     if (shotClock === 0) {
-        playHorn()
+        playHorn();
         StopTimer();
     }
 }

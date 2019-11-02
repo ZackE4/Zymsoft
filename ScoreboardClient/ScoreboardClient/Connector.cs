@@ -79,7 +79,10 @@ namespace ScoreboardClient
                     HomeTeamFouls = fouls.HomeTeamFouls,
                     AwayTeamFouls = fouls.AwayTeamFouls,
                     HomeTeamScore = score.HomeTeamScore,
-                    AwayTeamScore = score.AwayTeamScore
+                    AwayTeamScore = score.AwayTeamScore,
+                    //TODO ADD PROPER LOGIC HERE LATER
+                    HomeTeamTimeoutsRemaining = new int[]{5,5},
+                    AwayTeamTimeoutsRemaining = new int[]{5,5},
                 };
             }
 

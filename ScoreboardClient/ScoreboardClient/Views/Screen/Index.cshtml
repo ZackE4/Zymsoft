@@ -24,9 +24,18 @@
                 </span>
             </div>
             <div class="row logoRow">
-                <div class="logoContainer">
-                    <img src="@Model.HomeTeam.Logo" alt="logo" />
-                </div>
+                @if (!string.IsNullOrEmpty(Model.HomeTeam.Logo))
+                {
+                    <div class="logoContainer">
+                        <img src="@Model.HomeTeam.Logo" alt="logo" />
+                    </div>
+                }
+                else
+                {
+                    <div class="logoContainer">
+                        <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" alt="logo" />
+                    </div>
+                }
             </div>
         </div>
         @*<div class="col-lg-1"></div>*@
@@ -48,9 +57,18 @@
                 </span>
             </div>
             <div class="row logoRow">
-                <div class="logoContainer">
-                    <img src="@Model.AwayTeam.Logo" alt="logo" />
-                </div>
+                @if (!string.IsNullOrEmpty(Model.AwayTeam.Logo))
+                {
+                    <div class="logoContainer">
+                        <img src="@Model.AwayTeam.Logo" alt="logo" />
+                    </div>
+                }
+                else
+                {
+                    <div class="logoContainer">
+                        <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" alt="logo" />
+                    </div>
+                }
             </div>
         </div>
     </div>

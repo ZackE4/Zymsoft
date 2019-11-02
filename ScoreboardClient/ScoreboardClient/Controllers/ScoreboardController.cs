@@ -12,6 +12,7 @@ using ScoreboardClient.Models.Request.Client;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.SignalR;
 using ScoreboardClient.Hubs;
+using ScoreboardClient.Models.Response.Host;
 
 namespace ScoreboardClient.Controllers
 {
@@ -24,6 +25,71 @@ namespace ScoreboardClient.Controllers
         public ScoreboardController(IConfiguration configuration, IHubContext<ScoreboardHub> hubContext) : base(configuration)
         {
             this.HubContext = hubContext;
+        }
+
+        public async Task<ActionResult> CheckConnection(string apiToken)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            return new OkObjectResult("Success");
+        }
+
+        [HttpGet("GetGame")]
+        public async Task<ActionResult> GetFullGameData(string apiToken)
+        {
+            if (!await this.CheckLoginStatus())
+            {
+                return new BadRequestObjectResult("Something Went Wrong");
+            }
+
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            if (Connector.Game == null)
+            {
+                return new BadRequestObjectResult("Game Not Available");
+            }
+            if (Connector.Game.GameComplete)
+            {
+                return new BadRequestObjectResult("Game Already Complete");
+            }
+            if (Connector.League == null)
+            {
+                return new BadRequestObjectResult("League Not Available");
+            }
+            if (Connector.HomeTeam == null || Connector.AwayTeam == null)
+            {
+                return new BadRequestObjectResult("Error getting teams.");
+            }
+
+            string errorMessage = "";
+            var paramList = new Parameter[2];
+            paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList[1] = new Parameter("teamId", Connector.HomeTeam.TeamId, ParameterType.QueryString);
+            var homeTeamPlayerList = this.ApiClient.Get<List<Player>>("Players/ByTeam", paramList, ref errorMessage);
+
+            paramList = new Parameter[2];
+            paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList[1] = new Parameter("teamId", Connector.AwayTeam.TeamId, ParameterType.QueryString);
+            var awayTeamPlayerList = this.ApiClient.Get<List<Player>>("Players/ByTeam", paramList, ref errorMessage);
+
+
+            FullGameResponse response = new FullGameResponse()
+            {
+                HomeTeam = Connector.HomeTeam,
+                AwayTeam = Connector.AwayTeam,
+                GameScore = Connector.GameScore,
+                HomeTeamRoster = homeTeamPlayerList,
+                AwayTeamRoster = awayTeamPlayerList
+            };
+
+            return new OkObjectResult(response);
+
         }
 
         [HttpGet("GetTeam")]
@@ -52,6 +118,73 @@ namespace ScoreboardClient.Controllers
             }
 
             return new BadRequestObjectResult(errorMsg);
+        }
+
+        [HttpPost("StartTimer")]
+        public async Task<ActionResult> StartTimer(BasicLocalRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+            await this.HubContext.Clients.All.SendAsync("RecieveToggleTimer", "start");
+            return new OkObjectResult("Success");
+        }
+
+        [HttpPost("StopTimer")]
+        public async Task<ActionResult> StopTimer(BasicLocalRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+            await this.HubContext.Clients.All.SendAsync("RecieveToggleTimer", "stop");
+            return new OkObjectResult("Success");
+        }
+
+        [HttpPost("ResetShotClock")]
+        public async Task<ActionResult> ResetShotClock(BasicLocalRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+            await this.HubContext.Clients.All.SendAsync("RecieveResetShotClock");
+            return new OkObjectResult("Success");
+        }
+
+
+        [HttpPost("SetShotClock")]
+        public async Task<ActionResult> SetShotClock(SetShotClockRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+            await this.HubContext.Clients.All.SendAsync("RecieveSetShotClock", request.Value);
+            return new OkObjectResult("Success");
+        }
+
+        [HttpPost("SetGameClock")]
+        public async Task<ActionResult> SetGameClock(SetGameClockRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+            await this.HubContext.Clients.All.SendAsync("RecieveSetShotClock", request.Minutes, request.Seconds);
+            return new OkObjectResult("Success");
+        }
+
+        [HttpPost("PlayHorn")]
+        public async Task<ActionResult> PlayHorn(BasicLocalRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+            await this.HubContext.Clients.All.SendAsync("ReceivePlayHorn");
+            return new OkObjectResult("Success");
         }
 
         [HttpPost("RecordScore")]

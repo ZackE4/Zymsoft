@@ -9,6 +9,7 @@
 <button id="stopTimerbtn">Stop Timer</button>
 <button id="resetShotClockbtn">Reset Shot Clock</button>
 <button id="setShotClockbtn">Set Shot CLock 15</button>
+<button id="setClockbtn">Set Clock 2:15</button>
 <button id="hornbtn">Horn</button>
 <br />
 <button id="homeTeam2Points">Home +2</button>
@@ -126,6 +127,13 @@
 
     document.getElementById("hornbtn").addEventListener("click", function (event) {
         connection.invoke("PlayHorn").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("setClockbtn").addEventListener("click", function (event) {
+        connection.invoke("SetGameClock", 2, 15).catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();

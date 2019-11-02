@@ -88,7 +88,15 @@ namespace ScoreboardClient.Controllers
             {
                 parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
                 parameters[1] = new Parameter("id", await SettingsUtil.GetSetting("GameId"), ParameterType.QueryString);
-                Connector.Game = this.ApiClient.Get<Game>("Game", parameters, ref errorMsg);
+                var oldGame = this.ApiClient.Get<Game>("Game", parameters, ref errorMsg);
+                if(oldGame.SeasonId == Connector.Season.SeasonId)
+                {
+                    Connector.Game = oldGame;
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Game", new { errorMsg = "Last saved game does not belong to this league/season. Create a new game to continue" });
+                }
             }
 
             if(Connector.Game != null)

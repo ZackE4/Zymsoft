@@ -20,14 +20,14 @@ namespace ScoreboardClient.Controllers
         {
             if (!await this.CheckLoginStatus())
             {
-                RedirectToAction("Home", "Error", null);
+                return RedirectToAction("Index", "Game", new { errorMsg = "Authorization Error" });
             }
 
             await this.SetupGameForDemo();
 
             if(Connector.Game == null)
             {
-                RedirectToAction("Home", "Error", null);
+                return RedirectToAction("Index", "Game", new { errorMsg = "No Game Currently Loaded" });
             }
 
             var viewModel = new ScreenViewModel();
@@ -71,18 +71,25 @@ namespace ScoreboardClient.Controllers
             {
                 parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
                 parameters[1] = new Parameter("id", await SettingsUtil.GetSetting("GameId"), ParameterType.QueryString);
-                Connector.Game = this.ApiClient.Get<Game>("Game", parameters, ref errorMsg);
+                var oldGame = this.ApiClient.Get<Game>("Game", parameters, ref errorMsg);
+                if (oldGame.SeasonId == Connector.Season.SeasonId)
+                {
+                    Connector.Game = oldGame;
+                }
             }
 
-            parameters = new Parameter[2];
-            parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
-            parameters[1] = new Parameter("id", Connector.Game.HomeTeamId, ParameterType.QueryString);
-            Connector.HomeTeam = this.ApiClient.Get<Team>("Teams", parameters, ref errorMsg);
+            if(Connector.Game != null)
+            {
+                parameters = new Parameter[2];
+                parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                parameters[1] = new Parameter("id", Connector.Game.HomeTeamId, ParameterType.QueryString);
+                Connector.HomeTeam = this.ApiClient.Get<Team>("Teams", parameters, ref errorMsg);
 
-            parameters = new Parameter[2];
-            parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
-            parameters[1] = new Parameter("id", Connector.Game.AwayTeamId, ParameterType.QueryString);
-            Connector.AwayTeam = this.ApiClient.Get<Team>("Teams", parameters, ref errorMsg);
+                parameters = new Parameter[2];
+                parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                parameters[1] = new Parameter("id", Connector.Game.AwayTeamId, ParameterType.QueryString);
+                Connector.AwayTeam = this.ApiClient.Get<Team>("Teams", parameters, ref errorMsg);
+            }
         }
     }
 }

@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace ScoreboardClient.Models.Request.Local
 {
-    public class LocalRecordFoulRequest
+    public class LocalRecordFoulRequest : BasicLocalRequest
     {
-        public virtual string ApiToken { get; set; }
         public virtual TimeSpan GameTime { get; set; }
         public virtual int PlayerId { get; set; }
         public virtual string Side { get; set; }
