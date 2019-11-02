@@ -41,6 +41,10 @@
         <p>@Model.AwayTeam.TeamName AT @Model.HomeTeam.TeamName</p>
         <p>Game Created: @Model.Game.Date.ToString("MMMM dd yyyy")</p>
         <p>Game Status: @gameStatus</p>
+        <hr />
+        <p><b>To Connect to this Game:</b></p>
+        <p>APIAddress: @Model.LocalAPIAddress</p>
+        <p>ApiKey: @Model.LocalAPIKey</p>
         <br /><br /><hr />
     }
     <h3>Create New Game</h3>

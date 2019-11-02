@@ -27,24 +27,25 @@
             <img src="@Model.Player.Picture" style="max-width:400px; max-height:400px;" />
         </div>
     }
-    <form method="POST" asp-action="@(AddEdit)Player" asp-controller="Teams">
-        @if (AddEdit == "Edit")
-        {
-            <input type="hidden" name="PlayerId" value="@Model.Player.PlayerId" />
-        }
-        <input type="hidden" name="TeamId" value="@Model.Player.TeamId" />
-        <div class="form-group">
-            <label>First Name </label>
-            <input type="text" name="FirstName" value="@Model.Player.FirstName" class="form-control" />
-            <label>Last Name: </label>
-            <input type="text" name="LastName" value="@Model.Player.LastName" class="form-control" />
-            <label>Number: </label>
-            <input type="text" name="PlayerNum" value="@Model.Player.PlayerNum" class="form-control" />
-            <label>Position: </label>
-            <input type="text" name="Position" value="@Model.Player.Position" class="form-control" />
-            <label>Picture Url: </label>
-            <input type="text" name="Picture" value="@Model.Player.Picture" class="form-control" />
-        </div>
-        <button class="btn btn-lg btn-primary" name="Submit" value="Submit" type="Submit">Submit</button>
-    </form>
+        <form method="POST" asp-action="@(AddEdit)Player" asp-controller="Teams">
+            @if (AddEdit == "Edit")
+            {
+                <input type="hidden" name="PlayerId" value="@Model.Player.PlayerId" />
+            }
+            <input type="hidden" name="TeamId" value="@Model.Player.TeamId" />
+            <div class="form-group">
+                <label>First Name </label>
+                <input type="text" name="FirstName" value="@Model.Player.FirstName" class="form-control" />
+                <label>Last Name: </label>
+                <input type="text" name="LastName" value="@Model.Player.LastName" class="form-control" />
+                <label>Number: </label>
+                <input type="text" name="PlayerNum" value="@Model.Player.PlayerNum" class="form-control" />
+                <label>Position: </label>
+                <input type="text" name="Position" value="@Model.Player.Position" class="form-control" />
+                <label>Picture Url: </label>
+                <input type="text" name="Picture" value="@Model.Player.Picture" class="form-control" />
+            </div>
+            <button class="btn btn-lg btn-primary" type="button" onclick="history.back();">Back</button>
+            <button class="btn btn-lg btn-primary" name="Submit" value="Submit" type="Submit">Submit</button>
+        </form>
 </div>

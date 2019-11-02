@@ -11,6 +11,7 @@ using System.Linq;
 using ScoreboardClient.Models;
 using ScoreboardClient.Models.Request.Client;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace ScoreboardClient.Controllers
 {
@@ -35,6 +36,9 @@ namespace ScoreboardClient.Controllers
                 return RedirectToAction("Index", "Home", new { errorMsg = "Your league must be a season to start games" });
             }
             var viewModel = new GameViewModel();
+            viewModel.LocalAPIKey = Configuration["Local.API.Key"];
+            var localIpAddress = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            viewModel.LocalAPIAddress = $"{localIpAddress}/api/";
             viewModel.League = Connector.League;
             viewModel.Game = Connector.Game;
             if (!string.IsNullOrEmpty(errorMsg))

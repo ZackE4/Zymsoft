@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using ScoreboardClient.Data.Entities.Concrete;
 using ScoreboardClient.Models.ViewModels;
 using RestSharp;
+using ScoreboardClient.Models.Request.Client;
+using Newtonsoft.Json;
 
 namespace ScoreboardClient.Controllers
 {
@@ -56,6 +58,82 @@ namespace ScoreboardClient.Controllers
             await SettingsUtil.SetSetting("GameTime", GameTime.ToString());
             Connector.GameScore.GameTime = GameTime;
             return new OkObjectResult("Game Time Saved");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveRecordedPoints(int period, int minutes, int seconds, int points, int playerId)
+        {
+            var GameTime = new TimeSpan(0, (period - 1) * 12, 0) + (new TimeSpan(0, 12, 0) - new TimeSpan(0, minutes, seconds));
+            if (!await this.CheckLoginStatus())
+            {
+                return new BadRequestObjectResult("Something Went Wrong");
+            }
+
+            if (Connector.Game == null || Connector.Game.GameComplete)
+            {
+                return new BadRequestObjectResult("Game Not Available");
+            }
+            if (Connector.League == null)
+            {
+                return new BadRequestObjectResult("League Not Available");
+            }
+
+            RecordScoreRequest apiRequest = new RecordScoreRequest
+            {
+                ApiToken = Connector.CurrentApiToken,
+                GameTime = GameTime,
+                Points = points,
+                PlayerId = playerId,
+                GameId = Connector.Game.GameId,
+                LeagueKey = Connector.League.LeagueKey
+            };
+
+            string errorMsg = "";
+            var scoringLog = this.ApiClient.Post<ScoringLog>("Scoring/RecordScore", JsonConvert.SerializeObject(apiRequest), ref errorMsg);
+
+            if (scoringLog != null)
+            {
+                return new OkObjectResult("Score Saved");
+            }
+
+            return new BadRequestObjectResult(errorMsg);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveRecordedFoul(int period, int minutes, int seconds, int playerId)
+        {
+            var GameTime = new TimeSpan(0, (period - 1) * 12, 0) + (new TimeSpan(0, 12, 0) - new TimeSpan(0, minutes, seconds));
+            if (!await this.CheckLoginStatus())
+            {
+                return new BadRequestObjectResult("Something Went Wrong");
+            }
+            if (Connector.Game == null || Connector.Game.GameComplete)
+            {
+                return new BadRequestObjectResult("Game Not Available");
+            }
+            if (Connector.League == null)
+            {
+                return new BadRequestObjectResult("League Not Available");
+            }
+
+            RecordFoulRequest apiRequest = new RecordFoulRequest
+            {
+                ApiToken = Connector.CurrentApiToken,
+                GameTime = GameTime,
+                PlayerId = playerId,
+                GameId = Connector.Game.GameId,
+                LeagueKey = Connector.League.LeagueKey
+            };
+
+            string errorMsg = "";
+            var foulLog = this.ApiClient.Post<FoulLog>("Scoring/RecordFoul", JsonConvert.SerializeObject(apiRequest), ref errorMsg);
+
+            if (foulLog != null)
+            {
+                return new OkObjectResult("Foul Saved");
+            }
+
+            return new BadRequestObjectResult(errorMsg);
         }
 
         protected async Task SetupGameForDemo()

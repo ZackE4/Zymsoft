@@ -10,6 +10,26 @@
 <link href="https://fonts.googleapis.com/css?family=Russo+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="~/css/Scoreboard.css" />
 
+@switch (period)
+{
+    case 1:
+        <input type="hidden" id="homeTeamQuarterFouls" value="@Model.GameScore.HomeTeamFouls[0]" />
+        <input type="hidden" id="awayTeamQuarterFouls" value="@Model.GameScore.AwayTeamFouls[0]" />
+        break;
+    case 2:
+        <input type="hidden" id="homeTeamQuarterFouls" value="@Model.GameScore.HomeTeamFouls[1]" />
+        <input type="hidden" id="awayTeamQuarterFouls" value="@Model.GameScore.AwayTeamFouls[1]" />
+        break;
+    case 3:
+        <input type="hidden" id="homeTeamQuarterFouls" value="@Model.GameScore.HomeTeamFouls[1]" />
+        <input type="hidden" id="awayTeamQuarterFouls" value="@Model.GameScore.AwayTeamFouls[1]" />
+        break;
+    case 4:
+        <input type="hidden" id="homeTeamQuarterFouls" value="@Model.GameScore.HomeTeamFouls[1]" />
+        <input type="hidden" id="awayTeamQuarterFouls" value="@Model.GameScore.AwayTeamFouls[1]" />
+        break;
+}
+
 <div id="ScoreboardContainer">
     <div id="TopRow" class="row topRow">
         <div id="HomeTeamDiv" class="col-lg-4 text-center">
@@ -80,16 +100,30 @@
         </div>
         <div id="HomeTeamBonusDiv" class="col-lg-1">
             <span id="homeBonus" class="BonusSpan">
-                @if (period == 1 || period == 2)
+                @if (period == 1)
                 {
-                    if (Model.GameScore.HomeTeamFouls[0] + Model.GameScore.HomeTeamFouls[1] > 10)
+                    if (Model.GameScore.HomeTeamFouls[0] > 4)
                     {
                         <text>< BONUS</text>
                     }
                 }
-                else if (period == 3 || period == 4)
+                else if (period == 2)
                 {
-                    if (Model.GameScore.HomeTeamFouls[2] + Model.GameScore.HomeTeamFouls[3] > 10)
+                    if (Model.GameScore.HomeTeamFouls[1] > 4)
+                    {
+                        <text>< BONUS</text>
+                    }
+                }
+                else if (period == 3)
+                {
+                    if (Model.GameScore.HomeTeamFouls[2] > 4)
+                    {
+                        <text>< BONUS</text>
+                    }
+                }
+                else if (period == 4)
+                {
+                    if (Model.GameScore.HomeTeamFouls[3] > 4)
                     {
                         <text>< BONUS</text>
                     }
@@ -110,17 +144,31 @@
             </div>
         </div>
         <div id="AwayTeamBonusDiv" class="col-lg-1">
-            <span d="awayBonus" class="BonusSpan">
-                @if (period == 1 || period == 2)
+            <span id="awayBonus" class="BonusSpan">
+                @if (period == 1)
                 {
-                    if (Model.GameScore.AwayTeamFouls[0] + Model.GameScore.AwayTeamFouls[1] > 10)
+                    if (Model.GameScore.AwayTeamFouls[0] > 4)
                     {
                         <text>BONUS ></text>
                     }
                 }
-                else if (period == 3 || period == 4)
+                else if (period == 2)
                 {
-                    if (Model.GameScore.AwayTeamFouls[2] + Model.GameScore.AwayTeamFouls[3] > 10)
+                    if (Model.GameScore.AwayTeamFouls[1] > 4)
+                    {
+                        <text>BONUS ></text>
+                    }
+                }
+                else if (period == 3)
+                {
+                    if (Model.GameScore.AwayTeamFouls[2] > 4)
+                    {
+                        <text>BONUS ></text>
+                    }
+                }
+                else if (period == 4)
+                {
+                    if (Model.GameScore.AwayTeamFouls[3] > 4)
                     {
                         <text>BONUS ></text>
                     }
@@ -173,7 +221,7 @@
         </div>
     </div>
 </div>
-<input type="hidden" id="timerRunning" value="false"/>
+<input type="hidden" id="timerRunning" value="false" />
 
 @section scripts{
     <script src="~/lib/signalr/dist/browser/signalr.js"></script>

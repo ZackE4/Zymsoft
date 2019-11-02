@@ -32,10 +32,34 @@ connection.on("RecieveToggleTimer", function (action) {
 });
 
 connection.on("updateScore", function (gameScore) {
+    if (parseInt($('#homeTeamScore').html()) !== gameScore.homeTeamScore || parseInt($('#awayTeamScore').html()) !== gameScore.awayTeamScore) {
+        $('#shotclock').html(24);
+    }
     $('#homeTeamScore').html(gameScore.homeTeamScore);
     $('#awayTeamScore').html(gameScore.awayTeamScore);
     $('#homeTeamFouls').html(gameScore.homeTeamFouls.reduce((a, b) => a + b, 0));
     $('#awayTeamFouls').html(gameScore.awayTeamFouls.reduce((a, b) => a + b, 0));
+
+    if (parseInt($('#period').html()) === 1) {
+        $('#homeTeamQuarterFouls').val(gameScore.homeTeamFouls[0]);
+        $('#awayTeamQuarterFouls').val(gameScore.awayTeamFouls[0]);
+    } else if (parseInt($('#period').html()) === 2) {
+        $('#homeTeamQuarterFouls').val(gameScore.homeTeamFouls[1]);
+        $('#awayTeamQuarterFouls').val(gameScore.awayTeamFouls[1]);
+    } else if (parseInt($('#period').html()) === 3) {
+        $('#homeTeamQuarterFouls').val(gameScore.homeTeamFouls[2]);
+        $('#awayTeamQuarterFouls').val(gameScore.awayTeamFouls[2]);
+    } else if (parseInt($('#period').html()) === 4) {
+        $('#homeTeamQuarterFouls').val(gameScore.homeTeamFouls[3]);
+        $('#awayTeamQuarterFouls').val(gameScore.awayTeamFouls[3]);
+    }
+
+    if (parseInt($('#homeTeamQuarterFouls').val()) > 4) {
+        $('#homeBonus').html('< BONUS');
+    }
+    if (parseInt($('#awayTeamQuarterFouls').val()) > 4) {
+        $('#awayBonus').html('BONUS >');
+    }
 });
 
 connection.on("RecieveResetShotClock", function () {
@@ -61,11 +85,19 @@ connection.on("ReceivePlayHorn", function () {
     playHorn();
 });
 
+connection.on("saveFoul", function (playerId) {
+    SaveFoul(playerId);
+});
+
+connection.on("saveScore", function (points, playerId) {
+    SaveScore(parseInt(points), parseInt(playerId));
+});
+
 function playHorn() {
     var audio = new Audio('/audio/buzzer.mp3');
     var audioPromise = audio.play();
     if (audioPromise !== null) {
-        audioPromise.catch(() => { audio.play(); })
+        audioPromise.catch(() => { audio.play(); });
     }
 }
 
@@ -109,6 +141,10 @@ function tickTimer() {
             $('#TimerSeconds').html("00");
             $('#TimerMins').html(12);
             var newPeriod = parseInt($('#period').html()) + 1;
+            $('#homeTeamQuarterFouls').val(0);
+            $('#awayTeamQuarterFouls').val(0);
+            $('#homeBonus').html('');
+            $('#awayBonus').html('');
             $('#period').html(newPeriod);
             $('#shotclock').html(24);
         }
@@ -130,6 +166,7 @@ function StopTimer() {
     data.minutes = parseInt($('#TimerMins').html());
     data.seconds = parseInt($('#TimerSeconds').html());
 
+    // update time back to Connector
     $.ajax({
         type: "POST",
         url: "/Screen/SaveGameTime",
@@ -138,7 +175,43 @@ function StopTimer() {
         },
         dataType: "json"
     });
-    // update time back to Connector...
+}
+
+function SaveScore(points, playerId) {
+    var data = {};
+    data.period = parseInt($('#period').html());
+    data.minutes = parseInt($('#TimerMins').html());
+    data.seconds = parseInt($('#TimerSeconds').html());
+    data.playerId = playerId;
+    data.points = points;
+
+    // record time of scoring play for stats
+    $.ajax({
+        type: "POST",
+        url: "/Screen/SaveRecordedPoints",
+        data: data,
+        success: function (responseData) {
+        },
+        dataType: "json"
+    });
+}
+
+function SaveFoul(playerId) {
+    var data = {};
+    data.period = parseInt($('#period').html());
+    data.minutes = parseInt($('#TimerMins').html());
+    data.seconds = parseInt($('#TimerSeconds').html());
+    data.playerId = playerId;
+
+    //record time of foul for stats
+    $.ajax({
+        type: "POST",
+        url: "/Screen/SaveRecordedFoul",
+        data: data,
+        success: function (responseData) {
+        },
+        dataType: "json"
+    });
 }
 
 //$(document).ready(function () {
