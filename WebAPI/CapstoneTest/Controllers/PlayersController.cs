@@ -82,7 +82,7 @@ namespace CapstoneTest.Controllers
                 Position = request.Position,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Picture = request.Picture,
+                Picture = String.IsNullOrEmpty(request.Picture) ? Configuration.GetValue<string>("DefaultPlayerLogo") : request.Picture,
                 TeamId = request.TeamId
             };
 

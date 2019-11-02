@@ -108,7 +108,7 @@ namespace CapstoneTest.Controllers
 
             team.TeamName = request.TeamName;
             team.CoachName = request.CoachName;
-            team.Logo = request.Logo;
+            team.Logo = String.IsNullOrEmpty(request.Logo) ? Configuration.GetValue<string>("DefaultTeamLogo") : request.Logo;
 
             var updatedTeam = await this.TeamRepositry.UpdateAsync(team);
 
