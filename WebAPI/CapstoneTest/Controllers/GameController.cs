@@ -66,7 +66,7 @@ namespace CapstoneTest.Controllers
             return new OkObjectResult(await this.GameRepository.GetAsync(id));
         }
 
-        [HttpPost]
+        [HttpPost("CompleteGame")]
         public async Task<ActionResult> CompleteGame(CompleteGameRequest request)
         {
             if (!await this.IsAPITokenValid(request.ApiToken))
@@ -90,7 +90,7 @@ namespace CapstoneTest.Controllers
 
             game.GameComplete = true;
 
-            return new OkObjectResult(this.GameRepository.UpdateAsync(game));
+            return new OkObjectResult(await this.GameRepository.UpdateAsync(game));
         }
     }
 }

@@ -77,17 +77,17 @@ namespace CapstoneTest.Data.Repositories.Concrete
                                 Season_SeasonId = @SeasonId
                             WHERE GameId = @GameId";
 
-            await this.DataContext.ExecuteNonQueryAsync(updateQuery, new { @Date = game.Date, @HomeTeamId = game.HomeTeamId, @AwayTeamId = game.AwayTeamId, @GameComplete = game.GameComplete, @SeasonId = game.SeasonId });
+            await this.DataContext.ExecuteNonQueryAsync(updateQuery, new { @Date = game.Date, @HomeTeamId = game.HomeTeamId, @AwayTeamId = game.AwayTeamId, @GameComplete = game.GameComplete, @SeasonId = game.SeasonId, @GameId = game.GameId });
 
             string selectLastQuery = @"
-                             SELECT g.[GameId],
+                              SELECT g.[GameId],
                                    g.[Date],
                                    g.[HomeTeamId],
                                    g.[AwayTeamId],
                                    g.[GameComplete],
                                    g.[Season_SeasonId] as SeasonId
                             FROM Games g
-                            WHERE GameId = @GameId";
+                            WHERE GameId = @GameId;";
 
             return (await this.DataContext.QueryAsync<Game>(selectLastQuery, new { @GameId = game.GameId })).FirstOrDefault();
         }
