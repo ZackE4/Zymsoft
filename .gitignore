@@ -4,3 +4,7 @@
 
 /.vs/*
 /CapstoneTest/obj/*
+/ScoreboardClient/.vs
+/ScoreboardClient/ScoreboardClient/bin/Debug/netcoreapp2.1
+/ScoreboardClient/ScoreboardClient/obj
+/WebAPI
