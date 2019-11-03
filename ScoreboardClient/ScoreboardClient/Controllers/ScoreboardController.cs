@@ -120,6 +120,58 @@ namespace ScoreboardClient.Controllers
             return new BadRequestObjectResult(errorMsg);
         }
 
+        [HttpPost("CallTimeout")]
+        public async Task<ActionResult> CallTimeout(CallTimeoutRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            if (request.Side == "Home")
+            {
+                if (Connector.GameScore.HomeTeamTimeoutsRemaining > 0)
+                {
+                    Connector.GameScore.HomeTeamTimeoutsRemaining = Connector.GameScore.HomeTeamTimeoutsRemaining - 1;
+                }
+            }
+            else if (request.Side == "Away")
+            {
+                if (Connector.GameScore.AwayTeamTimeoutsRemaining > 0)
+                {
+                    Connector.GameScore.AwayTeamTimeoutsRemaining = Connector.GameScore.AwayTeamTimeoutsRemaining - 1;
+                }
+            }
+
+            await this.HubContext.Clients.All.SendAsync("ReceiveCallTimeout", request.Side);
+
+            return new OkObjectResult("Success");
+        }
+
+        [HttpPost("SetTimeouts")]
+        public async Task<ActionResult> SetTimeouts(SetTimeoutsRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+            await this.HubContext.Clients.All.SendAsync("RecieveToggleTimer", "start");
+
+            //whenever you start or stop the timer, return back to the current period (to store for recording fouls)
+            int period = Connector.Game.GameComplete ? 4 : (int)(Connector.GameScore.GameTime.Minutes / 12) + 1; if (request.Side == "Home")
+            {
+                Connector.GameScore.HomeTeamTimeoutsRemaining = request.Timeouts;
+            }
+            else if (request.Side == "Away")
+            {
+                Connector.GameScore.AwayTeamTimeoutsRemaining = request.Timeouts;
+            }
+
+            await this.HubContext.Clients.All.SendAsync("ReceiveSetTimeout", request.Side, request.Timeouts);
+
+            return new OkObjectResult(period);
+        }
+
         [HttpPost("StartTimer")]
         public async Task<ActionResult> StartTimer(BasicLocalRequest request)
         {
