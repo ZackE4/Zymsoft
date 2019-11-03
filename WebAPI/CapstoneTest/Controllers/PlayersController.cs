@@ -82,7 +82,7 @@ namespace CapstoneTest.Controllers
                 Position = request.Position,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Picture = request.Picture,
+                Picture = String.IsNullOrEmpty(request.Picture) ? Configuration.GetValue<string>("DefaultPlayerLogo") : request.Picture,
                 TeamId = request.TeamId
             };
 
@@ -122,7 +122,7 @@ namespace CapstoneTest.Controllers
             player.Position = request.Position;
             player.FirstName = request.FirstName;
             player.LastName = request.LastName;
-            player.Picture = request.Picture;
+            player.Picture = String.IsNullOrEmpty(request.Picture) ? Configuration.GetValue<string>("DefaultPlayerLogo") : request.Picture;
             player.TeamId = request.TeamId;
 
             var updatedPlayer = await this.PlayerRepository.UpdateAsync(player);

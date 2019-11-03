@@ -15,6 +15,8 @@ namespace ScoreboardClient
     {
         private static string BaseWebApiAddress { get; set; }
         private static GameScore _gameScore { get; set; }
+        private static string _homeTeamTimeoutsRemaining { get; set; }
+        private static string _awayTeamTimeoutsRemaining { get; set; }
 
         public static IGame Game { get; set; }
         public static ITeam HomeTeam { get; set; }
@@ -56,6 +58,7 @@ namespace ScoreboardClient
 
         private static GameScore GetGameScore(int gameId)
         {
+            SetTimeoutsFromSave();
             var ApiClient = new WebApiClient(BaseWebApiAddress);
             LoginIfNeccesary(ApiClient);
 
@@ -72,6 +75,9 @@ namespace ScoreboardClient
 
             var fouls = ApiClient.Get<GameFoulsResponse>("Scoring/Fouls", paramList, ref errorMsg);
 
+            var homeTeamTimeouts = string.IsNullOrEmpty(_homeTeamTimeoutsRemaining) ? 5 : Convert.ToInt32(_homeTeamTimeoutsRemaining);
+            var awayTeamTimeouts = string.IsNullOrEmpty(_awayTeamTimeoutsRemaining) ? 5 : Convert.ToInt32(_awayTeamTimeoutsRemaining);
+
             if (score != null && fouls != null)
             {
                 return new GameScore()
@@ -79,7 +85,9 @@ namespace ScoreboardClient
                     HomeTeamFouls = fouls.HomeTeamFouls,
                     AwayTeamFouls = fouls.AwayTeamFouls,
                     HomeTeamScore = score.HomeTeamScore,
-                    AwayTeamScore = score.AwayTeamScore
+                    AwayTeamScore = score.AwayTeamScore,
+                    HomeTeamTimeoutsRemaining = homeTeamTimeouts,
+                    AwayTeamTimeoutsRemaining = awayTeamTimeouts
                 };
             }
 
@@ -101,6 +109,18 @@ namespace ScoreboardClient
                     CurrentApiToken = loginResponse.Login.LoginKey;
                     ApiTokenExpiry = loginResponse.Login.Expiry;
                     League = new League() { LeagueId = loginResponse.LeagueId, LeagueName = loginResponse.LeagueName, Logo = loginResponse.Logo };
+                }
+            }
+        }
+
+        private static async void SetTimeoutsFromSave()
+        {
+            if(Connector.Game != null)
+            {
+                if(Convert.ToInt16(await SettingsUtil.GetSetting("GameId")) == Connector.Game.GameId)
+                {
+                    _homeTeamTimeoutsRemaining = await SettingsUtil.GetSetting("HomeTeamTimeouts");
+                    _awayTeamTimeoutsRemaining = await SettingsUtil.GetSetting("AwayTeamTimeouts");
                 }
             }
         }

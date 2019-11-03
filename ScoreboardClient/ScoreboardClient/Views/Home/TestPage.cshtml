@@ -9,6 +9,7 @@
 <button id="stopTimerbtn">Stop Timer</button>
 <button id="resetShotClockbtn">Reset Shot Clock</button>
 <button id="setShotClockbtn">Set Shot CLock 15</button>
+<button id="setClockbtn">Set Clock 2:15</button>
 <button id="hornbtn">Horn</button>
 <br />
 <button id="homeTeam2Points">Home +2</button>
@@ -16,8 +17,19 @@
 <button id="awayTeam2Points">Away +2</button>
 <button id="awayTeam3Points">Away +3</button>
 <br />
-<button id="homeTeamFoul">Home Foul</button>
-<button id="awayTeamFoul">Away Foul</button>
+<button id="homeTeamFoul">Home Foul 1</button>
+<button id="homeTeamFoul2">Home Foul 2</button>
+<button id="homeTeamFoul3">Home Foul 3</button>
+<button id="homeTeamFoul4">Home Foul 4</button>
+<button id="awayTeamFoul">Away Foul 1</button>
+<button id="awayTeamFoul2">Away Foul 2</button>
+<button id="awayTeamFoul3">Away Foul 3</button>
+<button id="awayTeamFoul4">Away Foul 4</button>
+<br />
+<button id="homeTeamTimeoutbtn">Home Timeout</button>
+<button id="homeTeamTimeoutTo4btn">Home Timeouts to 4</button>
+<button id="awayTeamTimeoutbtn">Away Timeout</button>
+<button id="awayTeamTimeoutTo4btn">Away Timeouts to 4</button>
 
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script>
@@ -69,42 +81,84 @@
         //});
 
         //event.preventDefault();
-        connection.invoke("RecordScore", "0:5:05", "2", "4", "Home").catch(function (err) {
+        connection.invoke("RecordScore", "2", "4", "Home").catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();
     });
 
     document.getElementById("homeTeam3Points").addEventListener("click", function (event) {
-        connection.invoke("RecordScore", "0:5:05", "3", "4", "Home").catch(function (err) {
+        connection.invoke("RecordScore", "3", "4", "Home").catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();
     });
 
     document.getElementById("awayTeam2Points").addEventListener("click", function (event) {
-        connection.invoke("RecordScore", "0:5:05", "2", "3", "Away").catch(function (err) {
+        connection.invoke("RecordScore", "2", "3", "Away").catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();
     });
 
     document.getElementById("awayTeam3Points").addEventListener("click", function (event) {
-        connection.invoke("RecordScore", "0:5:05", "3", "3", "Away").catch(function (err) {
+        connection.invoke("RecordScore", "3", "3", "Away").catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();
     });
 
     document.getElementById("homeTeamFoul").addEventListener("click", function (event) {
-        connection.invoke("RecordFoul", "0:5:05", "4", "Home").catch(function (err) {
+        connection.invoke("RecordFoul", "1", "4", "Home").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeamFoul2").addEventListener("click", function (event) {
+        connection.invoke("RecordFoul", "2", "4", "Home").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeamFoul3").addEventListener("click", function (event) {
+        connection.invoke("RecordFoul", "3", "4", "Home").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeamFoul4").addEventListener("click", function (event) {
+        connection.invoke("RecordFoul", "4", "4", "Home").catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();
     });
 
     document.getElementById("awayTeamFoul").addEventListener("click", function (event) {
-        connection.invoke("RecordFoul", "0:5:05", "3", "Away").catch(function (err) {
+        connection.invoke("RecordFoul", "1", "3", "Away").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeamFoul2").addEventListener("click", function (event) {
+        connection.invoke("RecordFoul", "2", "3", "Away").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeamFoul3").addEventListener("click", function (event) {
+        connection.invoke("RecordFoul", "3", "3", "Away").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeamFoul4").addEventListener("click", function (event) {
+        connection.invoke("RecordFoul", "4", "3", "Away").catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();
@@ -126,6 +180,41 @@
 
     document.getElementById("hornbtn").addEventListener("click", function (event) {
         connection.invoke("PlayHorn").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("setClockbtn").addEventListener("click", function (event) {
+        connection.invoke("SetGameClock", 2, 15).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeamTimeoutbtn").addEventListener("click", function (event) {
+        connection.invoke("CallTimeout", "Home").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeamTimeoutbtn").addEventListener("click", function (event) {
+        connection.invoke("CallTimeout", "Away").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeamTimeoutTo4btn").addEventListener("click", function (event) {
+        connection.invoke("SetTimeouts", "Home", 4).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeamTimeoutTo4btn").addEventListener("click", function (event) {
+        connection.invoke("SetTimeouts", "Away",4 ).catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();

@@ -81,3 +81,8 @@ body {
 .listError {
     color: darkred;
 }
+
+form{
+    max-width: 500px;
+    margin: auto;
+}

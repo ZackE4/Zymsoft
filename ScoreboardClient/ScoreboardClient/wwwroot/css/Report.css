@@ -1,0 +1,41 @@
+﻿.logoContainer {
+    height: 100% !important;
+    min-height: 100% !important;
+    margin: 25px;
+    object-fit: scale-down;
+    overflow: hidden;
+    max-height: none;
+    border-radius: 20%;
+    box-sizing: border-box;
+}
+
+    .logoContainer img {
+        height: 15vh;
+        width: 15vh;
+        border-radius: 20%;
+        box-sizing: border-box;
+        border-color: black;
+        border-width: 3px;
+        border-style: solid;
+    }
+
+.logoRow {
+    height: 100% important;
+    min-height: 100% !important;
+    box-sizing: border-box;
+}
+
+.TeamNameSpan {
+    font-size: 3.5em;
+    color: black;
+    text-shadow: 1px 1px grey;
+}
+
+.AtSignSpan {
+    font-size: 6em;
+    color: black;
+}
+
+table{
+    text-align:left;
+}

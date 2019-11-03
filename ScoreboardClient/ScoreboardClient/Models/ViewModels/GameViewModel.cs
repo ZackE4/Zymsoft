@@ -16,5 +16,10 @@ namespace ScoreboardClient.Models.ViewModels
         public virtual bool gameHasStarted { get; set; }
         public virtual bool SavedGameAvailable { get; set; }
         public virtual List<Team> LeagueTeamList { get; set; }
+
+        public virtual string LocalAPIAddress { get; set; }
+        public virtual string LocalAPIKey { get; set; }
+
+        public virtual bool CompleteGameAvaialble { get; set; }
     }
 }

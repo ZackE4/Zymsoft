@@ -65,5 +65,32 @@ namespace CapstoneTest.Controllers
 
             return new OkObjectResult(await this.GameRepository.GetAsync(id));
         }
+
+        [HttpPost("CompleteGame")]
+        public async Task<ActionResult> CompleteGame(CompleteGameRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            string leagueId = await this.GetLeagueId(request.LeagueKey);
+
+            if (leagueId == null)
+            {
+                return new BadRequestObjectResult("League Not Found");
+            }
+
+            var game = await this.GameRepository.GetAsync(request.GameId);
+
+            if(game == null)
+            {
+                return new BadRequestObjectResult("Game Not Found");
+            }
+
+            game.GameComplete = true;
+
+            return new OkObjectResult(await this.GameRepository.UpdateAsync(game));
+        }
     }
 }

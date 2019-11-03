@@ -7,4 +7,5 @@
 /ScoreboardClient/.vs
 /ScoreboardClient/ScoreboardClient/bin/Debug/netcoreapp2.1
 /ScoreboardClient/ScoreboardClient/obj
-/WebAPI
+/WebAPI/.vs
+/WebAPI/CapstoneTest/bin

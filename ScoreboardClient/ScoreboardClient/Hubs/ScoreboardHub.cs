@@ -27,99 +27,105 @@ namespace ScoreboardClient.Hubs
             await Clients.All.SendAsync("RecieveSetShotClock", value);
         }
 
+        public async Task SetGameClock(int mins, int seconds)
+        {
+            await Clients.All.SendAsync("RecieveSetGameClock", mins, seconds);
+        }
+
         public async Task PlayHorn()
         {
             await Clients.All.SendAsync("ReceivePlayHorn");
         }
 
-        public async Task RecordScore(string gameTime, string Points, string PlayerId, string side)
+        public async Task CallTimeout(string side)
         {
-            var ApiClient = new WebApiClient("http://142.55.32.86:50291/api");
-
-            RecordScoreRequest apiRequest = new RecordScoreRequest
+            if(side == "Home")
             {
-                ApiToken = Connector.CurrentApiToken,
-                GameTime = TimeSpan.Parse(gameTime),
-                Points = Convert.ToInt32(Points),
-                PlayerId = Convert.ToInt32(PlayerId),
-                GameId = Connector.Game.GameId,
-                LeagueKey = Connector.League.LeagueKey
-            };
-
-            string errorMsg = "";
-            var scoringLog = ApiClient.Post<ScoringLog>("Scoring/RecordScore", JsonConvert.SerializeObject(apiRequest), ref errorMsg);
-
-            if (scoringLog != null)
+                if(Connector.GameScore.HomeTeamTimeoutsRemaining > 0)
+                {
+                    Connector.GameScore.HomeTeamTimeoutsRemaining = Connector.GameScore.HomeTeamTimeoutsRemaining - 1;
+                }
+            }else if(side == "Away")
             {
-                if (side.ToUpper() == "HOME")
+                if (Connector.GameScore.AwayTeamTimeoutsRemaining > 0)
                 {
-                    Connector.GameScore.HomeTeamScore = Connector.GameScore.HomeTeamScore + Convert.ToInt32(Points);
+                    Connector.GameScore.AwayTeamTimeoutsRemaining = Connector.GameScore.AwayTeamTimeoutsRemaining - 1;
                 }
-                else if (side.ToUpper() == "AWAY")
-                {
-                    Connector.GameScore.AwayTeamScore = Connector.GameScore.AwayTeamScore + Convert.ToInt32(Points);
-                }
-
-                await Clients.All.SendAsync("updateScore", Connector.GameScore);
             }
+
+            await Clients.All.SendAsync("ReceiveCallTimeout", side);
         }
-        public async Task RecordFoul(string gameTime, string PlayerId, string side)
+
+        public async Task SetTimeouts(string side, int timeouts)
         {
-            var ApiClient = new WebApiClient("http://142.55.32.86:50291/api");
-
-            RecordFoulRequest apiRequest = new RecordFoulRequest
+            if (side == "Home")
             {
-                ApiToken = Connector.CurrentApiToken,
-                GameTime = TimeSpan.Parse(gameTime),
-                PlayerId = Convert.ToInt32(PlayerId),
-                GameId = Connector.Game.GameId,
-                LeagueKey = Connector.League.LeagueKey
-            };
-
-            string errorMsg = "";
-            var foulLog = ApiClient.Post<FoulLog>("Scoring/RecordFoul", JsonConvert.SerializeObject(apiRequest), ref errorMsg);
-
-            if (foulLog != null)
-            {
-                if (side.ToUpper() == "HOME")
-                {
-                    switch ((int)(TimeSpan.Parse(gameTime).Minutes / 12))
-                    {
-                        case 0:
-                            Connector.GameScore.HomeTeamFouls[0]++;
-                            break;
-                        case 1:
-                            Connector.GameScore.HomeTeamFouls[1]++;
-                            break;
-                        case 2:
-                            Connector.GameScore.HomeTeamFouls[2]++;
-                            break;
-                        case 3:
-                            Connector.GameScore.HomeTeamFouls[3]++;
-                            break;
-                    }
-                }
-                else if (side.ToUpper() == "AWAY")
-                {
-                    switch ((int)(TimeSpan.Parse(gameTime).Minutes / 12))
-                    {
-                        case 0:
-                            Connector.GameScore.AwayTeamFouls[0]++;
-                            break;
-                        case 1:
-                            Connector.GameScore.AwayTeamFouls[1]++;
-                            break;
-                        case 2:
-                            Connector.GameScore.AwayTeamFouls[2]++;
-                            break;
-                        case 3:
-                            Connector.GameScore.AwayTeamFouls[3]++;
-                            break;
-                    }
-                }
-
-                await Clients.All.SendAsync("updateScore", Connector.GameScore);
+                Connector.GameScore.HomeTeamTimeoutsRemaining = timeouts;
             }
+            else if (side == "Away")
+            {
+                Connector.GameScore.AwayTeamTimeoutsRemaining = timeouts;
+            }
+
+            await Clients.All.SendAsync("ReceiveSetTimeout", side, timeouts);
+        }
+
+        public async Task RecordScore(string Points, string PlayerId, string side)
+        {
+            if (side.ToUpper() == "HOME")
+            {
+                Connector.GameScore.HomeTeamScore = Connector.GameScore.HomeTeamScore + Convert.ToInt32(Points);
+            }
+            else if (side.ToUpper() == "AWAY")
+            {
+                Connector.GameScore.AwayTeamScore = Connector.GameScore.AwayTeamScore + Convert.ToInt32(Points);
+            }
+
+            await Clients.All.SendAsync("updateScore", Connector.GameScore);
+            await Clients.All.SendAsync("saveScore", Points, PlayerId);
+        }
+
+        public async Task RecordFoul(string period, string PlayerId, string side)
+        {
+            if (side.ToUpper() == "HOME")
+            {
+                switch (Convert.ToInt32(period))
+                {
+                    case 1:
+                        Connector.GameScore.HomeTeamFouls[0]++;
+                        break;
+                    case 2:
+                        Connector.GameScore.HomeTeamFouls[1]++;
+                        break;
+                    case 3:
+                        Connector.GameScore.HomeTeamFouls[2]++;
+                        break;
+                    case 4:
+                        Connector.GameScore.HomeTeamFouls[3]++;
+                        break;
+                }
+            }
+            else if (side.ToUpper() == "AWAY")
+            {
+                switch (Convert.ToInt32(period))
+                {
+                    case 1:
+                        Connector.GameScore.AwayTeamFouls[0]++;
+                        break;
+                    case 2:
+                        Connector.GameScore.AwayTeamFouls[1]++;
+                        break;
+                    case 3:
+                        Connector.GameScore.AwayTeamFouls[2]++;
+                        break;
+                    case 4:
+                        Connector.GameScore.AwayTeamFouls[3]++;
+                        break;
+                }
+            }
+
+            await Clients.All.SendAsync("updateScore", Connector.GameScore);
+            await Clients.All.SendAsync("saveFoul", PlayerId);
         }
     }
 }
