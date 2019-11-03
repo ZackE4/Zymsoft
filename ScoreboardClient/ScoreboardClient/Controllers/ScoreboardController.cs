@@ -169,7 +169,7 @@ namespace ScoreboardClient.Controllers
 
             await this.HubContext.Clients.All.SendAsync("ReceiveSetTimeout", request.Side, request.Timeouts);
 
-            return new OkObjectResult(period);
+            return new OkObjectResult("Success");
         }
 
         [HttpPost("StartTimer")]
