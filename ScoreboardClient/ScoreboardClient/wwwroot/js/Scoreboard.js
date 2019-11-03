@@ -93,12 +93,33 @@ connection.on("saveScore", function (points, playerId) {
     SaveScore(parseInt(points), parseInt(playerId));
 });
 
+connection.on("ReceiveCallTimeout", function (side) {
+    if (side === "Home") {
+        if (parseInt($('#homeTeamTimeouts').html().trim()) > 0) {
+            $('#homeTeamTimeouts').html(parseInt($('#homeTeamTimeouts').html().trim()) - 1);
+            playHorn();
+            StopTimer();
+        }
+    } else if (side === "Away") {
+        if (parseInt($('#awayTeamTimeouts').html().trim()) > 0) {
+            $('#awayTeamTimeouts').html(parseInt($('#awayTeamTimeouts').html().trim()) - 1);
+            playHorn();
+            StopTimer();
+        }
+    }
+});
+
+connection.on("ReceiveSetTimeout", function (side, timeouts) {
+    if (side === "Home") {
+        $('#homeTeamTimeouts').html(timeouts);
+    } else if (side === "Away") {
+        $('#awayTeamTimeouts').html(timeouts);
+    }
+});
+
 function playHorn() {
     var audio = new Audio('/audio/buzzer.mp3');
-    var audioPromise = audio.play();
-    if (audioPromise !== null) {
-        audioPromise.catch(() => { audio.play(); });
-    }
+    audio.play();
 }
 
 function tickShotClock() {

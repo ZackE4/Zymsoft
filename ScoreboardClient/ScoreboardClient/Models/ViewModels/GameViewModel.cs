@@ -19,5 +19,7 @@ namespace ScoreboardClient.Models.ViewModels
 
         public virtual string LocalAPIAddress { get; set; }
         public virtual string LocalAPIKey { get; set; }
+
+        public virtual bool CompleteGameAvaialble { get; set; }
     }
 }

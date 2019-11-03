@@ -7,7 +7,7 @@
     {
         if (Model.Game.GameComplete)
         {
-            gameStatus = "Comeplete";
+            gameStatus = "Complete";
         }
         else
         {
@@ -41,10 +41,20 @@
         <p>@Model.AwayTeam.TeamName AT @Model.HomeTeam.TeamName</p>
         <p>Game Created: @Model.Game.Date.ToString("MMMM dd yyyy")</p>
         <p>Game Status: @gameStatus</p>
+        @if (Model.Game.GameComplete)
+        {
+            <br /><br />
+            <a href="/Game/GameReport?gameId=@Model.Game.GameId" class="btn btn-lg btn-primary" id="CompleteGameBtn">View Game Report</a>
+        }
         <hr />
         <p><b>To Connect to this Game:</b></p>
         <p>APIAddress: @Model.LocalAPIAddress</p>
         <p>ApiKey: @Model.LocalAPIKey</p>
+        @if (Model.CompleteGameAvaialble && !Model.Game.GameComplete)
+        {
+            <br /><br />
+            <a href="/Game/CompleteGame" class="btn btn-lg btn-primary" id="CompleteGameBtn">Complete this Game</a>
+        }
         <br /><br /><hr />
     }
     <h3>Create New Game</h3>

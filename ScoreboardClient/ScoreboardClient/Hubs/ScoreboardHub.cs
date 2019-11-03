@@ -37,6 +37,39 @@ namespace ScoreboardClient.Hubs
             await Clients.All.SendAsync("ReceivePlayHorn");
         }
 
+        public async Task CallTimeout(string side)
+        {
+            if(side == "Home")
+            {
+                if(Connector.GameScore.HomeTeamTimeoutsRemaining > 0)
+                {
+                    Connector.GameScore.HomeTeamTimeoutsRemaining = Connector.GameScore.HomeTeamTimeoutsRemaining - 1;
+                }
+            }else if(side == "Away")
+            {
+                if (Connector.GameScore.AwayTeamTimeoutsRemaining > 0)
+                {
+                    Connector.GameScore.AwayTeamTimeoutsRemaining = Connector.GameScore.AwayTeamTimeoutsRemaining - 1;
+                }
+            }
+
+            await Clients.All.SendAsync("ReceiveCallTimeout", side);
+        }
+
+        public async Task SetTimeouts(string side, int timeouts)
+        {
+            if (side == "Home")
+            {
+                Connector.GameScore.HomeTeamTimeoutsRemaining = timeouts;
+            }
+            else if (side == "Away")
+            {
+                Connector.GameScore.AwayTeamTimeoutsRemaining = timeouts;
+            }
+
+            await Clients.All.SendAsync("ReceiveSetTimeout", side, timeouts);
+        }
+
         public async Task RecordScore(string Points, string PlayerId, string side)
         {
             if (side.ToUpper() == "HOME")
@@ -51,6 +84,7 @@ namespace ScoreboardClient.Hubs
             await Clients.All.SendAsync("updateScore", Connector.GameScore);
             await Clients.All.SendAsync("saveScore", Points, PlayerId);
         }
+
         public async Task RecordFoul(string period, string PlayerId, string side)
         {
             if (side.ToUpper() == "HOME")

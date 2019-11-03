@@ -25,11 +25,16 @@ namespace ScoreboardClient.Controllers
                 return RedirectToAction("Index", "Game", new { errorMsg = "Authorization Error" });
             }
 
-            await this.SetupGameForDemo();
+            await this.SetupGame();
 
             if(Connector.Game == null)
             {
                 return RedirectToAction("Index", "Game", new { errorMsg = "No Game Currently Loaded" });
+            }
+
+            if (Connector.Game.GameComplete)
+            {
+                return RedirectToAction("Index", "Game", new { errorMsg = "Loaded game already complete." });
             }
 
             var viewModel = new ScreenViewModel();
@@ -136,7 +141,7 @@ namespace ScoreboardClient.Controllers
             return new BadRequestObjectResult(errorMsg);
         }
 
-        protected async Task SetupGameForDemo()
+        protected async Task SetupGame()
         {
             if(String.IsNullOrEmpty(await SettingsUtil.GetSetting("GameId")))
             {

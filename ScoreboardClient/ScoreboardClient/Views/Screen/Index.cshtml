@@ -24,7 +24,7 @@
         <input type="hidden" id="homeTeamQuarterFouls" value="@Model.GameScore.HomeTeamFouls[1]" />
         <input type="hidden" id="awayTeamQuarterFouls" value="@Model.GameScore.AwayTeamFouls[1]" />
         break;
-    case 4:
+    case 4: 
         <input type="hidden" id="homeTeamQuarterFouls" value="@Model.GameScore.HomeTeamFouls[1]" />
         <input type="hidden" id="awayTeamQuarterFouls" value="@Model.GameScore.AwayTeamFouls[1]" />
         break;
@@ -98,6 +98,61 @@
                 @Model.GameScore.HomeTeamScore
             </span>
         </div>
+        <div id="HomeTeamTimeoutsDiv" class="col-lg-1">
+            <div class="row">
+                <span class="TimeoutsHeader">
+                    TIMEOUTS
+                </span>
+            </div>
+            <div class="row">
+                <span id="homeTeamTimeouts" class="TimeoutsSpan">
+                    @Model.GameScore.HomeTeamTimeoutsRemaining
+                </span>
+            </div>
+        </div>
+        <div id="Period Div" class="col-lg-2">
+            <div class="row">
+                <span class="PeriodHeader">
+                    PERIOD
+                </span>
+            </div>
+            <div class="row">
+                <span id="period" class="PeriodSpan">
+                    @period
+                </span>
+            </div>
+        </div>
+        <div id="AwayTeamTimeoutsDiv" class="col-lg-1">
+            <div class="row">
+                <span class="TimeoutsHeader">
+                    TIMEOUTS
+                </span>
+            </div>
+            <div class="row">
+                <span id="awayTeamTimeouts" class="TimeoutsSpan">
+                    @Model.GameScore.AwayTeamTimeoutsRemaining
+                </span>
+            </div>
+        </div>
+        <div id="AwayTeamScoreDiv" class="col-lg-4">
+            <span id="awayTeamScore" class="ScoreSpan">
+                @Model.GameScore.AwayTeamScore
+            </span>
+        </div>
+    </div>
+    <div id="BottomRow" class="row text-center">
+        <div id="HomeTeamFoulsDiv" class="col-lg-4">
+            <div class="row">
+                <span class="FoulsHeader">
+                    FOULS
+                </span>
+            </div>
+            <div class="row">
+                <span class="FoulsSpan" id="homeTeamFouls">
+                    @Model.GameScore.HomeTeamFouls.Sum()
+                </span>
+            </div>
+        </div>
         <div id="HomeTeamBonusDiv" class="col-lg-1">
             <span id="homeBonus" class="BonusSpan">
                 @if (period == 1)
@@ -131,15 +186,15 @@
                 @*< BONUS*@
             </span>
         </div>
-        <div id="Period Div" class="col-lg-2">
+        <div id="ShotClockDiv" class="col-lg-2">
             <div class="row">
-                <span class="PeriodHeader">
-                    PERIOD
+                <span class="FoulsHeader">
+                    SHOT
                 </span>
             </div>
             <div class="row">
-                <span id="period" class="PeriodSpan">
-                    @period
+                <span class="ShotClockSpan" id="shotclock">
+                    24
                 </span>
             </div>
         </div>
@@ -175,37 +230,6 @@
                 }
                 @*BONUS >*@
             </span>
-        </div>
-        <div id="AwayTeamScoreDiv" class="col-lg-4">
-            <span id="awayTeamScore" class="ScoreSpan">
-                @Model.GameScore.AwayTeamScore
-            </span>
-        </div>
-    </div>
-    <div id="BottomRow" class="row text-center">
-        <div id="HomeTeamFoulsDiv" class="col-lg-4">
-            <div class="row">
-                <span class="FoulsHeader">
-                    FOULS
-                </span>
-            </div>
-            <div class="row">
-                <span class="FoulsSpan" id="homeTeamFouls">
-                    @Model.GameScore.HomeTeamFouls.Sum()
-                </span>
-            </div>
-        </div>
-        <div id="ShotClockDiv" class="col-lg-4">
-            <div class="row">
-                <span class="FoulsHeader">
-                    SHOT
-                </span>
-            </div>
-            <div class="row">
-                <span class="ShotClockSpan" id="shotclock">
-                    24
-                </span>
-            </div>
         </div>
         <div id="AwayTeamFoulsDiv" class="col-lg-4">
             <div class="row">

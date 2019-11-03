@@ -13,8 +13,8 @@ namespace ScoreboardClient.Models
         public virtual int[] HomeTeamFouls { get; set; }
         public virtual int[] AwayTeamFouls { get; set; }
 
-        public virtual int[] HomeTeamTimeoutsRemaining { get; set; }
-        public virtual int[] AwayTeamTimeoutsRemaining { get; set; }
+        public virtual int HomeTeamTimeoutsRemaining { get; set; }
+        public virtual int AwayTeamTimeoutsRemaining { get; set; }
 
         public virtual TimeSpan GameTime { get; set; }
     }

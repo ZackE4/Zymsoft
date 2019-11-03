@@ -25,6 +25,11 @@
 <button id="awayTeamFoul2">Away Foul 2</button>
 <button id="awayTeamFoul3">Away Foul 3</button>
 <button id="awayTeamFoul4">Away Foul 4</button>
+<br />
+<button id="homeTeamTimeoutbtn">Home Timeout</button>
+<button id="homeTeamTimeoutTo4btn">Home Timeouts to 4</button>
+<button id="awayTeamTimeoutbtn">Away Timeout</button>
+<button id="awayTeamTimeoutTo4btn">Away Timeouts to 4</button>
 
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script>
@@ -182,6 +187,34 @@
 
     document.getElementById("setClockbtn").addEventListener("click", function (event) {
         connection.invoke("SetGameClock", 2, 15).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeamTimeoutbtn").addEventListener("click", function (event) {
+        connection.invoke("CallTimeout", "Home").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeamTimeoutbtn").addEventListener("click", function (event) {
+        connection.invoke("CallTimeout", "Away").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("homeTeamTimeoutTo4btn").addEventListener("click", function (event) {
+        connection.invoke("SetTimeouts", "Home", 4).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("awayTeamTimeoutTo4btn").addEventListener("click", function (event) {
+        connection.invoke("SetTimeouts", "Away",4 ).catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();

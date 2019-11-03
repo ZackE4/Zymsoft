@@ -1,0 +1,190 @@
+﻿@model ScoreboardClient.Models.ViewModels.GameReportViewModel
+
+@{
+    ViewData["Title"] = "GameReport";
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+
+    var homeTeamPlayerIds = from player in Model.HomeTeamPlayerList select player.PlayerId;
+    var awayTeamPlayerIds = from player in Model.AwayTeamPlayerList select player.PlayerId;
+
+    int homeTeamPointsQuarter1 = Model.ScoringLogs.Where(x => Model.HomeTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Where(x=>x.GameTime <= new TimeSpan(0,12,0)).Sum(x=>x.Points);
+    int homeTeamPointsQuarter2 = Model.ScoringLogs.Where(x => Model.HomeTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Where(x => x.GameTime > new TimeSpan(0, 12, 0)).Where(x => x.GameTime <= new TimeSpan(0, 24, 0)).Sum(x => x.Points);
+    int homeTeamPointsQuarter3 = Model.ScoringLogs.Where(x => Model.HomeTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Where(x => x.GameTime > new TimeSpan(0, 24, 0)).Where(x => x.GameTime <= new TimeSpan(0, 36, 0)).Sum(x => x.Points);
+    int homeTeamPointsQuarter4 = Model.ScoringLogs.Where(x => Model.HomeTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Where(x => x.GameTime > new TimeSpan(0, 36, 0)).Sum(x => x.Points);
+
+    int awayTeamPointsQuarter1 = Model.ScoringLogs.Where(x => Model.AwayTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Where(x => x.GameTime <= new TimeSpan(0, 12, 0)).Sum(x => x.Points);
+    int awayTeamPointsQuarter2 = Model.ScoringLogs.Where(x => Model.AwayTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Where(x => x.GameTime > new TimeSpan(0, 12, 0)).Where(x => x.GameTime <= new TimeSpan(0, 24, 0)).Sum(x => x.Points);
+    int awayTeamPointsQuarter3 = Model.ScoringLogs.Where(x => Model.AwayTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Where(x => x.GameTime > new TimeSpan(0, 24, 0)).Where(x => x.GameTime <= new TimeSpan(0, 36, 0)).Sum(x => x.Points);
+    int awayTeamPointsQuarter4 = Model.ScoringLogs.Where(x => Model.AwayTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Where(x => x.GameTime > new TimeSpan(0, 36, 0)).Sum(x => x.Points);
+
+    int homeTeamFouls = Model.FoulLogs.Where(x => Model.HomeTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Count();
+    int awayTeamFouls = Model.FoulLogs.Where(x => Model.AwayTeamPlayerList.Any(y => y.PlayerId == x.PlayerId)).Count();
+}
+
+<div class="text-center">
+    <h2>Game Summary Report</h2>
+    <h4>Played on @Model.Game.Date.ToString("yyyy MMM dd") in @Model.League.LeagueName</h4>
+    <div id="TopRow" class="row">
+        <div id="AwayTeamDiv" class="col-lg-4">
+            <div class="row">
+                <span class="TeamNameSpan">
+                    @Model.AwayTeam.TeamName
+                </span>
+            </div>
+            <div class="row logoRow">
+                @if (!string.IsNullOrEmpty(Model.AwayTeam.Logo))
+                {
+                    <div class="logoContainer">
+                        <img src="@Model.AwayTeam.Logo" alt="logo" />
+                    </div>
+                }
+                else
+                {
+                    <div class="logoContainer">
+                        <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" alt="logo" />
+                    </div>
+                }
+            </div>
+        </div>
+        <div id="QuarterBreakdownDiv" class="col-lg-4">
+            <span class="AtSignSpan">
+                @@
+            </span>
+        </div>
+        <div id="HomeTeamDiv" class="col-lg-4">
+            <div class="row">
+                <span class="TeamNameSpan">
+                    @Model.HomeTeam.TeamName
+                </span>
+            </div>
+            <div class="row logoRow">
+                @if (!string.IsNullOrEmpty(Model.HomeTeam.Logo))
+                {
+                    <div class="logoContainer">
+                        <img src="@Model.HomeTeam.Logo" alt="logo" />
+                    </div>
+                }
+                else
+                {
+                    <div class="logoContainer">
+                        <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" alt="logo" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div id="Middle Row" class="row">
+        <div class="col-lg-4">
+
+        </div>
+        <div id="ScoreQuarterTable" class="col-lg-4">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>@Model.HomeTeam.TeamName</th>
+                        <td>@homeTeamPointsQuarter1</td>
+                        <td>@homeTeamPointsQuarter2</td>
+                        <td>@homeTeamPointsQuarter3</td>
+                        <td>@homeTeamPointsQuarter4</td>
+                        <th>@(homeTeamPointsQuarter1 + homeTeamPointsQuarter2 + homeTeamPointsQuarter3 + homeTeamPointsQuarter4)</th>
+                    </tr>
+                    <tr>
+                        <th>@Model.AwayTeam.TeamName</th>
+                        <td>@awayTeamPointsQuarter1</td>
+                        <td>@awayTeamPointsQuarter2</td>
+                        <td>@awayTeamPointsQuarter3</td>
+                        <td>@awayTeamPointsQuarter4</td>
+                        <th>@(awayTeamPointsQuarter1 + awayTeamPointsQuarter2 + awayTeamPointsQuarter3 + awayTeamPointsQuarter4)</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+
+        </div>
+    </div>
+    <br /><br />
+    <div id="BottomRow" class="row">
+        <div id="AwayTeamPlayerStats" class="col-lg-5">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Num</th>
+                        <th>Name</th>
+                        <th>Pos</th>
+                        <th>Pts</th>
+                        <th>Fouls</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var player in Model.AwayTeamPlayerList)
+                    {
+                        var playerPoints = (from score in Model.ScoringLogs where score.PlayerId == player.PlayerId select score.Points).Sum();
+                        var playerFouls = (from foul in Model.FoulLogs where foul.PlayerId == player.PlayerId select foul.FouldLogId).Count();
+                    <tr>
+                        <td>@player.PlayerNum</td>
+                        <td>@($"{player.FirstName} {player.LastName}")</td>
+                        <td>@player.Position</td>
+                        <td>@playerPoints</td>
+                        <td>@playerFouls</td>
+                    </tr>
+                    }
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <th>@(awayTeamPointsQuarter1 + awayTeamPointsQuarter2 + awayTeamPointsQuarter3 + awayTeamPointsQuarter4)</th>
+                        <th>@awayTeamFouls</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-2">
+        </div>
+        <div id="HomeTeamPlayerStats" class="col-lg-5">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Num</th>
+                        <th>Name</th>
+                        <th>Pos</th>
+                        <th>Pts</th>
+                        <th>Fouls</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var player in Model.HomeTeamPlayerList)
+                    {
+                        var playerPoints = (from score in Model.ScoringLogs where score.PlayerId == player.PlayerId select score.Points).Sum();
+                        var playerFouls = (from foul in Model.FoulLogs where foul.PlayerId == player.PlayerId select foul.FouldLogId).Count();
+                        <tr>
+                            <td>@player.PlayerNum</td>
+                            <td>@($"{player.FirstName} {player.LastName}")</td>
+                            <td>@player.Position</td>
+                            <td>@playerPoints</td>
+                            <td>@playerFouls</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <th>@(homeTeamPointsQuarter1 + homeTeamPointsQuarter2 + homeTeamPointsQuarter3 + homeTeamPointsQuarter4)</th>
+                        <th>@homeTeamFouls</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
