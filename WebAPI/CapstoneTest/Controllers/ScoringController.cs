@@ -220,5 +220,43 @@ namespace CapstoneTest.Controllers
         {
             return gameTime % 12;
         }
+
+        [HttpGet("FoulLogs")]
+        public async Task<ActionResult> GetFoulLogsByGame(string apiToken, int gameId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            var game = await this.GameRepository.GetAsync(gameId);
+
+            if (game == null)
+            {
+                return new BadRequestObjectResult("Game Not Found");
+            }
+
+            return new OkObjectResult(await this.FoulLogRepository.GetByGameAsync(gameId));
+
+        }
+
+        [HttpGet("ScoreLogs")]
+        public async Task<ActionResult> GetScoreLogsByGame(string apiToken, int gameId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            var game = await this.GameRepository.GetAsync(gameId);
+
+            if (game == null)
+            {
+                return new BadRequestObjectResult("Game Not Found");
+            }
+
+            return new OkObjectResult(await this.ScoringLogRepository.GetByGameAsync(gameId));
+        }
     }
+
 }
