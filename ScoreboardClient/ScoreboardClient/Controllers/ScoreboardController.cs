@@ -155,7 +155,6 @@ namespace ScoreboardClient.Controllers
             {
                 return new BadRequestObjectResult("UnAuthorized");
             }
-            await this.HubContext.Clients.All.SendAsync("RecieveToggleTimer", "start");
 
             //whenever you start or stop the timer, return back to the current period (to store for recording fouls)
             int period = Connector.Game.GameComplete ? 4 : (int)(Connector.GameScore.GameTime.Minutes / 12) + 1; if (request.Side == "Home")
