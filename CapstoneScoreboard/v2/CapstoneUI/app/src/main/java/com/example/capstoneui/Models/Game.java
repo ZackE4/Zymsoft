@@ -8,8 +8,8 @@ public class Game {
     private HomeTeam homeTeam;
     private AwayTeam awayTeam;
     private GameScore gameScore;
-    private List<Object> homeTeamRoster = null;
-    private List<Object> awayTeamRoster = null;
+    private List<HomeTeamRoster> homeTeamRoster = null;
+    private List<AwayTeamRoster> awayTeamRoster = null;
 
     public HomeTeam getHomeTeam() {
         return homeTeam;
@@ -35,19 +35,19 @@ public class Game {
         this.gameScore = gameScore;
     }
 
-    public List<Object> getHomeTeamRoster() {
+    public List<HomeTeamRoster> getHomeTeamRoster() {
         return homeTeamRoster;
     }
 
-    public void setHomeTeamRoster(List<Object> homeTeamRoster) {
+    public void setHomeTeamRoster(List<HomeTeamRoster> homeTeamRoster) {
         this.homeTeamRoster = homeTeamRoster;
     }
 
-    public List<Object> getAwayTeamRoster() {
+    public List<AwayTeamRoster> getAwayTeamRoster() {
         return awayTeamRoster;
     }
 
-    public void setAwayTeamRoster(List<Object> awayTeamRoster) {
+    public void setAwayTeamRoster(List<AwayTeamRoster> awayTeamRoster) {
         this.awayTeamRoster = awayTeamRoster;
     }
 

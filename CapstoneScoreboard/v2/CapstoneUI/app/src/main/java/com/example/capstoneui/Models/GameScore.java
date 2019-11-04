@@ -8,8 +8,8 @@ public class GameScore {
     private Integer awayTeamScore;
     private List<Integer> homeTeamFouls = null;
     private List<Integer> awayTeamFouls = null;
-    private List<Integer> homeTeamTimeoutsRemaining = null;
-    private List<Integer> awayTeamTimeoutsRemaining = null;
+    private Integer homeTeamTimeoutsRemaining;
+    private Integer awayTeamTimeoutsRemaining;
     private String gameTime;
 
     public Integer getHomeTeamScore() {
@@ -44,19 +44,19 @@ public class GameScore {
         this.awayTeamFouls = awayTeamFouls;
     }
 
-    public List<Integer> getHomeTeamTimeoutsRemaining() {
+    public Integer getHomeTeamTimeoutsRemaining() {
         return homeTeamTimeoutsRemaining;
     }
 
-    public void setHomeTeamTimeoutsRemaining(List<Integer> homeTeamTimeoutsRemaining) {
+    public void setHomeTeamTimeoutsRemaining(Integer homeTeamTimeoutsRemaining) {
         this.homeTeamTimeoutsRemaining = homeTeamTimeoutsRemaining;
     }
 
-    public List<Integer> getAwayTeamTimeoutsRemaining() {
+    public Integer getAwayTeamTimeoutsRemaining() {
         return awayTeamTimeoutsRemaining;
     }
 
-    public void setAwayTeamTimeoutsRemaining(List<Integer> awayTeamTimeoutsRemaining) {
+    public void setAwayTeamTimeoutsRemaining(Integer awayTeamTimeoutsRemaining) {
         this.awayTeamTimeoutsRemaining = awayTeamTimeoutsRemaining;
     }
 

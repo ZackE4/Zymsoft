@@ -3,13 +3,14 @@ package com.example.capstoneui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import com.example.capstoneui.Controller.ViewController;
+import com.example.capstoneui.Controller.ViewControllerContainer;
+import com.example.capstoneui.Models.AwayTeamRoster;
+import com.example.capstoneui.Models.HomeTeamRoster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,26 +23,27 @@ public class AddScore extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_score);
-
-        ViewController viewController = new ViewController("168de16b", this);
         lv = (ListView) findViewById(R.id.listViewAddSc);
-
-        // Instanciating an array list (you don't need to do this,
-        // you already have yours).
         List<String> your_array_list = new ArrayList<String>();
-        //adding list of players
-        your_array_list.add("foo");
-        your_array_list.add("bar");
-        your_array_list.add("foo");
-        your_array_list.add("bar");
-        your_array_list.add("foo");
-        your_array_list.add("bar");
-        your_array_list.add("foo");
-        your_array_list.add("bar");
-        your_array_list.add("foo");
-        your_array_list.add("bar");
-        your_array_list.add("foo");
-        your_array_list.add("bar");
+        if (ViewControllerContainer.ViewController.point)
+        {
+            List<HomeTeamRoster> roster = ViewControllerContainer.ViewController.currentGame.getHomeTeamRoster();
+            for (int i =0; i < roster.size(); i++)
+            {
+                your_array_list.add(i, roster.get(i).getFirstName() + ", " + roster.get(i).getLastName());
+            }
+        }
+        else
+        {
+            List<AwayTeamRoster> roster = ViewControllerContainer.ViewController.currentGame.getAwayTeamRoster();
+            for (int i =0; i < roster.size(); i++)
+            {
+                your_array_list.add(i, roster.get(i).getFirstName() + ", " + roster.get(i).getLastName());
+            }
+        }
+
+
+
 
         // This is the array adapter, it takes the context of the activity as a
         // first parameter, the type of list view as a second parameter and your
@@ -56,8 +58,27 @@ public class AddScore extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                    //onselect
+                if (ViewControllerContainer.ViewController.point)
+                {
+                    List<HomeTeamRoster> roster = ViewControllerContainer.ViewController.currentGame.getHomeTeamRoster();
+                    ViewControllerContainer.ViewController.playerId=roster.get(position).getPlayerId();
+                }
+                else
+                {
+                    List<AwayTeamRoster> roster = ViewControllerContainer.ViewController.currentGame.getAwayTeamRoster();
+                    ViewControllerContainer.ViewController.playerId=roster.get(position).getPlayerId();
+                }
 
+                if(ViewControllerContainer.ViewController.scoring==10)
+                {
+                    ViewControllerContainer.ViewController.recordFoul();
+                    ViewControllerContainer.ViewController.updateFoul();
+                    ViewControllerContainer.ViewController.scoring=0;
+                }
+                else{
+                    ViewControllerContainer.ViewController.recordScore();
+                    ViewControllerContainer.ViewController.updateScore();
+                }
                 finish();
             }
         });

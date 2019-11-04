@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AddFoul" />
+        <activity android:name=".SetTimeOut"></activity>
+        <activity android:name=".ChooseScore" />
         <activity android:name=".AddScore" />
         <activity
             android:name=".MainActivity"

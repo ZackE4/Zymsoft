@@ -4,6 +4,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.capstonescoreboardapp.databinding.ActivityMainBinding;
+
 import androidx.databinding.DataBindingUtil;
 
 import retrofit2.Call;
@@ -17,15 +19,17 @@ public class ViewController {
     private String apiToken;
     private Retrofit retrofit;
     private Scoring gameScore;
+    private ActivityMainBinding binding;
 
-    public ViewController(String apiToken) {
+    public ViewController(String apiToken, ActivityMainBinding binding) {
         this.apiToken = apiToken;
         //Retrofit allows the connection to post man/webapi
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://142.55.32.86:50291/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
+        this.binding = binding;
+        Log.e("API", "start" + apiToken);
     }
 
     public String createAPIToken() {
@@ -35,24 +39,37 @@ public class ViewController {
 
         Call<League> call = login.Login("ABC123", "2AC9CB7DC02B3C0083EB70898E549B63");
 
-        call.enqueue(new Callback<League>() {
-            @Override
-            public void onResponse(Call<League> call, Response<League> response) {
-                if (!response.isSuccessful())
-                {
-                    Log.e("APICall", "Code: "+ response.code());
-                    return;
-                }
-                League gets = response.body();
-                apiToken = gets.getLogin().getLoginKey();
-            }
+        try{
+            Response<League> response = call.execute();
+            League apiResponse = response.body();
+            apiToken = apiResponse.getLogin().getLoginKey();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
 
-            @Override
-            public void onFailure(Call<League> call, Throwable t) {
-                Log.e("APICall", t.getMessage());
-            }
-        });
-        Log.e("API", "ab" + apiToken);
+
+//        call.enqueue(new Callback<League>() {
+//            @Override
+//            public void onResponse(Call<League> call, Response<League> response) {
+//                if (!response.isSuccessful())
+//                {
+//                    Log.e("APICall", "Code1: "+ response.code());
+//                    return;
+//                }
+//                League gets = response.body();
+//                apiToken = gets.getLogin().getLoginKey();
+//                Log.e("API", "abc " + apiToken);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<League> call, Throwable t) {
+//                Log.e("APICall", t.getMessage());
+//            }
+//        });
+////        call.execute();
+        Log.e("API", "ab q" + apiToken);
         return apiToken;
     }
 
@@ -63,28 +80,23 @@ public class ViewController {
                 .create(TeamInfoAPI.class);
 
         Call<Scoring> call = teamInfo.GetScoreOfGame(apiToken, 2);
-        Log.e("API", " " + apiToken);
+        Log.e("API", " ??" + apiToken);
         call.enqueue(new Callback<Scoring>() {
             @Override
             public void onResponse(Call<Scoring> call, Response<Scoring> response) {
                 if (!response.isSuccessful())
                 {
-                    Log.e("APICall", "Code: "+ response.code());
+                    Log.e("APICall", "Code2: "+ response.code());
                     return;
                 }
 
 
                 Scoring gets = response.body();
                 gameScore = new Scoring(gets.getHomeTeamScore(), gets.getAwayTeamScore(), gets.getGameId());
-//                //data binding instead
-//                MainActivity binding =
-//                        DataBindingUtil.setContentView(this, R.layout.activity_main);
-//                binding.txt.setText("Hello World"); // you should use resources!
-//
-//                TextView team1Score = (TextView) MainActivity.class.g(R.id.txtTeam1Score);
-//                TextView team2Score = (TextView) findViewById(R.id.txtTeam2Score);
-//                team1Score.setText("Score : 1");
-//                team2Score.setText("Score : " +gameScores.getAwayTeamScore());
+                Log.e("API", " q" + gets.getAwayTeamScore());
+                binding.txtTeam1Score.setText("Score : 1");
+                Log.e("API", "z " + binding.txtTeam1Score.getText());
+                binding.txtTeam2Score.setText("Score : " + gameScore.getAwayTeamScore());
             }
 
             @Override
