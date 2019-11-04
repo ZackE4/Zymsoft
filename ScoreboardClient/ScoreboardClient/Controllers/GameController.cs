@@ -247,6 +247,7 @@ namespace ScoreboardClient.Controllers
                 if(oldGame.SeasonId == Connector.Season.SeasonId)
                 {
                     Connector.Game = oldGame;
+                    Connector.GameScore = null;
                 }
                 else
                 {
