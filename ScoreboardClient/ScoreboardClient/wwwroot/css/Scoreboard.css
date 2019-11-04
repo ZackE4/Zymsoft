@@ -3,10 +3,37 @@
     padding: 0px;
     margin: 0px;
     /*background-color: #2a5096;*/
-    background-image: url(https://image.freepik.com/free-vector/abstract-blue-hexagon-shapes-dark-background_125759-111.jpg);
-    background-size: contain;
+    background-image: url(https://image.freepik.com/free-vector/abstract-blue-hexagon-shapes-dark-background_125759-111.jpg) !important;
+    background-size: contain !important;
     font-family: 'Russo One', sans-serif;
     box-sizing: border-box;
+}
+
+.media-player-fullscreen {
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+    ::-webkit-scrollbar:vertical {
+        width: 12px;
+    }
+
+    ::-webkit-scrollbar:horizontal {
+        height: 12px;
+    }
+
+::-webkit-scrollbar-thumb {
+    background-color: black;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: black;
 }
 
 #HomeTeamDiv {

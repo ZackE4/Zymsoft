@@ -127,5 +127,16 @@ namespace ScoreboardClient.Hubs
             await Clients.All.SendAsync("updateScore", Connector.GameScore);
             await Clients.All.SendAsync("saveFoul", PlayerId);
         }
+
+
+        public async Task SwitchMediaPage()
+        {
+            await Clients.All.SendAsync("RecieveSwitchMediaPage");
+        }
+
+        public async Task SwitchScoreboardPage()
+        {
+            await Clients.All.SendAsync("RecieveSwitchScoreboardPage");
+        }
     }
 }
