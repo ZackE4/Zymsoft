@@ -5,7 +5,8 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/scoreboardHub").build();
 
 connection.start().then(function () {
-    alert("Scoreboard Connected!");
+    //alert("Scoreboard Connected!");
+    console.log("Scoreboard Connected");
 }).catch(function (err) {
     alert("Scoreboard Connection Error!");
 });

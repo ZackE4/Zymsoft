@@ -247,7 +247,6 @@ namespace ScoreboardClient.Controllers
                 if(oldGame.SeasonId == Connector.Season.SeasonId)
                 {
                     Connector.Game = oldGame;
-                    Connector.GameScore = null;
                 }
                 else
                 {
@@ -277,6 +276,7 @@ namespace ScoreboardClient.Controllers
 
             string errorMessage = "";
             Connector.Game = this.ApiClient.Post<Game>("Game/Create", JsonConvert.SerializeObject(apiRequest), ref errorMessage);
+            Connector.GameScore = null;
 
             if (Connector.Game != null)
             {
