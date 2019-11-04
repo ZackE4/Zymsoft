@@ -117,6 +117,20 @@ connection.on("ReceiveSetTimeout", function (side, timeouts) {
     }
 });
 
+connection.on("RecieveSwitchMediaPage", function () {
+    showMediaPage();
+    setTimeout(function () {
+        var vid = document.getElementById("media-video");
+        vid.play();
+    }, 500);
+});
+
+connection.on("RecieveSwitchScoreboardPage", function () {
+    showScoreboardPage();
+    var vid = document.getElementById("media-video");
+    vid.pause();
+});
+
 function playHorn() {
     var audio = new Audio('/audio/buzzer.mp3');
     audio.play();
@@ -235,6 +249,17 @@ function SaveFoul(playerId) {
     });
 }
 
-//$(document).ready(function () {
+function showMediaPage() {
+    //$('#switchMediaPage').trigger('click');
+    location.hash = "#mediaPage";
+}
 
-//});
+function showScoreboardPage() {
+    //$('#switchScoreboardPage').trigger('click');
+    location.hash = "#scoreboardPage";
+}
+
+$(document).ready(function () {
+    var mediaPlayer = $('#media-video');
+    mediaPlayer.controls = false;
+});

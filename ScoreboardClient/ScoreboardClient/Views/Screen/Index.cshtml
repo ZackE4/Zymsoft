@@ -24,228 +24,242 @@
         <input type="hidden" id="homeTeamQuarterFouls" value="@Model.GameScore.HomeTeamFouls[1]" />
         <input type="hidden" id="awayTeamQuarterFouls" value="@Model.GameScore.AwayTeamFouls[1]" />
         break;
-    case 4: 
+    case 4:
         <input type="hidden" id="homeTeamQuarterFouls" value="@Model.GameScore.HomeTeamFouls[1]" />
         <input type="hidden" id="awayTeamQuarterFouls" value="@Model.GameScore.AwayTeamFouls[1]" />
         break;
 }
 
 <div id="ScoreboardContainer">
-    <div id="TopRow" class="row topRow">
-        <div id="HomeTeamDiv" class="col-lg-4 text-center">
-            <div class="row">
-                <span class="HomeAwayHeader">
-                    HOME
-                </span>
+    <div data-role="page" id="scoreboardPage">
+        <div id="TopRow" class="row topRow">
+            <div id="HomeTeamDiv" class="col-lg-4 text-center">
+                <div class="row">
+                    <span class="HomeAwayHeader">
+                        HOME
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="TeamNameSpan">
+                        @Model.HomeTeam.TeamName
+                    </span>
+                </div>
+                <div class="row logoRow">
+                    @if (!string.IsNullOrEmpty(Model.HomeTeam.Logo))
+                    {
+                        <div class="logoContainer">
+                            <img src="@Model.HomeTeam.Logo" alt="logo" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="logoContainer">
+                            <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" alt="logo" />
+                        </div>
+                    }
+                </div>
             </div>
-            <div class="row">
-                <span class="TeamNameSpan">
-                    @Model.HomeTeam.TeamName
-                </span>
+            @*<div class="col-lg-1"></div>*@
+            <div id="GameTimerDiv" class="col-lg-4 text-center">
+                <div class="Timer">
+                    <span id="TimerMins">@currentTimer.Minutes</span> : <span id="TimerSeconds">@currentTimer.Seconds.ToString("00")</span>
+                </div>
             </div>
-            <div class="row logoRow">
-                @if (!string.IsNullOrEmpty(Model.HomeTeam.Logo))
-                {
-                    <div class="logoContainer">
-                        <img src="@Model.HomeTeam.Logo" alt="logo" />
-                    </div>
-                }
-                else
-                {
-                    <div class="logoContainer">
-                        <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" alt="logo" />
-                    </div>
-                }
+            @*<div class="col-lg-1"></div>*@
+            <div id="AwayTeamDiv" class="col-lg-4 text-center">
+                <div class="row">
+                    <span class="HomeAwayHeader">
+                        AWAY
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="TeamNameSpan">
+                        @Model.AwayTeam.TeamName
+                    </span>
+                </div>
+                <div class="row logoRow">
+                    @if (!string.IsNullOrEmpty(Model.AwayTeam.Logo))
+                    {
+                        <div class="logoContainer">
+                            <img src="@Model.AwayTeam.Logo" alt="logo" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="logoContainer">
+                            <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" alt="logo" />
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-        @*<div class="col-lg-1"></div>*@
-        <div id="GameTimerDiv" class="col-lg-4 text-center">
-            <div class="Timer">
-                <span id="TimerMins">@currentTimer.Minutes</span> : <span id="TimerSeconds">@currentTimer.Seconds.ToString("00")</span>
+        <div id="MidRow" class="row text-center">
+            <div id="HomeTeamScoreDiv" class="col-lg-4">
+                <span id="homeTeamScore" class="ScoreSpan">
+                    @Model.GameScore.HomeTeamScore
+                </span>
+            </div>
+            <div id="HomeTeamTimeoutsDiv" class="col-lg-1">
+                <div class="row">
+                    <span class="TimeoutsHeader">
+                        TIMEOUTS
+                    </span>
+                </div>
+                <div class="row">
+                    <span id="homeTeamTimeouts" class="TimeoutsSpan">
+                        @Model.GameScore.HomeTeamTimeoutsRemaining
+                    </span>
+                </div>
+            </div>
+            <div id="Period Div" class="col-lg-2">
+                <div class="row">
+                    <span class="PeriodHeader">
+                        PERIOD
+                    </span>
+                </div>
+                <div class="row">
+                    <span id="period" class="PeriodSpan">
+                        @period
+                    </span>
+                </div>
+            </div>
+            <div id="AwayTeamTimeoutsDiv" class="col-lg-1">
+                <div class="row">
+                    <span class="TimeoutsHeader">
+                        TIMEOUTS
+                    </span>
+                </div>
+                <div class="row">
+                    <span id="awayTeamTimeouts" class="TimeoutsSpan">
+                        @Model.GameScore.AwayTeamTimeoutsRemaining
+                    </span>
+                </div>
+            </div>
+            <div id="AwayTeamScoreDiv" class="col-lg-4">
+                <span id="awayTeamScore" class="ScoreSpan">
+                    @Model.GameScore.AwayTeamScore
+                </span>
             </div>
         </div>
-        @*<div class="col-lg-1"></div>*@
-        <div id="AwayTeamDiv" class="col-lg-4 text-center">
-            <div class="row">
-                <span class="HomeAwayHeader">
-                    AWAY
+        <div id="BottomRow" class="row text-center">
+            <div id="HomeTeamFoulsDiv" class="col-lg-4">
+                <div class="row">
+                    <span class="FoulsHeader">
+                        FOULS
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="FoulsSpan" id="homeTeamFouls">
+                        @Model.GameScore.HomeTeamFouls.Sum()
+                    </span>
+                </div>
+            </div>
+            <div id="HomeTeamBonusDiv" class="col-lg-1">
+                <span id="homeBonus" class="BonusSpan">
+                    @if (period == 1)
+                    {
+                        if (Model.GameScore.HomeTeamFouls[0] > 4)
+                        {
+                            <text>< BONUS</text>
+                        }
+                    }
+                    else if (period == 2)
+                    {
+                        if (Model.GameScore.HomeTeamFouls[1] > 4)
+                        {
+                            <text>< BONUS</text>
+                        }
+                    }
+                    else if (period == 3)
+                    {
+                        if (Model.GameScore.HomeTeamFouls[2] > 4)
+                        {
+                            <text>< BONUS</text>
+                        }
+                    }
+                    else if (period == 4)
+                    {
+                        if (Model.GameScore.HomeTeamFouls[3] > 4)
+                        {
+                            <text>< BONUS</text>
+                        }
+                    }
+                    @*< BONUS*@
                 </span>
             </div>
-            <div class="row">
-                <span class="TeamNameSpan">
-                    @Model.AwayTeam.TeamName
+            <div id="ShotClockDiv" class="col-lg-2">
+                <div class="row">
+                    <span class="FoulsHeader">
+                        SHOT
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="ShotClockSpan" id="shotclock">
+                        24
+                    </span>
+                </div>
+            </div>
+            <div id="AwayTeamBonusDiv" class="col-lg-1">
+                <span id="awayBonus" class="BonusSpan">
+                    @if (period == 1)
+                    {
+                        if (Model.GameScore.AwayTeamFouls[0] > 4)
+                        {
+                            <text>BONUS ></text>
+                        }
+                    }
+                    else if (period == 2)
+                    {
+                        if (Model.GameScore.AwayTeamFouls[1] > 4)
+                        {
+                            <text>BONUS ></text>
+                        }
+                    }
+                    else if (period == 3)
+                    {
+                        if (Model.GameScore.AwayTeamFouls[2] > 4)
+                        {
+                            <text>BONUS ></text>
+                        }
+                    }
+                    else if (period == 4)
+                    {
+                        if (Model.GameScore.AwayTeamFouls[3] > 4)
+                        {
+                            <text>BONUS ></text>
+                        }
+                    }
+                    @*BONUS >*@
                 </span>
             </div>
-            <div class="row logoRow">
-                @if (!string.IsNullOrEmpty(Model.AwayTeam.Logo))
-                {
-                    <div class="logoContainer">
-                        <img src="@Model.AwayTeam.Logo" alt="logo" />
-                    </div>
-                }
-                else
-                {
-                    <div class="logoContainer">
-                        <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" alt="logo" />
-                    </div>
-                }
+            <div id="AwayTeamFoulsDiv" class="col-lg-4">
+                <div class="row">
+                    <span class="FoulsHeader">
+                        FOULS
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="FoulsSpan" id="awayTeamFouls">
+                        @Model.GameScore.AwayTeamFouls.Sum()
+                    </span>
+                </div>
             </div>
+        </div>
+    <input type="hidden" id="timerRunning" value="false" />
+    </div>
+    <div data-role="page" id="mediaPage">
+        <div class="mediaContainer">
+            <video id='media-video' controls preload="auto" class="media-player-fullscreen">
+                <source src='~/media/ShoeCommercial.mp4' type='video/mp4'>
+            </video>
         </div>
     </div>
-    <div id="MidRow" class="row text-center">
-        <div id="HomeTeamScoreDiv" class="col-lg-4">
-            <span id="homeTeamScore" class="ScoreSpan">
-                @Model.GameScore.HomeTeamScore
-            </span>
-        </div>
-        <div id="HomeTeamTimeoutsDiv" class="col-lg-1">
-            <div class="row">
-                <span class="TimeoutsHeader">
-                    TIMEOUTS
-                </span>
-            </div>
-            <div class="row">
-                <span id="homeTeamTimeouts" class="TimeoutsSpan">
-                    @Model.GameScore.HomeTeamTimeoutsRemaining
-                </span>
-            </div>
-        </div>
-        <div id="Period Div" class="col-lg-2">
-            <div class="row">
-                <span class="PeriodHeader">
-                    PERIOD
-                </span>
-            </div>
-            <div class="row">
-                <span id="period" class="PeriodSpan">
-                    @period
-                </span>
-            </div>
-        </div>
-        <div id="AwayTeamTimeoutsDiv" class="col-lg-1">
-            <div class="row">
-                <span class="TimeoutsHeader">
-                    TIMEOUTS
-                </span>
-            </div>
-            <div class="row">
-                <span id="awayTeamTimeouts" class="TimeoutsSpan">
-                    @Model.GameScore.AwayTeamTimeoutsRemaining
-                </span>
-            </div>
-        </div>
-        <div id="AwayTeamScoreDiv" class="col-lg-4">
-            <span id="awayTeamScore" class="ScoreSpan">
-                @Model.GameScore.AwayTeamScore
-            </span>
-        </div>
+    <div data-role="page" id="switchsPage">
+
     </div>
-    <div id="BottomRow" class="row text-center">
-        <div id="HomeTeamFoulsDiv" class="col-lg-4">
-            <div class="row">
-                <span class="FoulsHeader">
-                    FOULS
-                </span>
-            </div>
-            <div class="row">
-                <span class="FoulsSpan" id="homeTeamFouls">
-                    @Model.GameScore.HomeTeamFouls.Sum()
-                </span>
-            </div>
-        </div>
-        <div id="HomeTeamBonusDiv" class="col-lg-1">
-            <span id="homeBonus" class="BonusSpan">
-                @if (period == 1)
-                {
-                    if (Model.GameScore.HomeTeamFouls[0] > 4)
-                    {
-                        <text>< BONUS</text>
-                    }
-                }
-                else if (period == 2)
-                {
-                    if (Model.GameScore.HomeTeamFouls[1] > 4)
-                    {
-                        <text>< BONUS</text>
-                    }
-                }
-                else if (period == 3)
-                {
-                    if (Model.GameScore.HomeTeamFouls[2] > 4)
-                    {
-                        <text>< BONUS</text>
-                    }
-                }
-                else if (period == 4)
-                {
-                    if (Model.GameScore.HomeTeamFouls[3] > 4)
-                    {
-                        <text>< BONUS</text>
-                    }
-                }
-                @*< BONUS*@
-            </span>
-        </div>
-        <div id="ShotClockDiv" class="col-lg-2">
-            <div class="row">
-                <span class="FoulsHeader">
-                    SHOT
-                </span>
-            </div>
-            <div class="row">
-                <span class="ShotClockSpan" id="shotclock">
-                    24
-                </span>
-            </div>
-        </div>
-        <div id="AwayTeamBonusDiv" class="col-lg-1">
-            <span id="awayBonus" class="BonusSpan">
-                @if (period == 1)
-                {
-                    if (Model.GameScore.AwayTeamFouls[0] > 4)
-                    {
-                        <text>BONUS ></text>
-                    }
-                }
-                else if (period == 2)
-                {
-                    if (Model.GameScore.AwayTeamFouls[1] > 4)
-                    {
-                        <text>BONUS ></text>
-                    }
-                }
-                else if (period == 3)
-                {
-                    if (Model.GameScore.AwayTeamFouls[2] > 4)
-                    {
-                        <text>BONUS ></text>
-                    }
-                }
-                else if (period == 4)
-                {
-                    if (Model.GameScore.AwayTeamFouls[3] > 4)
-                    {
-                        <text>BONUS ></text>
-                    }
-                }
-                @*BONUS >*@
-            </span>
-        </div>
-        <div id="AwayTeamFoulsDiv" class="col-lg-4">
-            <div class="row">
-                <span class="FoulsHeader">
-                    FOULS
-                </span>
-            </div>
-            <div class="row">
-                <span class="FoulsSpan" id="awayTeamFouls">
-                    @Model.GameScore.AwayTeamFouls.Sum()
-                </span>
-            </div>
-        </div>
-    </div>
+    <a href="#mediaPage" id="switchMediaPage"></a>
+    <a href="#scoreboardPage" id="switchScoreboardPage"></a>
 </div>
-<input type="hidden" id="timerRunning" value="false" />
 
 @section scripts{
     <script src="~/lib/signalr/dist/browser/signalr.js"></script>
