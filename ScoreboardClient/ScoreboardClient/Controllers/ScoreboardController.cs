@@ -229,7 +229,7 @@ namespace ScoreboardClient.Controllers
             {
                 return new BadRequestObjectResult("UnAuthorized");
             }
-            await this.HubContext.Clients.All.SendAsync("RecieveSetShotClock", request.Minutes, request.Seconds);
+            await this.HubContext.Clients.All.SendAsync("RecieveSetGameClock", request.Minutes, request.Seconds);
             return new OkObjectResult("Success");
         }
 
