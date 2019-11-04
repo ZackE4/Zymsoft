@@ -48,6 +48,8 @@ public class ViewControllerContainer {
         public static Integer scoring;//amount of points
         public static Integer playerId;
 
+        public static String connectionStat;
+
 
         public static void playHorn() {
             //create our api with retrofit
@@ -96,6 +98,7 @@ public class ViewControllerContainer {
                     String[] times = time.split(":");
                     Log.e("api ", " " + times[0] +" a" + times[1] + " b" + times[2]);
                     period = Integer.parseInt(times[1]) / 12 + 1;
+                    Log.e("API", ""+period);
                     if (period > 4)
                     {
                         period=4;
@@ -263,6 +266,7 @@ public class ViewControllerContainer {
                 recordFoul.setSide("Home");
                 List<Integer> homeFouls = currentGame.getGameScore().getHomeTeamFouls();
                 homeFouls.set(period-1, homeFouls.get(period-1) +1);
+                Log.e("API", ""+homeFouls.get(period-1));
                 currentGame.getGameScore().setHomeTeamFouls(homeFouls);
             }
             else
@@ -270,10 +274,11 @@ public class ViewControllerContainer {
                 recordFoul.setSide("Away");
                 List<Integer> awayFouls = currentGame.getGameScore().getAwayTeamFouls();
                 awayFouls.set(period-1, awayFouls.get(period-1) +1);
+                Log.e("API", ""+awayFouls.get(period-1));
                 currentGame.getGameScore().setAwayTeamFouls(awayFouls);
             }
             recordFoul.setPlayerId(playerId);
-            recordFoul.setPeriod(period-1);
+            recordFoul.setPeriod(period);
             Call<String> call = teamInfo.recordFoul(recordFoul);
             call.enqueue(new Callback<String>() {
                 @Override
@@ -477,5 +482,33 @@ public class ViewControllerContainer {
             timeouts1.setText("" + currentGame.getGameScore().getHomeTeamTimeoutsRemaining());
             timeouts2.setText("" + currentGame.getGameScore().getAwayTeamTimeoutsRemaining());
         }
+
+        public static void checkConnection() {
+            //create our api with retrofit
+            TeamInfoAPI teamInfo = retrofit
+                    .create(TeamInfoAPI.class);
+
+            BasicRequest checkConn = new BasicRequest();
+            checkConn.apiToken = apiKey;
+            Call<String> call = teamInfo.checkConnection(checkConn);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("APICall", "Code: " + response.code() + " Message: " + response.errorBody());
+                        return;
+                    }
+                    connectionStat = response.body();
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.e("APICall2", t.getMessage());
+                }
+            });
+        }
+
+
+
+
     }
 }

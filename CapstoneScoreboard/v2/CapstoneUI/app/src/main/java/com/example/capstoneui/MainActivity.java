@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private String apiKey = "168de16b";
+    public static String ipaddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,9 @@ public class MainActivity extends AppCompatActivity {
         ViewControllerContainer.ViewController.context=this;
         ViewControllerContainer.ViewController.okHttpClient = UnsafeOkHttpClient.getUnsafeOkHttpClient();
         //Retrofit allows the connection to post man/webapi
+        Log.e("api", "http://" + ipaddress + "/api/Scoreboard/");
         ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.41/api/Scoreboard/")
+                .baseUrl("http://" + ipaddress + "/api/Scoreboard/")
                 .client(ViewControllerContainer.ViewController.okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

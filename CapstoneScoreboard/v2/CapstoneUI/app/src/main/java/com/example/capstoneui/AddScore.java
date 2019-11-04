@@ -30,7 +30,7 @@ public class AddScore extends AppCompatActivity {
             List<HomeTeamRoster> roster = ViewControllerContainer.ViewController.currentGame.getHomeTeamRoster();
             for (int i =0; i < roster.size(); i++)
             {
-                your_array_list.add(i, roster.get(i).getFirstName() + ", " + roster.get(i).getLastName());
+                your_array_list.add(i, roster.get(i).getPlayerId() + "  |  " + roster.get(i).getFirstName() + ", " + roster.get(i).getLastName());
             }
         }
         else
@@ -38,7 +38,7 @@ public class AddScore extends AppCompatActivity {
             List<AwayTeamRoster> roster = ViewControllerContainer.ViewController.currentGame.getAwayTeamRoster();
             for (int i =0; i < roster.size(); i++)
             {
-                your_array_list.add(i, roster.get(i).getFirstName() + ", " + roster.get(i).getLastName());
+                your_array_list.add(i, roster.get(i).getPlayerId() + "  |  " + roster.get(i).getFirstName() + ", " + roster.get(i).getLastName());
             }
         }
 

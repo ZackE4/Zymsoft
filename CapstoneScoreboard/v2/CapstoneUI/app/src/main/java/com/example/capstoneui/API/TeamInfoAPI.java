@@ -25,6 +25,10 @@ public interface TeamInfoAPI {
     Call<Game> GetFullGameData(@Query("apiToken") String APIToken
     );
 
+    @GET("CheckConnection")
+    Call<String> checkConnection(@Query("apiToken") BasicRequest APIToken
+    );
+
     @POST("PlayHorn")
     Call<BasicRequest> playHorn(@Body BasicRequest requestHorn);
 

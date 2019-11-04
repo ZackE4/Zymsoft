@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".ConfigPage">
+
+    <TextView
+        android:id="@+id/txtMessage"
+        style="@style/TextAltColor"
+        android:layout_width="350dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="16dp"
+        android:text="Please enter the ip address of your hosted app"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edtIp"
+        style="@style/TextAltColor"
+        android:layout_width="273dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="24dp"
+        android:background="#727272"
+        android:ems="10"
+        android:hint="Ex 192.168.40.42"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtMessage" />
+
+    <Button
+        android:id="@+id/btnSubmitIP"
+        android:layout_width="161dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/roundbutton"
+        android:onClick="submitIP"
+        android:text="Submit"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtIp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
