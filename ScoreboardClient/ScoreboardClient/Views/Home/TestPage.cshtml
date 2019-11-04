@@ -30,6 +30,9 @@
 <button id="homeTeamTimeoutTo4btn">Home Timeouts to 4</button>
 <button id="awayTeamTimeoutbtn">Away Timeout</button>
 <button id="awayTeamTimeoutTo4btn">Away Timeouts to 4</button>
+<br />
+<button id="switchMediaPagebtn">Switch Media Page</button>
+<button id="switchScoreboardPageBtn">Switch Scoreboard Page</button>
 
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script>
@@ -82,6 +85,20 @@
 
         //event.preventDefault();
         connection.invoke("RecordScore", "2", "4", "Home").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("switchMediaPagebtn").addEventListener("click", function (event) {
+        connection.invoke("SwitchMediaPage").catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    document.getElementById("switchScoreboardPageBtn").addEventListener("click", function (event) {
+        connection.invoke("SwitchScoreboardPage").catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();
@@ -214,7 +231,7 @@
     });
 
     document.getElementById("awayTeamTimeoutTo4btn").addEventListener("click", function (event) {
-        connection.invoke("SetTimeouts", "Away",4 ).catch(function (err) {
+        connection.invoke("SetTimeouts", "Away", 4).catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();
