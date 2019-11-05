@@ -129,5 +129,29 @@ namespace ScoreboardClient.Controllers
 
             return new OkObjectResult("Success");
         }
+
+        [HttpPost("ShowMediaPage")]
+        public async Task<ActionResult> ShowMediaPage(BasicLocalRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+            await this.HubContext.Clients.All.SendAsync("RecieveSwitchMediaPage");
+
+            return new OkObjectResult("Success");
+        }
+
+        [HttpPost("ShowScoreboardPage")]
+        public async Task<ActionResult> ShowScoreboardPage(BasicLocalRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+            await this.HubContext.Clients.All.SendAsync("RecieveSwitchScoreboardPage");
+
+            return new OkObjectResult("Success");
+        }
     }
 }
