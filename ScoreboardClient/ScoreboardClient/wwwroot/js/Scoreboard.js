@@ -138,8 +138,8 @@ connection.on("RecievePlayVideo", function (videoFileName) {
     $('#activeVideo').attr('src', "/media/" + videoFileName);
     vid.load();
     if ($('#isVideoShowing').val() === "false") {
-        $('#imageAdDiv').slideToggle();
-        $('#videoPlayerDiv').slideToggle();
+        $('#imageAdDiv').fadeOut();
+        $('#videoPlayerDiv').fadeIn();
     }
     setTimeout(function () {
         vid.play();
@@ -152,8 +152,8 @@ connection.on("RecieveShowImage", function (imgFileName) {
     if ($('#isVideoShowing').val() === "true") {
         var vid = document.getElementById("media-video");
         vid.pause();
-        $('#videoPlayerDiv').slideToggle();
-        $('#imageAdDiv').slideToggle();
+        $('#videoPlayerDiv').fadeOut();
+        $('#imageAdDiv').fadeIn();
     }
     $('#isVideoShowing').val("false"); 
 });
