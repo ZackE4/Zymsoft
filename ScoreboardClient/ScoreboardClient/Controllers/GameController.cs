@@ -291,12 +291,8 @@ namespace ScoreboardClient.Controllers
         {
             Connector.HomeTeam = null;
             Connector.AwayTeam = null;
-            var oldGameId = await SettingsUtil.GetSetting("GameId");
-            if (string.IsNullOrEmpty(oldGameId))
-            {
-                oldGameId = "999999";
-            }
-            if(Convert.ToInt32(oldGameId) != Connector.Game.GameId)
+            var oldGameId = Convert.ToInt32(await SettingsUtil.GetSetting("GameId"));
+            if(oldGameId != Connector.Game.GameId)
             {
                 await SettingsUtil.SetSetting("GameTime", "");
                 await SettingsUtil.SetSetting("HomeTeamTimeouts", "5");
