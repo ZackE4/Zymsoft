@@ -7,3 +7,12 @@
 /ScoreboardClient/.vs
 /ScoreboardClient/ScoreboardClient/bin/Debug/netcoreapp2.1
 /ScoreboardClient/ScoreboardClient/obj
+ScoreboardClient/ScoreboardClient/bin/Release/netcoreapp2.1/ScoreboardClient.pdb
+ScoreboardClient/ScoreboardClient/appsettings.json
+ScoreboardClient/ScoreboardClient/bin/Release/netcoreapp2.1/ScoreboardClient.dll
+*.json
+ScoreboardClient/ScoreboardClient/bin/Release/netcoreapp2.1/ScoreboardClient.dll
+ScoreboardClient/ScoreboardClient/appsettings.json
+ScoreboardClient/ScoreboardClient/wwwroot/css/Scoreboard.css
+ScoreboardClient/ScoreboardClient/bin/Release/netcoreapp2.1/ScoreboardClient.Views.pdb
+ScoreboardClient/ScoreboardClient/bin/Release/netcoreapp2.1/ScoreboardClient.Views.dll

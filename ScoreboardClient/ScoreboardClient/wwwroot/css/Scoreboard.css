@@ -9,6 +9,10 @@
     box-sizing: border-box;
 }
 
+body{
+    padding: 0px !important;
+}
+
 .media-player-fullscreen {
     min-height: 100vh;
     min-width: 100vw;
