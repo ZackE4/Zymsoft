@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
     <PackageReference Include="RestSharp" Version="106.6.10" />
+    <PackageReference Include="Xabe.FFmpeg" Version="3.5.0" />
   </ItemGroup>
 
 </Project>

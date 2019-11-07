@@ -128,6 +128,15 @@ namespace ScoreboardClient.Hubs
             await Clients.All.SendAsync("saveFoul", PlayerId);
         }
 
+        public async Task PlayVideo(string videoFileName)
+        {
+            await Clients.All.SendAsync("RecievePlayVideo", videoFileName);
+        }
+
+        public async Task ShowImage(string imageFileName)
+        {
+            await Clients.All.SendAsync("RecieveShowImage", imageFileName);
+        }
 
         public async Task SwitchMediaPage()
         {
