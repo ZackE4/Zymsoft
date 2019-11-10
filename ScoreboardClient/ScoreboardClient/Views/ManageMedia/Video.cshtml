@@ -1,0 +1,62 @@
+﻿@model ScoreboardClient.Models.ViewModels.ManageVideoViewModel
+@{
+    ViewData["Title"] = "Video";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@await Html.PartialAsync("_PageMessages", Model.Messages)
+<div class="text-center">
+    <h1>Manage Videos</h1>
+    <hr />
+    <h3>Add new video.</h3>
+    <p><i>Videos must be in .mp4 format</i></p>
+    <form id="fileUploadForm" asp-action="UploadVideo" asp-controller="ManageMedia" method="POST" enctype="multipart/form-data">
+        <label>New File Name </label>
+        <input type="text" name="FileName" class="form-control" required />
+        <label>File: </label>
+        <input type="file" name="VideoFile" class="form-control" required/>
+        <br /><br />
+        <button class="btn btn-lg btn-primary" name="Submit" value="Submit" type="Submit">Submit</button>
+    </form>
+    <hr />
+    <br />
+    <div>
+        <div class="text-left">
+            <h3>Available Videos: </h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>FileName</th>
+                        <th>Duration</th>
+                        <th>File Size</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                @foreach (var video in Model.Videos)
+                {
+                    <tr>
+                        <td><a href="~/media/@video.FileName">@video.FileName</a></td>
+                        <td>@video.Duration.ToString()</td>
+                        <td>@($"{video.FileSize} Mb")</td>
+                        <td>
+                            <form action="/ManageMedia/DeleteVideo" method="post">
+                                <input type="hidden" value="@video.FileName" name="FileName" />
+                                <button class="btn btn-sm btn-primary" onclick="OnDeleteMediaClick();">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+    <a class="btn btn-lg btn-primary" href="/ManageMedia">Back</a>
+</div>
+
+@section Scripts{
+    <script>
+        function OnDeleteMediaClick() {
+            var c = confirm("Click Ok to confirm delete, this media will no longer be available in the scoreboard.");
+            return c;
+        }
+    </script>
+}
+
