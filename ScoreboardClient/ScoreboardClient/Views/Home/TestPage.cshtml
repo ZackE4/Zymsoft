@@ -33,9 +33,6 @@
 <br />
 <button id="switchMediaPagebtn">Switch Media Page</button>
 <button id="switchScoreboardPageBtn">Switch Scoreboard Page</button>
-<button id="playGhostBustersbtn">Play Ghostbusters</button>
-<button id="playShoeCommercialbtn">Play Shoe Commercial</button>
-<button id="showHarrisTimebtn">Show Harristime</button>
 
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
 <script>
@@ -88,27 +85,6 @@
 
         //event.preventDefault();
         connection.invoke("RecordScore", "2", "4", "Home").catch(function (err) {
-            return console.error(err.toString());
-        });
-        event.preventDefault();
-    });
-
-    document.getElementById("showHarrisTimebtn").addEventListener("click", function (event) {
-        connection.invoke("ShowImage", "HarrisTime.jpg").catch(function (err) {
-            return console.error(err.toString());
-        });
-        event.preventDefault();
-    });
-
-    document.getElementById("playGhostBustersbtn").addEventListener("click", function (event) {
-        connection.invoke("PlayVideo", "Ghostbusters.mp4").catch(function (err) {
-            return console.error(err.toString());
-        });
-        event.preventDefault();
-    });
-
-    document.getElementById("playShoeCommercialbtn").addEventListener("click", function (event) {
-        connection.invoke("PlayVideo", "ShoeCommercial.mp4").catch(function (err) {
             return console.error(err.toString());
         });
         event.preventDefault();

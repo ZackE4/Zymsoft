@@ -10,29 +10,12 @@
 }
 
 body{
-<<<<<<< HEAD
     padding: 0px !important;
-=======
-    padding-top: 0px !important;
->>>>>>> cbefac9216e5311dc965218638e9d9cfbda9f814
 }
 
 .media-player-fullscreen {
     min-height: 100vh;
-}
-
-.mediaContainer{
-    text-align:center;
-    margin:0 auto;
-    background-color:black;
-}
-
-.imageAd {
-    max-height: 100vh;
-}
-
-#imageAdDiv{
-    display:none;
+    min-width: 100vw;
 }
 
 ::-webkit-scrollbar {
@@ -85,7 +68,7 @@ body {
     color: #e6f542;
     font-size: 8.75em;
     margin-left: 10%;
-    margin-right: 10%;
+    margin-right 10%;
     border-color: white;
     border-width: 2px;
     border-radius: 30%;
