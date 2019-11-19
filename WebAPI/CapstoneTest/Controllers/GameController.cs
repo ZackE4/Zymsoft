@@ -70,6 +70,28 @@ namespace CapstoneTest.Controllers
             return new OkObjectResult(await this.GameRepository.GetAsync(id));
         }
 
+        [HttpGet("CompleteBySeason")]
+        public async Task<ActionResult> GetCompleteGamesBySeason(string apiToken, int seasonId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            return new OkObjectResult(await this.CompleteGameRepository.GetCompleteGamesBySeason(seasonId));
+        }
+
+        [HttpGet("CompleteByTeam")]
+        public async Task<ActionResult> GetCompleteGamesByTeamAndSeason(string apiToken, int teamId, int seasonId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            return new OkObjectResult(await this.CompleteGameRepository.GetCompleteGamesByTeamAndSeason(teamId, seasonId));
+        }
+
         [HttpPost("CompleteGame")]
         public async Task<ActionResult> CompleteGame(CompleteGameRequest request)
         {

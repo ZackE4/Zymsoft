@@ -73,7 +73,7 @@ namespace CapstoneTest.Data.Repositories.Concrete
                                                             AND (c.[WinningTeamId] = @TeamId 
                                                             OR c.[LosingTeamId] = @TeamId)");
 
-            return (await this.DataContext.QueryAsync<CompleteGame>(query, new { @TeamId = teamId }));
+            return (await this.DataContext.QueryAsync<CompleteGame>(query, new { @TeamId = teamId, @SeasonId = seasonId }));
         }
     }
 }
