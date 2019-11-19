@@ -104,6 +104,7 @@ namespace CapstoneTest.Controllers
                 var completeGame = new CompleteGame()
                 {
                     GameId = game.GameId,
+                    Date = game.Date,
                     TieFlag = false
                 };
             

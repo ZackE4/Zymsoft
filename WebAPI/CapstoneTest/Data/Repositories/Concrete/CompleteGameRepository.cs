@@ -19,7 +19,8 @@ namespace CapstoneTest.Data.Repositories.Concrete
                                    c.[WinningTeamId],
                                    c.[LosingTeamId],
                                    c.[GameId],
-                                   c.[TieFlag]
+                                   c.[TieFlag],
+                                   c.[Date]
                             FROM CompleteGame c
                             {0}";
 
@@ -29,13 +30,15 @@ namespace CapstoneTest.Data.Repositories.Concrete
                                 WinningTeamId,
                                 LosingTeamId,
                                 GameId,
-                                TieFlag
+                                TieFlag,
+                                Date
                             )
                             VALUES(
                                 @WinningTeamId,
                                 @LosingTeamId,
                                 @GameId,
-                                @TieFlag
+                                @TieFlag,
+                                @Date
                             )";
 
         public async Task<ICompleteGame> CompleteGame(ICompleteGame game)
@@ -47,7 +50,8 @@ namespace CapstoneTest.Data.Repositories.Concrete
                                    c.[WinningTeamId],
                                    c.[LosingTeamId],
                                    c.[GameId],
-                                   c.[TieFlag]
+                                   c.[TieFlag],
+                                   c.[Date]
                             FROM CompleteGame c
                             WHERE GameId = @GameId
                             ORDER BY CompleteGameId DESC";

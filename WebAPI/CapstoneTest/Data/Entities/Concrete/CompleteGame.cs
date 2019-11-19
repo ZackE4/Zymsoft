@@ -13,5 +13,6 @@ namespace CapstoneTest.Data.Entities.Concrete
         public virtual int LosingTeamId { get; set; }
         public virtual int GameId { get; set; }
         public virtual bool TieFlag { get; set; }
+        public virtual DateTime Date { get; set; }
     }
 }
