@@ -43,7 +43,7 @@ namespace CapstoneTest.Data.Repositories.Concrete
 
         public async Task<ICompleteGame> CompleteGame(ICompleteGame game)
         {
-            await this.DataContext.ExecuteNonQueryAsync(insertQuery, new { @WinningTeamId = game.WinningTeamId, @LosingTeamId = game.LosingTeamId, @GameId = game.GameId, @TieFlag = game.TieFlag });
+            await this.DataContext.ExecuteNonQueryAsync(insertQuery, new { @WinningTeamId = game.WinningTeamId, @LosingTeamId = game.LosingTeamId, @GameId = game.GameId, @TieFlag = game.TieFlag, @Date = game.Date });
 
             string selectLastQuery = @"
                             SELECT TOP(1) c.[CompleteGameId],
