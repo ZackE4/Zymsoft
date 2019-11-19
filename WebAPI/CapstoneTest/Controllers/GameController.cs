@@ -18,11 +18,15 @@ namespace CapstoneTest.Controllers
     {
         protected IGameRepository GameRepository { get; set; }
         protected ITeamRepository TeamRepository { get; set; }
+        protected ICompleteGameRepository CompleteGameRepository { get; set; }
+        protected IScoringLogRepository ScoringLogRepository { get; set; }
 
         public GameController(IConfiguration configuration) : base(configuration)
         {
             this.GameRepository = new GameRepository(this.ConnectionString);
             this.TeamRepository = new TeamRepository(this.ConnectionString);
+            this.CompleteGameRepository = new CompleteGameRepository(this.ConnectionString);
+            this.ScoringLogRepository = new ScoringLogRepository(this.ConnectionString);
         }
 
         [HttpPost("Create")]
@@ -89,6 +93,42 @@ namespace CapstoneTest.Controllers
             }
 
             game.GameComplete = true;
+
+            var homeTeamScoringLogs = await this.ScoringLogRepository.GetByTeamAndGameAsync(game.HomeTeamId, game.GameId);
+            var awayTeamScoringLogs = await this.ScoringLogRepository.GetByTeamAndGameAsync(game.AwayTeamId, game.GameId);
+
+            var homeTeamScore = homeTeamScoringLogs.Sum(x => x.Points);
+            var awayTeamScore = awayTeamScoringLogs.Sum(x => x.Points);
+
+            var completeGame = new CompleteGame()
+            {
+                GameId = game.GameId,
+                TieFlag = false
+            };
+            
+            if(homeTeamScore > awayTeamScore)
+            {
+                completeGame.WinningTeamId = game.HomeTeamId;
+                completeGame.LosingTeamId = game.AwayTeamId;
+            }
+            else if(awayTeamScore > homeTeamScore)
+            {
+                completeGame.WinningTeamId = game.AwayTeamId;
+                completeGame.LosingTeamId = game.HomeTeamId;
+            }
+            else
+            {
+                completeGame.WinningTeamId = game.HomeTeamId;
+                completeGame.LosingTeamId = game.AwayTeamId;
+                completeGame.TieFlag = true;
+            }
+
+            var newCompleteGame = await CompleteGameRepository.CompleteGame(completeGame);
+
+            if(newCompleteGame == null)
+            {
+                return new BadRequestObjectResult("Error Completing Game");
+            }
 
             return new OkObjectResult(await this.GameRepository.UpdateAsync(game));
         }
