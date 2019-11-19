@@ -92,43 +92,47 @@ namespace CapstoneTest.Controllers
                 return new BadRequestObjectResult("Game Not Found");
             }
 
-            game.GameComplete = true;
-
-            var homeTeamScoringLogs = await this.ScoringLogRepository.GetByTeamAndGameAsync(game.HomeTeamId, game.GameId);
-            var awayTeamScoringLogs = await this.ScoringLogRepository.GetByTeamAndGameAsync(game.AwayTeamId, game.GameId);
-
-            var homeTeamScore = homeTeamScoringLogs.Sum(x => x.Points);
-            var awayTeamScore = awayTeamScoringLogs.Sum(x => x.Points);
-
-            var completeGame = new CompleteGame()
+            if (!game.GameComplete)
             {
-                GameId = game.GameId,
-                TieFlag = false
-            };
+
+                var homeTeamScoringLogs = await this.ScoringLogRepository.GetByTeamAndGameAsync(game.HomeTeamId, game.GameId);
+                var awayTeamScoringLogs = await this.ScoringLogRepository.GetByTeamAndGameAsync(game.AwayTeamId, game.GameId);
+
+                var homeTeamScore = homeTeamScoringLogs.Sum(x => x.Points);
+                var awayTeamScore = awayTeamScoringLogs.Sum(x => x.Points);
+
+                var completeGame = new CompleteGame()
+                {
+                    GameId = game.GameId,
+                    TieFlag = false
+                };
             
-            if(homeTeamScore > awayTeamScore)
-            {
-                completeGame.WinningTeamId = game.HomeTeamId;
-                completeGame.LosingTeamId = game.AwayTeamId;
-            }
-            else if(awayTeamScore > homeTeamScore)
-            {
-                completeGame.WinningTeamId = game.AwayTeamId;
-                completeGame.LosingTeamId = game.HomeTeamId;
-            }
-            else
-            {
-                completeGame.WinningTeamId = game.HomeTeamId;
-                completeGame.LosingTeamId = game.AwayTeamId;
-                completeGame.TieFlag = true;
+                if(homeTeamScore > awayTeamScore)
+                {
+                    completeGame.WinningTeamId = game.HomeTeamId;
+                    completeGame.LosingTeamId = game.AwayTeamId;
+                }
+                else if(awayTeamScore > homeTeamScore)
+                {
+                    completeGame.WinningTeamId = game.AwayTeamId;
+                    completeGame.LosingTeamId = game.HomeTeamId;
+                }
+                else
+                {
+                    completeGame.WinningTeamId = game.HomeTeamId;
+                    completeGame.LosingTeamId = game.AwayTeamId;
+                    completeGame.TieFlag = true;
+                }
+
+                var newCompleteGame = await CompleteGameRepository.CompleteGame(completeGame);
+
+                if(newCompleteGame == null)
+                {
+                    return new BadRequestObjectResult("Error Completing Game");
+                }
             }
 
-            var newCompleteGame = await CompleteGameRepository.CompleteGame(completeGame);
-
-            if(newCompleteGame == null)
-            {
-                return new BadRequestObjectResult("Error Completing Game");
-            }
+            game.GameComplete = true;
 
             return new OkObjectResult(await this.GameRepository.UpdateAsync(game));
         }
