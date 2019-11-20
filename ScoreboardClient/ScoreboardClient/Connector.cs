@@ -49,6 +49,9 @@ namespace ScoreboardClient
         public static string CurrentApiToken { get; set; }
         public static DateTime ApiTokenExpiry { get; set; }
 
+        public static bool GameScreenOpen { get; set; }
+        public static bool TimerRunning { get; set; }
+
         public static void SetBaseApiAddress(string baseApiAddress)
         {
             BaseWebApiAddress = baseApiAddress;

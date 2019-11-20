@@ -270,4 +270,14 @@
 @section scripts{
     <script src="~/lib/signalr/dist/browser/signalr.js"></script>
     <script src="~/js/Scoreboard.js"></script>
+    <script>
+        $(window).on("beforeunload", function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Screen/UpdateScreenClose",
+                dataType: "json"
+            });
+        })
+    </script>
 }

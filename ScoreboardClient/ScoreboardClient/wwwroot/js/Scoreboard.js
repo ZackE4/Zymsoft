@@ -291,4 +291,15 @@ $(document).ready(function () {
     $.each(vids, function () {
         this.controls = false;
     }); 
+
+    var data = {};
+
+    $.ajax({
+        type: "POST",
+        url: "/Screen/UpdateScreenOpen",
+        data: data,
+        success: function (responseData) {
+        },
+        dataType: "json"
+    });
 });

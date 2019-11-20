@@ -24,6 +24,10 @@ namespace ScoreboardClient.Controllers
             {
                 return RedirectToAction("Index", "Game", new { errorMsg = "Authorization Error" });
             }
+            if (Connector.GameScreenOpen)
+            {
+                return RedirectToAction("Index", "Game", new { errorMsg = "There is already an open scoreboard screen" });
+            }
 
             await this.SetupGame();
 
@@ -53,6 +57,9 @@ namespace ScoreboardClient.Controllers
                 viewModel.GameTime = new TimeSpan(0, 0, 0);
             }
 
+            Connector.TimerRunning = false;
+
+
             return View(viewModel);
         }
 
@@ -63,6 +70,21 @@ namespace ScoreboardClient.Controllers
             await SettingsUtil.SetSetting("GameTime", GameTime.ToString());
             Connector.GameScore.GameTime = GameTime;
             return new OkObjectResult("Game Time Saved");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateScreenOpen()
+        {
+            Connector.GameScreenOpen = true;
+            return new OkObjectResult("Screen Status Updated");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateScreenClose()
+        {
+            Connector.TimerRunning = false;
+            Connector.GameScreenOpen = false;
+            return new OkObjectResult("Screen Status Updated");
         }
 
         [HttpPost]
