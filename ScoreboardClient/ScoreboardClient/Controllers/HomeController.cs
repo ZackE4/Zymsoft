@@ -43,6 +43,29 @@ namespace ScoreboardClient.Controllers
             {
                 this.GetCurrentActiveSeason();
                 viewModel.Season = Connector.Season;
+                string errorMessage = "";
+                Parameter[] paramList = new Parameter[2];
+                paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                paramList[1] = new Parameter("leagueKey", Connector.League.LeagueKey, ParameterType.QueryString);
+
+                viewModel.LeagueTeamList = this.ApiClient.Get<List<Team>>("Teams/ByLeague", paramList, ref errorMessage);
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    viewModel.Messages.Add(new PageMessage() { Message = $"Error loading teams from league: {errorMessage}", Type = MessageType.Error });
+                }
+
+                errorMessage = "";
+                paramList = new Parameter[2];
+                paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                paramList[1] = new Parameter("seasonId", Connector.Season.SeasonId, ParameterType.QueryString);
+
+                viewModel.LeagueCompleteGameList = this.ApiClient.Get<List<CompleteGame>>("Game/CompleteBySeason", paramList, ref errorMessage);
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    viewModel.Messages.Add(new PageMessage() { Message = $"Error loading stats from league: {errorMessage}", Type = MessageType.Error });
+                }
+
+                viewModel.LeagueTeamList = this.SortTeamListByWins(viewModel.LeagueTeamList, viewModel.LeagueCompleteGameList);
             }
 
             return View(viewModel);
@@ -157,6 +180,33 @@ namespace ScoreboardClient.Controllers
             Connector.AwayTeam = null;
             Connector.GameScore = null;
             Connector.Season = null;
+        }
+
+        private List<Team> SortTeamListByWins(List<Team> teams, List<CompleteGame> games)
+        {
+            for(int i = 0; i < teams.Count; i++)
+            {
+                if(i != 0)
+                {
+                    for (int y = 0; y < teams.Count; y++)
+                    {
+                        if (y != 0)
+                        {
+                            var teamWins = games.Count(x => x.WinningTeamId == teams[y].TeamId);
+                            var prevTeamWins = games.Count(x => x.WinningTeamId == teams[y-1].TeamId);
+
+                            if(teamWins > prevTeamWins)
+                            {
+                                var placeHolder = teams[y - 1];
+                                teams[y - 1] = teams[y];
+                                teams[y] = placeHolder;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return teams;
         }
 
         #endregion
