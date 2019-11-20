@@ -10,7 +10,7 @@ namespace CapstoneTest.Data.Repositories.Interfaces
     {
         Task<IEnumerable<IFoulLog>> GetByGameAsync(int gameId);
 
-        Task<IEnumerable<IFoulLog>> GetByPlayerAsync(int playerId);
+        Task<IEnumerable<IFoulLog>> GetByPlayerAndSeasonAsync(int playerId, int seasonId);
 
         Task<IEnumerable<IFoulLog>> GetByPlayerAndGameAsync(int playerId, int gameId);
 

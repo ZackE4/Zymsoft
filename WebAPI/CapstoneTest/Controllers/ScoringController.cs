@@ -257,6 +257,28 @@ namespace CapstoneTest.Controllers
 
             return new OkObjectResult(await this.ScoringLogRepository.GetByGameAsync(gameId));
         }
+
+        [HttpGet("PlayerScoreLogs")]
+        public async Task<ActionResult> GetScoreLogsByPlayerAndSeason(string apiToken, int playerId, int seasonId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            return new OkObjectResult(await this.ScoringLogRepository.GetByPlayerAndSeasonAsync(playerId, seasonId));
+        }
+
+        [HttpGet("PlayerFoulLogs")]
+        public async Task<ActionResult> GetFoulLogsByPlayerAndSeason(string apiToken, int playerId, int seasonId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            return new OkObjectResult(await this.FoulLogRepository.GetByPlayerAndSeasonAsync(playerId, seasonId));
+        }
     }
 
 }
