@@ -125,10 +125,25 @@ namespace ScoreboardClient.Controllers
                 return RedirectToAction("Index", "Teams", new { errorMsg = $"Error loading team: {errorMessage}" });
             }
 
+            errorMessage = "";
             paramList = new Parameter[2];
             paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
             paramList[1] = new Parameter("teamId", id, ParameterType.QueryString);
             viewModel.Players = this.ApiClient.Get<List<Player>>("Players/ByTeam", paramList, ref errorMessage);
+
+            errorMessage = "";
+            paramList = new Parameter[3];
+            paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList[1] = new Parameter("teamId", id, ParameterType.QueryString);
+            paramList[2] = new Parameter("seasonId", Connector.Season.SeasonId, ParameterType.QueryString);
+
+            viewModel.TeamHistory = this.ApiClient.Get<List<CompleteGame>>("Game/CompleteByTeam", paramList, ref errorMessage);
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                return RedirectToAction("Index", "Teams", new { errorMsg = $"Error getting team stats: {errorMessage}" });
+            }
+
+            viewModel.TeamHistory = viewModel.TeamHistory.OrderBy(x => x.Date).ToList();
 
             return View(viewModel);
         }
