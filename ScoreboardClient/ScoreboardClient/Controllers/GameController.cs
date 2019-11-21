@@ -265,6 +265,32 @@ namespace ScoreboardClient.Controllers
         [HttpPost]
         public IActionResult CreateGame(CreateGameModel request)
         {
+            if(request.HomeTeamId == request.AwayTeamId)
+            {
+                return RedirectToAction("Index", "Game", new { errorMsg = $"You must select two different teams." });
+            }
+            var errorMessage = "";
+            var paramList = new Parameter[2];
+            paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList[1] = new Parameter("teamId", request.HomeTeamId, ParameterType.QueryString);
+            List<Player> HomeTeamPlayers = this.ApiClient.Get<List<Player>>("Players/ByTeam", paramList, ref errorMessage);
+
+            errorMessage = "";
+            paramList = new Parameter[2];
+            paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList[1] = new Parameter("teamId", request.AwayTeamId, ParameterType.QueryString);
+            List<Player> AwayTeamPlayers = this.ApiClient.Get<List<Player>>("Players/ByTeam", paramList, ref errorMessage);
+
+            if(HomeTeamPlayers == null || AwayTeamPlayers == null)
+            {
+                return RedirectToAction("Index", "Game", new { errorMsg = $"Error retrieving team player lists." });
+            }
+
+            if(HomeTeamPlayers.Count < 5 || AwayTeamPlayers.Count < 5)
+            {
+                return RedirectToAction("Index", "Game", new { errorMsg = $"Teams must both have at least 5 players to play." });
+            }
+
             CreateGameRequest apiRequest = new CreateGameRequest
             {
                 ApiToken = Connector.CurrentApiToken,
@@ -274,7 +300,7 @@ namespace ScoreboardClient.Controllers
                 SeasonId = Connector.Season.SeasonId
             };
 
-            string errorMessage = "";
+            errorMessage = "";
             Connector.Game = this.ApiClient.Post<Game>("Game/Create", JsonConvert.SerializeObject(apiRequest), ref errorMessage);
             Connector.GameScore = null;
 

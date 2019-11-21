@@ -115,6 +115,22 @@ namespace ScoreboardClient.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(Team team)
         {
+            string errorMessage = "";
+            Parameter[] paramList = new Parameter[2];
+            paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList[1] = new Parameter("leagueKey", Connector.League.LeagueKey, ParameterType.QueryString);
+
+            var teamList = this.ApiClient.Get<List<Team>>("Teams/ByLeague", paramList, ref errorMessage);
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                return RedirectToAction("Index", "Teams", new { errorMsg = "Error updating team." });
+            }
+
+            if (teamList != null && teamList.Where(x => x.TeamName.ToUpper() == team.TeamName.ToUpper()).FirstOrDefault() != null)
+            {
+                return RedirectToAction("Index", "Teams", new { errorMsg = "A team with that name already exists" });
+            }
+
             AddTeamRequest apiRequest = new AddTeamRequest
             {
                 ApiToken = Connector.CurrentApiToken,
@@ -124,7 +140,7 @@ namespace ScoreboardClient.Controllers
                 Logo = team.Logo
             };
 
-            string errorMessage = "";
+            errorMessage = "";
             var newTeam = this.ApiClient.Post<Team>("Teams/Add", JsonConvert.SerializeObject(apiRequest), ref errorMessage);
 
             if(newTeam != null)
@@ -218,6 +234,22 @@ namespace ScoreboardClient.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Team team)
         {
+            string errorMessage = "";
+            Parameter[] paramList = new Parameter[2];
+            paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList[1] = new Parameter("leagueKey", Connector.League.LeagueKey, ParameterType.QueryString);
+
+            var teamList = this.ApiClient.Get<List<Team>>("Teams/ByLeague", paramList, ref errorMessage);
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                return RedirectToAction("Index", "Teams", new { errorMsg = "Error updating team." });
+            }
+
+            if(teamList != null && teamList.Where(x=>x.TeamName.ToUpper() == team.TeamName.ToUpper()).FirstOrDefault() != null)
+            {
+                return RedirectToAction("Index", "Teams", new { errorMsg = "A team with that name already exists" });
+            }
+
             UpdateTeamRequest apiRequest = new UpdateTeamRequest
             {
                 ApiToken = Connector.CurrentApiToken,
@@ -228,7 +260,7 @@ namespace ScoreboardClient.Controllers
                 TeamId = team.TeamId
             };
 
-            string errorMessage = "";
+            errorMessage = "";
             var updatedTeam = this.ApiClient.Post<Team>("Teams/Edit", JsonConvert.SerializeObject(apiRequest), ref errorMessage);
 
             if (updatedTeam != null)

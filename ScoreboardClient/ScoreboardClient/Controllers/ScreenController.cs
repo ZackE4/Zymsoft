@@ -69,6 +69,7 @@ namespace ScoreboardClient.Controllers
             var GameTime = new TimeSpan(0, (period-1) * 12, 0) + (new TimeSpan(0, 12, 0) - new TimeSpan(0,minutes,seconds));
             await SettingsUtil.SetSetting("GameTime", GameTime.ToString());
             Connector.GameScore.GameTime = GameTime;
+            Connector.TimerRunning = false;
             return new OkObjectResult("Game Time Saved");
         }
 
