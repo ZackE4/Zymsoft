@@ -25,7 +25,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
 
-    private String apiKey = "168de16b";
+    public static String apiKey = "168de16b";
+
     public static String ipaddress;
 
     @Override

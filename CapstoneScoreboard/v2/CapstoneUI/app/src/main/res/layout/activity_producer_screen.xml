@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProducerScreen">
+
+    <Switch
+        android:id="@+id/mediaSwitch"
+        android:layout_width="125dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="16dp"
+        android:text="Media"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtMedia"
+        android:layout_width="125dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="72dp"
+        android:gravity="center"
+        android:text="Scoreboard"
+        android:textAlignment="gravity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnVideos"
+        android:layout_width="211dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="16dp"
+        android:text="Video"
+        app:layout_constraintEnd_toStartOf="@+id/btnImages"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mediaSwitch" />
+
+    <Button
+        android:id="@+id/btnImages"
+        android:layout_width="194dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="16dp"
+        android:text="Images"
+        android:onClick="switchImages"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnVideos"
+        app:layout_constraintTop_toBottomOf="@+id/txtMedia" />
+
+    <ListView
+        android:id="@+id/dyListVideos"
+        android:layout_width="409dp"
+        android:layout_height="565dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="btnVideos"
+        app:layout_constraintTop_toBottomOf="@+id/btnVideos" />
+
+    <ListView
+        android:id="@+id/dyListImages"
+        android:layout_width="409dp"
+        android:layout_height="565dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnVideos"
+        tools:layout_editor_absoluteY="699dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
