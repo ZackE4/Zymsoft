@@ -181,10 +181,14 @@ namespace ScoreboardClient.Controllers
                 return new BadRequestObjectResult("UnAuthorized");
             }
             await this.HubContext.Clients.All.SendAsync("RecieveToggleTimer", "start");
+            var response = new TimerResponse()
+            {
+                Period = Connector.Game.GameComplete ? 4 : (int)(Connector.GameScore.GameTime.Minutes / 12) + 1,
+                TimerRunning = Connector.TimerRunning
+            };
             Connector.TimerRunning = true;
-            //whenever you start or stop the timer, return back to the current period (to store for recording fouls)
-            int period = Connector.Game.GameComplete ? 4 : (int)(Connector.GameScore.GameTime.Minutes / 12) + 1;
-            return new OkObjectResult(period);
+            //whenever you start or stop the timer, return back to the current period (to store for recording fouls) and whether the timer was already running
+            return new OkObjectResult(response);
         }
 
         [HttpPost("StopTimer")]
@@ -195,10 +199,14 @@ namespace ScoreboardClient.Controllers
                 return new BadRequestObjectResult("UnAuthorized");
             }
             await this.HubContext.Clients.All.SendAsync("RecieveToggleTimer", "stop");
+            var response = new TimerResponse()
+            {
+                Period = Connector.Game.GameComplete ? 4 : (int)(Connector.GameScore.GameTime.Minutes / 12) + 1,
+                TimerRunning = Connector.TimerRunning
+            };
 
-            //whenever you start or stop the timer, return back to the current period (to store for recording fouls)
-            int period = Connector.Game.GameComplete ? 4 : (int)(Connector.GameScore.GameTime.Minutes / 12) + 1;
-            return new OkObjectResult(period);
+            //whenever you start or stop the timer, return back to the current period (to store for recording fouls) and whether the timer was already running
+            return new OkObjectResult(response);
         }
 
         [HttpPost("ResetShotClock")]
