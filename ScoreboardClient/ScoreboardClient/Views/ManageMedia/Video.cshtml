@@ -38,9 +38,9 @@
                         <td>@video.Duration.ToString()</td>
                         <td>@($"{video.FileSize} Mb")</td>
                         <td>
-                            <form action="/ManageMedia/DeleteVideo" method="post">
+                            <form action="/ManageMedia/DeleteVideo" method="post" onsubmit="return OnDeleteMediaClick();">
                                 <input type="hidden" value="@video.FileName" name="FileName" />
-                                <button class="btn btn-sm btn-primary" onclick="OnDeleteMediaClick();">Delete</button>
+                                <button class="btn btn-sm btn-primary">Delete</button>
                             </form>
                         </td>
                     </tr>

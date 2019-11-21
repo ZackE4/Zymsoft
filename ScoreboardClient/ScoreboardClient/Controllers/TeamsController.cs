@@ -11,13 +11,18 @@ using ScoreboardClient.Data.Entities.Interfaces;
 using ScoreboardClient.Models;
 using ScoreboardClient.Models.Request.Client;
 using Newtonsoft.Json;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ScoreboardClient.Controllers
 {
     public class TeamsController : BaseController
     {
-        public TeamsController(IConfiguration configuration) : base(configuration)
+        private readonly IHostingEnvironment _env;
+
+        public TeamsController(IConfiguration configuration, IHostingEnvironment env) : base(configuration)
         {
+            _env = env;
         }
 
         public async Task<IActionResult> Index(string errorMsg, string actionMsg)
@@ -72,6 +77,37 @@ namespace ScoreboardClient.Controllers
             viewModel.AddEdit = AddEditTeam.Add;
             viewModel.League = Connector.League;
             viewModel.Team = new Team();
+
+            string webRootPath = _env.WebRootPath;
+            string imageFolderDirector = "teams";
+            var filePath = Path.Combine(webRootPath, imageFolderDirector);
+
+            viewModel.TeamImages = new List<ImageFile>();
+            var rawMediaFiles = System.IO.Directory.GetFiles(filePath);
+            var imageFileNames = new List<string>();
+
+            foreach (var file in rawMediaFiles)
+            {
+                if (Path.GetExtension(file).ToUpper() == ".APNG" ||
+                    Path.GetExtension(file).ToUpper() == ".BMP" ||
+                    Path.GetExtension(file).ToUpper() == ".JPG" ||
+                    Path.GetExtension(file).ToUpper() == ".JPEG" ||
+                    Path.GetExtension(file).ToUpper() == ".PNG" ||
+                    Path.GetExtension(file).ToUpper() == ".SVG" ||
+                    Path.GetExtension(file).ToUpper() == ".WEBP")
+                {
+                    imageFileNames.Add(file);
+                }
+            }
+            foreach (var imageFile in imageFileNames)
+            {
+                double fileSizeInMb = Convert.ToInt32(new System.IO.FileInfo(Path.Combine(filePath, imageFile)).Length) / 1000000.0;
+                viewModel.TeamImages.Add(new ImageFile()
+                {
+                    FileSize = fileSizeInMb.ToString("0.##"),
+                    FileName = Path.GetFileName(imageFile)
+                });
+            }
 
             return View(viewModel);
         }
@@ -143,7 +179,38 @@ namespace ScoreboardClient.Controllers
                 return RedirectToAction("Index", "Teams", new { errorMsg = $"Error getting team stats: {errorMessage}" });
             }
 
-            viewModel.TeamHistory = viewModel.TeamHistory.OrderBy(x => x.Date).ToList();
+            viewModel.TeamHistory = viewModel.TeamHistory.OrderByDescending(x => x.Date).ToList();
+
+            string webRootPath = _env.WebRootPath;
+            string imageFolderDirector = "teams";
+            var filePath = Path.Combine(webRootPath, imageFolderDirector);
+
+            viewModel.TeamImages = new List<ImageFile>();
+            var rawMediaFiles = System.IO.Directory.GetFiles(filePath);
+            var imageFileNames = new List<string>();
+
+            foreach (var file in rawMediaFiles)
+            {
+                if (Path.GetExtension(file).ToUpper() == ".APNG" ||
+                    Path.GetExtension(file).ToUpper() == ".BMP" ||
+                    Path.GetExtension(file).ToUpper() == ".JPG" ||
+                    Path.GetExtension(file).ToUpper() == ".JPEG" ||
+                    Path.GetExtension(file).ToUpper() == ".PNG" ||
+                    Path.GetExtension(file).ToUpper() == ".SVG" ||
+                    Path.GetExtension(file).ToUpper() == ".WEBP")
+                {
+                    imageFileNames.Add(file);
+                }
+            }
+            foreach (var imageFile in imageFileNames)
+            {
+                double fileSizeInMb = Convert.ToInt32(new System.IO.FileInfo(Path.Combine(filePath, imageFile)).Length) / 1000000.0;
+                viewModel.TeamImages.Add(new ImageFile()
+                {
+                    FileSize = fileSizeInMb.ToString("0.##"),
+                    FileName = Path.GetFileName(imageFile)
+                });
+            }
 
             return View(viewModel);
         }
@@ -188,6 +255,37 @@ namespace ScoreboardClient.Controllers
             var viewModel = new AddEditPlayerViewModel();
             viewModel.AddEdit = AddEditPlayer.Add;
             viewModel.Player = new Player() { TeamId = teamId };
+
+            string webRootPath = _env.WebRootPath;
+            string imageFolderDirector = "players";
+            var filePath = Path.Combine(webRootPath, imageFolderDirector);
+
+            viewModel.PlayerImages = new List<ImageFile>();
+            var rawMediaFiles = System.IO.Directory.GetFiles(filePath);
+            var imageFileNames = new List<string>();
+
+            foreach (var file in rawMediaFiles)
+            {
+                if (Path.GetExtension(file).ToUpper() == ".APNG" ||
+                    Path.GetExtension(file).ToUpper() == ".BMP" ||
+                    Path.GetExtension(file).ToUpper() == ".JPG" ||
+                    Path.GetExtension(file).ToUpper() == ".JPEG" ||
+                    Path.GetExtension(file).ToUpper() == ".PNG" ||
+                    Path.GetExtension(file).ToUpper() == ".SVG" ||
+                    Path.GetExtension(file).ToUpper() == ".WEBP")
+                {
+                    imageFileNames.Add(file);
+                }
+            }
+            foreach (var imageFile in imageFileNames)
+            {
+                double fileSizeInMb = Convert.ToInt32(new System.IO.FileInfo(Path.Combine(filePath, imageFile)).Length) / 1000000.0;
+                viewModel.PlayerImages.Add(new ImageFile()
+                {
+                    FileSize = fileSizeInMb.ToString("0.##"),
+                    FileName = Path.GetFileName(imageFile)
+                });
+            }
 
             return View(viewModel);
         }
@@ -243,6 +341,37 @@ namespace ScoreboardClient.Controllers
                 return RedirectToAction("Index", "Teams", new { errorMsg = $"Error retrieving player info: {errorMessage}" });
             }
 
+            string webRootPath = _env.WebRootPath;
+            string imageFolderDirector = "players";
+            var filePath = Path.Combine(webRootPath, imageFolderDirector);
+
+            viewModel.PlayerImages = new List<ImageFile>();
+            var rawMediaFiles = System.IO.Directory.GetFiles(filePath);
+            var imageFileNames = new List<string>();
+
+            foreach (var file in rawMediaFiles)
+            {
+                if (Path.GetExtension(file).ToUpper() == ".APNG" ||
+                    Path.GetExtension(file).ToUpper() == ".BMP" ||
+                    Path.GetExtension(file).ToUpper() == ".JPG" ||
+                    Path.GetExtension(file).ToUpper() == ".JPEG" ||
+                    Path.GetExtension(file).ToUpper() == ".PNG" ||
+                    Path.GetExtension(file).ToUpper() == ".SVG" ||
+                    Path.GetExtension(file).ToUpper() == ".WEBP")
+                {
+                    imageFileNames.Add(file);
+                }
+            }
+            foreach (var imageFile in imageFileNames)
+            {
+                double fileSizeInMb = Convert.ToInt32(new System.IO.FileInfo(Path.Combine(filePath, imageFile)).Length) / 1000000.0;
+                viewModel.PlayerImages.Add(new ImageFile()
+                {
+                    FileSize = fileSizeInMb.ToString("0.##"),
+                    FileName = Path.GetFileName(imageFile)
+                });
+            }
+
             return View(viewModel);
         }
 
@@ -271,6 +400,103 @@ namespace ScoreboardClient.Controllers
             }
 
             return RedirectToAction("Index", "Teams", new { errorMsg = $"Error updating player: {player.FirstName} {player.LastName}" });
+        }
+
+        public async Task<IActionResult> PlayerReport(int playerId)
+        {
+            if (!await this.CheckLoginStatus())
+            {
+                return RedirectToAction("Index", "Home", new { errorMsg = "You must join a league first." });
+            }
+            if (Connector.League == null)
+            {
+                return RedirectToAction("Index", "Home", new { errorMsg = "You must join a league first." });
+            }
+            if (Connector.Season == null)
+            {
+                return RedirectToAction("Index", "Home", new { errorMsg = "Your league must be in a season to view seasonal reports" });
+            }
+
+            var viewModel = new PlayerReportViewModel();
+            viewModel.League = Connector.League;
+
+            string errorMessage = "";
+            Parameter[] parameters = new Parameter[2];
+            parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            parameters[1] = new Parameter("id", playerId, ParameterType.QueryString);
+            var player = this.ApiClient.Get<Player>("Players", parameters, ref errorMessage);
+
+            if (player == null)
+            {
+                return RedirectToAction("Index", "Home", new { errorMsg = $"Unable to retrieve player report: {errorMessage}" });
+            }
+            viewModel.Player = player;
+
+            parameters = new Parameter[3];
+            parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            parameters[1] = new Parameter("playerId", playerId, ParameterType.QueryString);
+            parameters[2] = new Parameter("seasonId", Connector.Season.SeasonId, ParameterType.QueryString);
+            var scoringLogs = this.ApiClient.Get<List<ScoringLog>>("Scoring/PlayerScoreLogs", parameters, ref errorMessage);
+
+            if (scoringLogs == null)
+            {
+                return RedirectToAction("Index", "Home", new { errorMsg = $"Unable to retrieve player report: {errorMessage}" });
+            }
+            viewModel.SeasonScoringLogs = scoringLogs;
+            viewModel.SeasonScoringLogs = viewModel.SeasonScoringLogs.OrderBy(x => x.GameId).ToList();
+
+            parameters = new Parameter[3];
+            parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            parameters[1] = new Parameter("playerId", playerId, ParameterType.QueryString);
+            parameters[2] = new Parameter("seasonId", Connector.Season.SeasonId, ParameterType.QueryString);
+            var foulLogs = this.ApiClient.Get<List<FoulLog>>("Scoring/PlayerFoulLogs", parameters, ref errorMessage);
+
+            if (foulLogs == null)
+            {
+                return RedirectToAction("Index", "Home", new { errorMsg = $"Unable to retrieve player report: {errorMessage}" });
+            }
+            viewModel.SeasonFoulLogs = foulLogs;
+            viewModel.SeasonFoulLogs = viewModel.SeasonFoulLogs.OrderBy(x => x.GameId).ToList();
+
+            var paramList = new Parameter[2];
+            paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList[1] = new Parameter("Id", player.TeamId, ParameterType.QueryString);
+            var team = this.ApiClient.Get<Team>("Teams", paramList, ref errorMessage);
+
+            if (team == null)
+            {
+                return RedirectToAction("Index", "Home", new { errorMsg = $"Unable to retrieve game report: {errorMessage}" });
+            }
+            viewModel.Team = team;
+
+            List<int> scoringGameIds = viewModel.SeasonScoringLogs.Select(x => x.GameId).Distinct().ToList();
+            List<int> foulGameIds = viewModel.SeasonFoulLogs.Select(x => x.GameId).Distinct().ToList();
+
+            foreach(var gameId in scoringGameIds)
+            {
+                if (!foulGameIds.Contains(gameId))
+                {
+                    foulGameIds.Add(gameId);
+                }
+            }
+
+            viewModel.SeasonGamesPlayedIn = new List<Game>();
+            foreach(var gameId in foulGameIds)
+            {
+                paramList = new Parameter[2];
+                paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                paramList[1] = new Parameter("Id", gameId, ParameterType.QueryString);
+                var game = this.ApiClient.Get<Game>("Game", paramList, ref errorMessage);
+
+                if(game != null)
+                {
+                    viewModel.SeasonGamesPlayedIn.Add(game);
+                }
+            }
+
+            viewModel.SeasonGamesPlayedIn = viewModel.SeasonGamesPlayedIn.OrderByDescending(x => x.Date).ToList();
+
+            return View(viewModel);
         }
     }
 }

@@ -132,6 +132,70 @@ namespace ScoreboardClient.Controllers
 
         }
 
+        public async Task<IActionResult> LeagueReport()
+        {
+            var viewModel = new LeagueReportViewModel();
+            if(Connector.League == null)
+            {
+                return RedirectToAction("Index", new { errorMsg = "Must join a league to print a report" });
+            }
+
+            viewModel.League = Connector.League;
+
+            if (Connector.League != null)
+            {
+                this.GetCurrentActiveSeason();
+                viewModel.Season = Connector.Season;
+                string errorMessage = "";
+                Parameter[] paramList = new Parameter[2];
+                paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                paramList[1] = new Parameter("leagueKey", Connector.League.LeagueKey, ParameterType.QueryString);
+
+                viewModel.LeagueTeamList = this.ApiClient.Get<List<Team>>("Teams/ByLeague", paramList, ref errorMessage);
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    viewModel.Messages.Add(new PageMessage() { Message = $"Error loading teams from league: {errorMessage}", Type = MessageType.Error });
+                }
+
+                errorMessage = "";
+                paramList = new Parameter[2];
+                paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                paramList[1] = new Parameter("seasonId", Connector.Season.SeasonId, ParameterType.QueryString);
+
+                viewModel.LeagueCompleteGameList = this.ApiClient.Get<List<CompleteGame>>("Game/CompleteBySeason", paramList, ref errorMessage);
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    viewModel.Messages.Add(new PageMessage() { Message = $"Error loading stats from league: {errorMessage}", Type = MessageType.Error });
+                }
+
+                viewModel.LeagueTeamList = this.SortTeamListByWins(viewModel.LeagueTeamList, viewModel.LeagueCompleteGameList);
+
+                errorMessage = "";
+                paramList = new Parameter[2];
+                paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                paramList[1] = new Parameter("seasonId", Connector.Season.SeasonId, ParameterType.QueryString);
+
+                viewModel.TopScoringPlayer = this.ApiClient.Get<PlayerWithPoints>("Players/TopScoring", paramList, ref errorMessage);
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    viewModel.Messages.Add(new PageMessage() { Message = $"Error loading stats from league: {errorMessage}", Type = MessageType.Error });
+                }
+
+                errorMessage = "";
+                paramList = new Parameter[2];
+                paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                paramList[1] = new Parameter("seasonId", Connector.Season.SeasonId, ParameterType.QueryString);
+
+                viewModel.TopFoulingPlayer = this.ApiClient.Get<PlayerWithFouls>("Players/TopFouling", paramList, ref errorMessage);
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    viewModel.Messages.Add(new PageMessage() { Message = $"Error loading stats from league: {errorMessage}", Type = MessageType.Error });
+                }
+            }
+
+            return View(viewModel);
+        }
+
 
         #region private methods
 

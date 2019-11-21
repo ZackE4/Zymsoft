@@ -19,5 +19,6 @@ namespace ScoreboardClient.Models.ViewModels
         public virtual AddEditTeam AddEdit { get; set; }
         public virtual ILeague League { get; set; }
         public virtual List<CompleteGame> TeamHistory { get; set; }
+        public virtual List<ImageFile> TeamImages { get; set; }
     }
 }

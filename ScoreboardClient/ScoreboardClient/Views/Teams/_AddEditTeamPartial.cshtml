@@ -75,15 +75,22 @@
             {
                 <input type="hidden" name="TeamId" value="@Model.Team.TeamId" />
             }
-            <div class="form-group">
-                <label>Team Name </label>
-                <input type="text" name="TeamName" value="@Model.Team.TeamName" class="form-control" />
-                <label>Coach Name: </label>
-                <input type="text" name="CoachName" value="@Model.Team.CoachName" class="form-control" />
-                <label>Logo Url: </label>
-                <input type="text" name="Logo" value="@Model.Team.Logo" class="form-control" />
-                <input type="hidden" name="LeagueId" value="@Model.League.LeagueId" class="form-control" />
-            </div>
+                <div class="form-group">
+                    <label>Team Name </label>
+                    <input type="text" name="TeamName" value="@Model.Team.TeamName" class="form-control" />
+                    <label>Coach Name: </label>
+                    <input type="text" name="CoachName" value="@Model.Team.CoachName" class="form-control" />
+                    <label>Logo Url: </label>
+                    <select class="form-control" id="Logo" name="Logo" required>
+                        <option value=""></option>
+                        @foreach (var image in Model.TeamImages)
+                        {
+                            string selected = Model.Team != null && Model.Team.Logo == $"/teams/{image.FileName}" ? "selected" : "";
+                            @:<option value="/teams/@image.FileName" @selected>@image.FileName</option>
+                        }
+                    </select>
+                    <input type="hidden" name="LeagueId" value="@Model.League.LeagueId" class="form-control"/>
+                </div>
             @if (AddEdit == "Add")
             {
                 <button class="btn btn-lg btn-primary" type="button" onclick="history.back();">Back</button>

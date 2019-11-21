@@ -1,20 +1,20 @@
 ﻿@model ScoreboardClient.Models.ViewModels.ManageImageViewModel
 @{
-    ViewData["Title"] = "Images";
+    ViewData["Title"] = "Player Images";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @await Html.PartialAsync("_PageMessages", Model.Messages)
 <div class="text-center">
-    <h1>Manage Images</h1>
+    <h1>Manage Player Images</h1>
     <hr />
     <h3>Add new image.</h3>
     <p><i>The following formats are accepted: .APNG, .BMP, .JPG, .JPEG, .PNG, .SVG, .WEBP</i></p>
-    <form id="fileUploadForm" asp-action="UploadImage" asp-controller="ManageMedia" method="POST" enctype="multipart/form-data">
+    <form id="fileUploadForm" asp-action="UploadPlayerImage" asp-controller="ManageMedia" method="POST" enctype="multipart/form-data">
         <label>New File Name </label>
-        <input type="text" name="FileName" class="form-control" required/>
+        <input type="text" name="FileName" class="form-control" required />
         <label>File: </label>
-        <input type="file" name="ImageFile" class="form-control" required/>
+        <input type="file" name="ImageFile" class="form-control" required />
         <br /><br />
         <button class="btn btn-lg btn-primary" name="Submit" value="Submit" type="Submit">Submit</button>
     </form>
@@ -35,11 +35,11 @@
                 @foreach (var image in Model.Images)
                 {
                     <tr>
-                        <td><a href="~/media/@image.FileName">@image.FileName</a></td>
+                        <td><a href="~/players/@image.FileName">@image.FileName</a></td>
                         <td>@($"{image.FileSize} Mb")</td>
-                        <td style="padding-left:20px;"><img height="50" width="50" src="~/media/@image.FileName" alt="@image.FileName"/></td>
+                        <td style="padding-left:20px;"><img height="50" width="50" src="~/players/@image.FileName" alt="@image.FileName" /></td>
                         <td>
-                            <form action="/ManageMedia/DeleteImage" method="post" onSubmit="return OnDeleteMediaClick();">
+                            <form action="/ManageMedia/DeletePlayerImage" method="post"  onSubmit="return OnDeleteMediaClick();">
                                 <input type="hidden" value="@image.FileName" name="FileName" />
                                 <button class="btn btn-sm btn-primary">Delete</button>
                             </form>
@@ -54,8 +54,8 @@
 
 @section Scripts{
     <script>
-        function OnDeleteMediaClick() {
-            var c = confirm("Click Ok to confirm delete, this media will no longer be available in the scoreboard.");
+        function OnDeleteMediaClick(e) {
+            var c = confirm("Click Ok to confirm delete, this media will no longer be available for player pictures, any players using this image will be affected.");
             return c;
         }
     </script>

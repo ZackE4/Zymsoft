@@ -43,7 +43,14 @@
                 <label>Position: </label>
                 <input type="text" name="Position" value="@Model.Player.Position" class="form-control" />
                 <label>Picture Url: </label>
-                <input type="text" name="Picture" value="@Model.Player.Picture" class="form-control" />
+                <select class="form-control" id="Picture" name="Picture" required>
+                    <option value=""></option>
+                    @foreach (var image in Model.PlayerImages)
+                    {
+                        string selected = Model.Player != null && Model.Player.Picture == $"/players/{image.FileName}" ? "selected" : "";
+                        @:<option value="/players/@image.FileName" @selected>@image.FileName</option>
+                    }
+                </select>
             </div>
             <button class="btn btn-lg btn-primary" type="button" onclick="history.back();">Back</button>
             <button class="btn btn-lg btn-primary" name="Submit" value="Submit" type="Submit">Submit</button>

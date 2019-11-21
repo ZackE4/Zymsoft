@@ -141,16 +141,6 @@ namespace ScoreboardClient.Controllers
             }
         }
 
-        public IActionResult Players()
-        {
-            return View();
-        }
-
-        public IActionResult Teams()
-        {
-            return View();
-        }
-
         public IActionResult Images(string errorMsg, string actionMsg)
         {
             var viewModel = new ManageImageViewModel();
@@ -268,6 +258,246 @@ namespace ScoreboardClient.Controllers
             catch (Exception ex)
             {
                 return RedirectToAction("Images", "ManageMedia", new { errorMsg = $"Error deleting image: {ex.Message}" });
+            }
+        }
+
+        public IActionResult Players(string errorMsg, string actionMsg)
+        {
+            var viewModel = new ManageImageViewModel();
+            if (!string.IsNullOrEmpty(errorMsg))
+            {
+                viewModel.Messages.Add(new PageMessage() { Message = errorMsg, Type = MessageType.Error });
+            }
+            if (!string.IsNullOrEmpty(actionMsg))
+            {
+                viewModel.Messages.Add(new PageMessage() { Message = actionMsg, Type = MessageType.Success });
+            }
+
+            string webRootPath = _env.WebRootPath;
+            string imageFolderDirector = "players";
+            var filePath = Path.Combine(webRootPath, imageFolderDirector);
+
+            viewModel.Images = new List<ImageFile>();
+            var rawMediaFiles = System.IO.Directory.GetFiles(filePath);
+            var imageFileNames = new List<string>();
+
+            foreach (var file in rawMediaFiles)
+            {
+                if (Path.GetExtension(file).ToUpper() == ".APNG" ||
+                    Path.GetExtension(file).ToUpper() == ".BMP" ||
+                    Path.GetExtension(file).ToUpper() == ".JPG" ||
+                    Path.GetExtension(file).ToUpper() == ".JPEG" ||
+                    Path.GetExtension(file).ToUpper() == ".PNG" ||
+                    Path.GetExtension(file).ToUpper() == ".SVG" ||
+                    Path.GetExtension(file).ToUpper() == ".WEBP")
+                {
+                    imageFileNames.Add(file);
+                }
+            }
+            foreach (var imageFile in imageFileNames)
+            {
+                double fileSizeInMb = Convert.ToInt32(new System.IO.FileInfo(Path.Combine(filePath, imageFile)).Length) / 1000000.0;
+                viewModel.Images.Add(new ImageFile()
+                {
+                    FileSize = fileSizeInMb.ToString("0.##"),
+                    FileName = Path.GetFileName(imageFile)
+                });
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadPlayerImage(UploadImage uploadImage)
+        {
+            if (!uploadImage.ImageFile.ContentType.ToLower().StartsWith("image"))
+            {
+                return RedirectToAction("Video", "ManageMedia", new { errorMsg = $"Error Uploading File: File must be in valid image format." });
+            }
+
+            if (!uploadImage.FileName.ToUpper().EndsWith(".APNG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".BMP") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".JPG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".JPEG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".PNG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".SVG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".WEBP"))
+            {
+                string fileExt = uploadImage.ImageFile.ContentType.Split('/')[1];
+                uploadImage.FileName = $"{uploadImage.FileName}.{fileExt}";
+            }
+
+
+            string webRootPath = _env.WebRootPath;
+            string videoFolderDirectory = "players";
+            var filePath = Path.Combine(webRootPath, videoFolderDirectory, uploadImage.FileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                return RedirectToAction("Players", "ManageMedia", new { errorMsg = $"Error Uploading File: An Image file with that name already exists, please choose another file name and try again." });
+            }
+
+            try
+            {
+                if (uploadImage.ImageFile.Length > 0)
+                {
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        await uploadImage.ImageFile.CopyToAsync(stream);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Players", "ManageMedia", new { errorMsg = $"Error Uploading File: {ex.Message}" });
+            }
+            return RedirectToAction("Players", "ManageMedia", new { actionMsg = "File uploaded successfully" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePlayerImage(string fileName)
+        {
+            string webRootPath = _env.WebRootPath;
+            string videoFolderDirectory = "players";
+            var filePath = Path.Combine(webRootPath, videoFolderDirectory, fileName);
+
+            try
+            {
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                else
+                {
+                    return RedirectToAction("Players", "ManageMedia", new { errorMsg = $"{fileName} no longer available." });
+                }
+
+                return RedirectToAction("Players", "ManageMedia", new { actionMsg = $"{fileName} deleted." });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Players", "ManageMedia", new { errorMsg = $"Error deleting image: {ex.Message}" });
+            }
+        }
+
+        public IActionResult Teams(string errorMsg, string actionMsg)
+        {
+            var viewModel = new ManageImageViewModel();
+            if (!string.IsNullOrEmpty(errorMsg))
+            {
+                viewModel.Messages.Add(new PageMessage() { Message = errorMsg, Type = MessageType.Error });
+            }
+            if (!string.IsNullOrEmpty(actionMsg))
+            {
+                viewModel.Messages.Add(new PageMessage() { Message = actionMsg, Type = MessageType.Success });
+            }
+
+            string webRootPath = _env.WebRootPath;
+            string imageFolderDirector = "teams";
+            var filePath = Path.Combine(webRootPath, imageFolderDirector);
+
+            viewModel.Images = new List<ImageFile>();
+            var rawMediaFiles = System.IO.Directory.GetFiles(filePath);
+            var imageFileNames = new List<string>();
+
+            foreach (var file in rawMediaFiles)
+            {
+                if (Path.GetExtension(file).ToUpper() == ".APNG" ||
+                    Path.GetExtension(file).ToUpper() == ".BMP" ||
+                    Path.GetExtension(file).ToUpper() == ".JPG" ||
+                    Path.GetExtension(file).ToUpper() == ".JPEG" ||
+                    Path.GetExtension(file).ToUpper() == ".PNG" ||
+                    Path.GetExtension(file).ToUpper() == ".SVG" ||
+                    Path.GetExtension(file).ToUpper() == ".WEBP")
+                {
+                    imageFileNames.Add(file);
+                }
+            }
+            foreach (var imageFile in imageFileNames)
+            {
+                double fileSizeInMb = Convert.ToInt32(new System.IO.FileInfo(Path.Combine(filePath, imageFile)).Length) / 1000000.0;
+                viewModel.Images.Add(new ImageFile()
+                {
+                    FileSize = fileSizeInMb.ToString("0.##"),
+                    FileName = Path.GetFileName(imageFile)
+                });
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadTeamImage(UploadImage uploadImage)
+        {
+            if (!uploadImage.ImageFile.ContentType.ToLower().StartsWith("image"))
+            {
+                return RedirectToAction("Video", "ManageMedia", new { errorMsg = $"Error Uploading File: File must be in valid image format." });
+            }
+
+            if (!uploadImage.FileName.ToUpper().EndsWith(".APNG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".BMP") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".JPG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".JPEG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".PNG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".SVG") &&
+                !uploadImage.FileName.ToUpper().EndsWith(".WEBP"))
+            {
+                string fileExt = uploadImage.ImageFile.ContentType.Split('/')[1];
+                uploadImage.FileName = $"{uploadImage.FileName}.{fileExt}";
+            }
+
+
+            string webRootPath = _env.WebRootPath;
+            string videoFolderDirectory = "teams";
+            var filePath = Path.Combine(webRootPath, videoFolderDirectory, uploadImage.FileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                return RedirectToAction("Teams", "ManageMedia", new { errorMsg = $"Error Uploading File: An Image file with that name already exists, please choose another file name and try again." });
+            }
+
+            try
+            {
+                if (uploadImage.ImageFile.Length > 0)
+                {
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        await uploadImage.ImageFile.CopyToAsync(stream);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Teams", "ManageMedia", new { errorMsg = $"Error Uploading File: {ex.Message}" });
+            }
+            return RedirectToAction("Teams", "ManageMedia", new { actionMsg = "File uploaded successfully" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteTeamImage(string fileName)
+        {
+            string webRootPath = _env.WebRootPath;
+            string videoFolderDirectory = "teams";
+            var filePath = Path.Combine(webRootPath, videoFolderDirectory, fileName);
+
+            try
+            {
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                else
+                {
+                    return RedirectToAction("Teams", "ManageMedia", new { errorMsg = $"{fileName} no longer available." });
+                }
+
+                return RedirectToAction("Teams", "ManageMedia", new { actionMsg = $"{fileName} deleted." });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Teams", "ManageMedia", new { errorMsg = $"Error deleting image: {ex.Message}" });
             }
         }
     }
