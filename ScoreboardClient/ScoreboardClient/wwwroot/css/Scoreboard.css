@@ -10,11 +10,8 @@
 }
 
 body{
-<<<<<<< HEAD
     padding: 0px !important;
-=======
     padding-top: 0px !important;
->>>>>>> cbefac9216e5311dc965218638e9d9cfbda9f814
 }
 
 .media-player-fullscreen {
@@ -33,6 +30,7 @@ body{
 
 #imageAdDiv{
     display:none;
+    min-height: 100vh;
 }
 
 ::-webkit-scrollbar {
