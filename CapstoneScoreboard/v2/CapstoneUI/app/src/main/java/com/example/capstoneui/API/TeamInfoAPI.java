@@ -2,12 +2,9 @@ package com.example.capstoneui.API;
 
 import com.example.capstoneui.Models.BasicRequest;
 import com.example.capstoneui.Models.CallTimeout;
-import com.example.capstoneui.Models.FoulLog;
-import com.example.capstoneui.Models.Fouls;
 import com.example.capstoneui.Models.Game;
 import com.example.capstoneui.Models.RecordFoul;
 import com.example.capstoneui.Models.RecordScore;
-import com.example.capstoneui.Models.ScoringLog;
 import com.example.capstoneui.Models.SetGameClock;
 import com.example.capstoneui.Models.SetShotClock;
 import com.example.capstoneui.Models.SetTimeout;

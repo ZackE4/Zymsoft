@@ -507,6 +507,33 @@ public class ViewControllerContainer {
             });
         }
 
+        public static void getAvailMedia() {
+            //create our api with retrofit
+            TeamInfoAPI teamInfo = retrofit
+                    .create(TeamInfoAPI.class);
+
+            BasicRequest requestHorn = new BasicRequest();
+            requestHorn.apiToken = apiKey;
+            Call<BasicRequest> call = teamInfo.playHorn(requestHorn);
+            Log.e("API", " " + apiKey);
+            call.enqueue(new Callback<BasicRequest>() {
+                @Override
+                public void onResponse(Call<BasicRequest> call, Response<BasicRequest> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("APICall", "Code: " + response.code() + " Message: " + response.errorBody());
+                        return;
+                    }
+                    BasicRequest gets = response.body();
+                    Log.e("API", " " + gets.apiToken);
+                }
+
+                @Override
+                public void onFailure(Call<BasicRequest> call, Throwable t) {
+                    Log.e("APICall2", t.getMessage());
+                }
+            });
+        }
+
 
 
 
