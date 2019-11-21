@@ -15,5 +15,9 @@ namespace CapstoneTest.Data.Repositories.Interfaces
         Task<IPlayer> AddAsync(IPlayer player);
 
         Task<IPlayer> UpdateAsync(IPlayer player);
+
+        Task<IPlayerWithPoints> GetTopScorerAsync(int seasonId);
+
+        Task<IPlayerWithFouls> GetTopFoulerAsync(int seasonId);
     }
 }

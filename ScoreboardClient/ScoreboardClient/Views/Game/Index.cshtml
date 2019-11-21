@@ -18,6 +18,8 @@
     {
         gameStatus = "Not Started";
     }
+
+    string createFormOnSubmit = Model.Game != null && !Model.Game.GameComplete ? "return OnCreateGameSubmit();" : "return true";
 }
 
 @await Html.PartialAsync("_PageMessages", Model.Messages)
@@ -58,7 +60,7 @@
         <br /><br /><hr />
     }
     <h3>Create New Game</h3>
-    <form asp-controller="Game" asp-action="CreateGame" method="Post">
+    <form asp-controller="Game" asp-action="CreateGame" method="Post" onsubmit="@createFormOnSubmit">
         <div class="form-group">
             <label>Home Team:</label>
             <select class="form-control" id="HomeTeamId" name="HomeTeamId" required>
@@ -82,3 +84,13 @@
         <button type="submit" class="btn btn-lg btn-primary" id="AddTeamBtn">Create Game</button>
     </form>
 </div>
+
+
+@section Scripts{
+    <script>
+        function OnCreateGameSubmit() {
+            var c = confirm("There is currently a game loaded, if that game is not completed, no stats from that game will be saved, click OK to create a new game anyways.");
+            return c;
+        }
+    </script>
+}

@@ -52,11 +52,11 @@ namespace CapstoneTest.Data.Repositories.Concrete
             return (await this.DataContext.QueryAsync<ScoringLog>(query, new { @GameId = gameId, @PlayerId = playerId }));
         }
 
-        public async Task<IEnumerable<IScoringLog>> GetByPlayerAsync(int playerId)
+        public async Task<IEnumerable<IScoringLog>> GetByPlayerAndSeasonAsync(int playerId, int seasonId)
         {
-            var query = string.Format(baseSelectQuery, "WHERE Player_PlayerId = @PlayerId;");
+            var query = string.Format(baseSelectQuery, "INNER JOIN Games g on s.[Game_GameId] = g.[GameId] WHERE g.[GameComplete] = 1 AND s.Player_PlayerId = @PlayerId AND g.[Season_SeasonId] = @SeasonId;");
 
-            return (await this.DataContext.QueryAsync<ScoringLog>(query, new { @PlayerId = playerId }));
+            return (await this.DataContext.QueryAsync<ScoringLog>(query, new { @PlayerId = playerId, @SeasonId = seasonId }));
         }
 
         public async Task<IScoringLog> RecordScore(IScoringLog score)
@@ -90,6 +90,13 @@ namespace CapstoneTest.Data.Repositories.Concrete
             var query = string.Format(SelectQuery, "WHERE s.[Game_GameId] = @GameId AND p.Team_TeamId = @TeamId;");
 
             return (await this.DataContext.QueryAsync<ScoringLog>(query, new { @GameId = gameId, @TeamId = teamId }));
+        }
+
+        public async Task UndoScore(int scoringLogId)
+        {
+            string query = "DELETE FROM ScoringLogs WHERE ScoringLogId = @ScoringLogId";
+
+            await this.DataContext.ExecuteNonQueryAsync(query, new { @ScoringLogId = scoringLogId });
         }
     }
 }

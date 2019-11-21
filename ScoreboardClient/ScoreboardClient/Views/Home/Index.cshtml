@@ -48,11 +48,43 @@ else
                 <h4>Current Season</h4>
                 <b>Started: </b>@Model.Season.SeasonStart.ToString("dd MMMM yyyy")<br />
                 <b>Ends: </b>@Model.Season.SeasonEnd.ToString("dd MMMM yyyy")
+                <br /><br />
+                @if (Model.LeagueTeamList != null && Model.LeagueTeamList.Count > 0)
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>Wins</th>
+                                <th>Losses</th>
+                                <th>Ties</th>
+                            </tr>
+                        </thead>
+                        @foreach (var team in Model.LeagueTeamList)
+                        {
+                            int teamWins = 0;
+                            int teamLosses = 0;
+                            int teamTies = 0;
+                            if(Model.LeagueCompleteGameList != null)
+                            {
+                                teamWins = Model.LeagueCompleteGameList.Count(x => x.WinningTeamId == team.TeamId);
+                                teamLosses = Model.LeagueCompleteGameList.Count(x => x.LosingTeamId == team.TeamId);
+                                teamTies = Model.LeagueCompleteGameList.Count(x => (x.WinningTeamId == team.TeamId || x.LosingTeamId == team.TeamId) && x.TieFlag);
+                            }
+                            <tr>
+                                <td class="text-left">@team.TeamName</td>
+                                <td class="text-left" style="padding-left:15px;">@teamWins</td>
+                                <td class="text-left" style="padding-left:15px;">@teamLosses</td>
+                                <td class="text-left" style="padding-left:15px;">@teamTies</td>
+                            </tr>
+                        }
+                    </table>
+                }
             }
         </div>
         <br /><br />
         <div>
-            <button class="btn btn-lg btn-primary" id="ChangeLeagueBtn">Change League</button>
+            @if (Model.Season != null){<a class="btn btn-lg btn-primary" id="ViewReportBtn" href="/Home/LeagueReport">View Report</a>} <button class="btn btn-lg btn-primary" id="ChangeLeagueBtn">Change League</button>
         </div>
         <div id="ChangeLeagueDiv" style="display:none;">
             <h2>Change League</h2>

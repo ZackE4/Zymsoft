@@ -120,16 +120,47 @@ connection.on("ReceiveSetTimeout", function (side, timeouts) {
 
 connection.on("RecieveSwitchMediaPage", function () {
     showMediaPage();
-    setTimeout(function () {
+    if ($('#isVideoShowing').val() === "true") {
         var vid = document.getElementById("media-video");
         vid.play();
-    }, 500);
+    }
 });
 
 connection.on("RecieveSwitchScoreboardPage", function () {
     showScoreboardPage();
     var vid = document.getElementById("media-video");
     vid.pause();
+});
+
+connection.on("RecievePlayVideo", function (videoFileName) {
+    showMediaPage();
+    var vid = document.getElementById("media-video");
+    $('#activeVideo').attr('src', "/media/" + videoFileName);
+    vid.load();
+    if ($('#isVideoShowing').val() === "false") {
+        $('#imageAdDiv').fadeOut();
+        $('#videoPlayerDiv').fadeIn();
+    }
+    setTimeout(function () {
+        vid.play();
+    }, 500);
+    $('#isVideoShowing').val("true"); 
+});
+connection.on("RecieveShowImage", function (imgFileName) {
+    showMediaPage();
+    $('#imgAd').attr('src', "/media/" + imgFileName);
+    if ($('#isVideoShowing').val() === "true") {
+        var vid = document.getElementById("media-video");
+        vid.pause();
+        $('#videoPlayerDiv').fadeOut();
+        $('#imageAdDiv').fadeIn();
+    }
+    $('#isVideoShowing').val("false"); 
+});
+
+connection.on("NewScoreboardOpened", function () {
+    alert("Another scoreboard screen has been opened, this screen will now be redirected");
+    window.location.href = "/Game?errorMsg=Another scoreboard screen was opened.";
 });
 
 function playHorn() {
@@ -261,6 +292,19 @@ function showScoreboardPage() {
 }
 
 $(document).ready(function () {
-    var mediaPlayer = $('#media-video');
-    mediaPlayer.controls = false;
+    var vids = $("video");
+    $.each(vids, function () {
+        this.controls = false;
+    }); 
+
+    var data = {};
+
+    $.ajax({
+        type: "POST",
+        url: "/Screen/UpdateScreenOpen",
+        data: data,
+        success: function (responseData) {
+        },
+        dataType: "json"
+    });
 });

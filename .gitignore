@@ -16,3 +16,6 @@ ScoreboardClient/ScoreboardClient/appsettings.json
 ScoreboardClient/ScoreboardClient/wwwroot/css/Scoreboard.css
 ScoreboardClient/ScoreboardClient/bin/Release/netcoreapp2.1/ScoreboardClient.Views.pdb
 ScoreboardClient/ScoreboardClient/bin/Release/netcoreapp2.1/ScoreboardClient.Views.dll
+/WebAPI/.vs
+/WebAPI/CapstoneTest/bin/Debug/netcoreapp2.1
+/WebAPI/CapstoneTest/bin/Release/netcoreapp2.1

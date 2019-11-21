@@ -249,10 +249,16 @@
     </div>
     <div data-role="page" id="mediaPage">
         <div class="mediaContainer">
-            <video id='media-video' controls preload="auto" class="media-player-fullscreen">
-                <source src='~/media/ShoeCommercial.mp4' type='video/mp4'>
-            </video>
+            <div id="videoPlayerDiv">
+                <video id='media-video' controls preload="auto" class="media-player-fullscreen">
+                    <source src='~/media/ShoeCommercial.mp4' type='video/mp4' id="activeVideo">
+                </video>
+            </div>
+            <div id="imageAdDiv">
+                <img src="" alt="image Ad Goes Here" class="imageAd" id="imgAd" />
+            </div>
         </div>
+        <input type="hidden" id="isVideoShowing" value="true" />
     </div>
     <div data-role="page" id="switchsPage">
 
@@ -264,4 +270,14 @@
 @section scripts{
     <script src="~/lib/signalr/dist/browser/signalr.js"></script>
     <script src="~/js/Scoreboard.js"></script>
+    <script>
+        $(window).on("beforeunload", function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Screen/UpdateScreenClose",
+                dataType: "json"
+            });
+        })
+    </script>
 }

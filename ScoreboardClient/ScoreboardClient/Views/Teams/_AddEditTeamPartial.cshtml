@@ -15,32 +15,82 @@
 
 <div class="text-center">
     <h1>@AddEdit Team</h1>
-    @if (!String.IsNullOrEmpty(Model.Team.Logo))
+    @if(Model.TeamHistory != null && Model.TeamHistory.Count > 0)
     {
-        <div id="TeamImageDiv">
-            <img src="@Model.Team.Logo" style="max-width:400px; max-height:400px;" />
+        @*IF TEAM HAS A RECORD*@
+    <div class="row">
+        <div class="col-lg-6">
+            @if (!String.IsNullOrEmpty(Model.Team.Logo))
+            {
+                <div id="TeamImageDiv">
+                    <img src="@Model.Team.Logo" style="max-width:400px; max-height:400px;" />
+                </div>
+            }
+            else
+            {
+                <div id="TeamImageDiv">
+                    <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" style="max-width:400px; max-height:400px;" />
+                </div>
+            }
         </div>
+        <div class="col-lg-6">
+            <h3>Last @(Model.TeamHistory.Count > 5 ? 5 : Model.TeamHistory.Count) Games</h3>
+            @for (var x = 0; x < (Model.TeamHistory.Count > 5 ? 5 : Model.TeamHistory.Count); x++)
+            {
+                if (Model.TeamHistory[x].WinningTeamId == Model.Team.TeamId)
+                {
+                    <p>- <a href="/Game/GameReport?gameId=@Model.TeamHistory[x].GameId">WIN</a> on @Model.TeamHistory[x].Date.ToString("dddd, dd MMMM yyyy")</p>
+                }
+                else if (Model.TeamHistory[x].LosingTeamId == Model.Team.TeamId)
+                {
+                    <p>- <a href="/Game/GameReport?gameId=@Model.TeamHistory[x].GameId">LOSS</a> on @Model.TeamHistory[x].Date.ToString("dddd, dd MMMM yyyy")</p>
+                }
+                else if (Model.TeamHistory[x].TieFlag)
+                {
+                    <p>- <a href="/Game/GameReport?gameId=@Model.TeamHistory[x].GameId">TIE</a> on @Model.TeamHistory[x].Date.ToString("dddd, dd MMMM yyyy")</p>
+                }
+            }
+        </div>
+    </div>
     }
     else
     {
-        <div id="TeamImageDiv">
-            <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" style="max-width:400px; max-height:400px;" />
-        </div>
+        @*IF TEAM HAS NO RECORD*@
+        @if (!String.IsNullOrEmpty(Model.Team.Logo))
+        {
+            <div id="TeamImageDiv">
+                <img src="@Model.Team.Logo" style="max-width:400px; max-height:400px;" />
+            </div>
+        }
+        else
+        {
+            <div id="TeamImageDiv">
+                <img src="http://cdn.shopify.com/s/files/1/0008/1274/4765/products/2e67479ae6ce1e0b5d3ad9ca81bab7d4.png?v=1539881292" style="max-width:400px; max-height:400px;" />
+            </div>
+        }
     }
+    <br />
         <form method="POST" asp-action="@AddEdit" asp-controller="Teams">
             @if (AddEdit == "Edit")
             {
                 <input type="hidden" name="TeamId" value="@Model.Team.TeamId" />
             }
-            <div class="form-group">
-                <label>Team Name </label>
-                <input type="text" name="TeamName" value="@Model.Team.TeamName" class="form-control" />
-                <label>Coach Name: </label>
-                <input type="text" name="CoachName" value="@Model.Team.CoachName" class="form-control" />
-                <label>Logo Url: </label>
-                <input type="text" name="Logo" value="@Model.Team.Logo" class="form-control" />
-                <input type="hidden" name="LeagueId" value="@Model.League.LeagueId" class="form-control" />
-            </div>
+                <div class="form-group">
+                    <label>Team Name </label>
+                    <input type="text" name="TeamName" value="@Model.Team.TeamName" class="form-control" />
+                    <label>Coach Name: </label>
+                    <input type="text" name="CoachName" value="@Model.Team.CoachName" class="form-control" />
+                    <label>Logo Url: </label>
+                    <select class="form-control" id="Logo" name="Logo" required>
+                        <option value=""></option>
+                        @foreach (var image in Model.TeamImages)
+                        {
+                            string selected = Model.Team != null && Model.Team.Logo == $"/teams/{image.FileName}" ? "selected" : "";
+                            @:<option value="/teams/@image.FileName" @selected>@image.FileName</option>
+                        }
+                    </select>
+                    <input type="hidden" name="LeagueId" value="@Model.League.LeagueId" class="form-control"/>
+                </div>
             @if (AddEdit == "Add")
             {
                 <button class="btn btn-lg btn-primary" type="button" onclick="history.back();">Back</button>

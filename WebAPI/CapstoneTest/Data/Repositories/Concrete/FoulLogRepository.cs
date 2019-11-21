@@ -49,11 +49,11 @@ namespace CapstoneTest.Data.Repositories.Concrete
             return (await this.DataContext.QueryAsync<FoulLog>(query, new { @GameId = gameId, @PlayerId = playerId }));
         }
 
-        public async Task<IEnumerable<IFoulLog>> GetByPlayerAsync(int playerId)
+        public async Task<IEnumerable<IFoulLog>> GetByPlayerAndSeasonAsync(int playerId, int seasonId)
         {
-            var query = string.Format(baseSelectQuery, "WHERE Player_PlayerId = @PlayerId;");
+            var query = string.Format(baseSelectQuery, "INNER JOIN Games g on f.[Game_GameId] = g.[GameId] WHERE f.[Player_PlayerId] = @PlayerId AND g.[Season_SeasonId] = @SeasonId;");
 
-            return (await this.DataContext.QueryAsync<FoulLog>(query, new { @PlayerId = playerId }));
+            return (await this.DataContext.QueryAsync<FoulLog>(query, new { @PlayerId = playerId, @SeasonId = seasonId }));
         }
 
         public async Task<IFoulLog> RecordFoul(IFoulLog foul)
@@ -85,6 +85,13 @@ namespace CapstoneTest.Data.Repositories.Concrete
             var query = string.Format(SelectQuery, "WHERE f.[Game_GameId] = @GameId AND p.Team_TeamId = @TeamId;");
 
             return (await this.DataContext.QueryAsync<FoulLog>(query, new { @GameId = gameId, @TeamId = teamId }));
+        }
+
+        public async Task UndoFoul(int foulLogId)
+        {
+            string query = "DELETE FROM FoulLogs WHERE FouldLogId = @FouldLogId";
+
+            await this.DataContext.ExecuteNonQueryAsync(query, new { @FouldLogId = foulLogId });
         }
     }
 }
