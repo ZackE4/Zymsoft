@@ -216,6 +216,58 @@ namespace CapstoneTest.Controllers
             return new OkObjectResult(newScoringLog);
         }
 
+        [HttpPost("UndoFoul")]
+        public async Task<ActionResult> UndoFoul(UndoFoulScoreRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            string leagueId = await this.GetLeagueId(request.LeagueKey);
+
+            if (leagueId == null)
+            {
+                return new BadRequestObjectResult("League Not Found");
+            }
+
+            try
+            {
+                await this.FoulLogRepository.UndoFoul(request.Id);
+
+                return new OkObjectResult("Undo Success");
+            }
+            catch { }
+
+            return new BadRequestObjectResult("Error with undo");
+        }
+
+        [HttpPost("UndoScore")]
+        public async Task<ActionResult> UndoScore(UndoFoulScoreRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            string leagueId = await this.GetLeagueId(request.LeagueKey);
+
+            if (leagueId == null)
+            {
+                return new BadRequestObjectResult("League Not Found");
+            }
+
+            try
+            {
+                await this.ScoringLogRepository.UndoScore(request.Id);
+
+                return new OkObjectResult("Undo Success");
+            }
+            catch { }
+
+            return new BadRequestObjectResult("Error with undo");
+        }
+
         public int ModGameTime(int gameTime)
         {
             return gameTime % 12;

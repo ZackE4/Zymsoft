@@ -17,5 +17,7 @@ namespace CapstoneTest.Data.Repositories.Interfaces
         Task<IEnumerable<IScoringLog>> GetByTeamAndGameAsync(int teamId, int gameId);
 
         Task<IScoringLog> RecordScore(IScoringLog score);
+
+        Task UndoScore(int scoringLogId);
     }
 }

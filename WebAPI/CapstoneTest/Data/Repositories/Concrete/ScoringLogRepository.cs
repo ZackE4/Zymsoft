@@ -91,5 +91,12 @@ namespace CapstoneTest.Data.Repositories.Concrete
 
             return (await this.DataContext.QueryAsync<ScoringLog>(query, new { @GameId = gameId, @TeamId = teamId }));
         }
+
+        public async Task UndoScore(int scoringLogId)
+        {
+            string query = "DELETE FROM ScoringLogs WHERE ScoringLogId = @ScoringLogId";
+
+            await this.DataContext.ExecuteNonQueryAsync(query, new { @ScoringLogId = scoringLogId });
+        }
     }
 }

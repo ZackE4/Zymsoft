@@ -86,5 +86,12 @@ namespace CapstoneTest.Data.Repositories.Concrete
 
             return (await this.DataContext.QueryAsync<FoulLog>(query, new { @GameId = gameId, @TeamId = teamId }));
         }
+
+        public async Task UndoFoul(int foulLogId)
+        {
+            string query = "DELETE FROM FoulLogs WHERE FouldLogId = @FouldLogId";
+
+            await this.DataContext.ExecuteNonQueryAsync(query, new { @FouldLogId = foulLogId });
+        }
     }
 }

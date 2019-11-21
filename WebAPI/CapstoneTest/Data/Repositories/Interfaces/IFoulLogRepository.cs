@@ -17,5 +17,7 @@ namespace CapstoneTest.Data.Repositories.Interfaces
         Task<IEnumerable<IFoulLog>> GetByTeamAndGameAsync(int teamId, int gameId);
 
         Task<IFoulLog> RecordFoul(IFoulLog foul);
+
+        Task UndoFoul(int foulLogId);
     }
 }
