@@ -54,18 +54,21 @@ namespace ScoreboardClient.Controllers
                     viewModel.Messages.Add(new PageMessage() { Message = $"Error loading teams from league: {errorMessage}", Type = MessageType.Error });
                 }
 
-                errorMessage = "";
-                paramList = new Parameter[2];
-                paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
-                paramList[1] = new Parameter("seasonId", Connector.Season.SeasonId, ParameterType.QueryString);
-
-                viewModel.LeagueCompleteGameList = this.ApiClient.Get<List<CompleteGame>>("Game/CompleteBySeason", paramList, ref errorMessage);
-                if (!string.IsNullOrEmpty(errorMessage))
+                if(Connector.Season != null)
                 {
-                    viewModel.Messages.Add(new PageMessage() { Message = $"Error loading stats from league: {errorMessage}", Type = MessageType.Error });
-                }
+                    errorMessage = "";
+                    paramList = new Parameter[2];
+                    paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+                    paramList[1] = new Parameter("seasonId", Connector.Season.SeasonId, ParameterType.QueryString);
 
-                viewModel.LeagueTeamList = this.SortTeamListByWins(viewModel.LeagueTeamList, viewModel.LeagueCompleteGameList);
+                    viewModel.LeagueCompleteGameList = this.ApiClient.Get<List<CompleteGame>>("Game/CompleteBySeason", paramList, ref errorMessage);
+                    if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        viewModel.Messages.Add(new PageMessage() { Message = $"Error loading stats from league: {errorMessage}", Type = MessageType.Error });
+                    }
+
+                    viewModel.LeagueTeamList = this.SortTeamListByWins(viewModel.LeagueTeamList, viewModel.LeagueCompleteGameList);
+                }
             }
 
             return View(viewModel);
