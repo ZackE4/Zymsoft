@@ -54,7 +54,7 @@ namespace CapstoneTest.Data.Repositories.Concrete
 
         public async Task<IEnumerable<IScoringLog>> GetByPlayerAndSeasonAsync(int playerId, int seasonId)
         {
-            var query = string.Format(baseSelectQuery, "INNER JOIN Games g on s.[Game_GameId] = g.[GameId] WHERE s.Player_PlayerId = @PlayerId AND g.[Season_SeasonId] = @SeasonId;");
+            var query = string.Format(baseSelectQuery, "INNER JOIN Games g on s.[Game_GameId] = g.[GameId] WHERE g.[GameComplete] = 1 AND s.Player_PlayerId = @PlayerId AND g.[Season_SeasonId] = @SeasonId;");
 
             return (await this.DataContext.QueryAsync<ScoringLog>(query, new { @PlayerId = playerId, @SeasonId = seasonId }));
         }

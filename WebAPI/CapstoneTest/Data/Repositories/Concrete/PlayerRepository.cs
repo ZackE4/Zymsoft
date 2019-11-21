@@ -123,6 +123,7 @@ namespace CapstoneTest.Data.Repositories.Concrete
 	                            INNER JOIN ScoringLogs s on s.[Player_PlayerId] = p.[PlayerId]
 	                            INNER JOIN Games g on s.[Game_GameId] = g.[GameId]
 	                            WHERE g.Season_SeasonId = @SeasonId
+                                AND g.[GameComplete] = 1
 	                            GROUP BY p.[PlayerId]
 	                            ORDER BY SUM(s.[Points]) DESC) x on x.PlayerId = p.PlayerId";
 
@@ -147,6 +148,7 @@ namespace CapstoneTest.Data.Repositories.Concrete
 	                            INNER JOIN FoulLogs f on f.[Player_PlayerId] = p.[PlayerId]
 	                            INNER JOIN Games g on f.[Game_GameId] = g.[GameId]
 	                            WHERE g.Season_SeasonId = @SeasonId
+                                AND g.[GameComplete] = 1
 	                            GROUP BY p.[PlayerId]
 	                            ORDER BY Count(f.[FouldLogId]) DESC) x on x.PlayerId = p.PlayerId";
 
