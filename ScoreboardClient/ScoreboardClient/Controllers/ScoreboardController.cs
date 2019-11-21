@@ -29,6 +29,7 @@ namespace ScoreboardClient.Controllers
             this.HubContext = hubContext;
         }
 
+        [HttpGet("CheckConnection")]
         public async Task<ActionResult> CheckConnection(string apiToken)
         {
             if (!await this.IsAPITokenValid(apiToken))
