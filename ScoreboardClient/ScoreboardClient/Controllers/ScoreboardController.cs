@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.SignalR;
 using ScoreboardClient.Hubs;
 using ScoreboardClient.Models.Response.Host;
+using ScoreboardClient.Models;
+using ScoreboardClient.Models.Response.Client;
 
 namespace ScoreboardClient.Controllers
 {
@@ -244,6 +246,66 @@ namespace ScoreboardClient.Controllers
             return new OkObjectResult("Success");
         }
 
+        [HttpPost("Undo")]
+        public async Task<ActionResult> Undo(BasicLocalRequest request)
+        {
+            if (!await this.IsAPITokenValid(request.ApiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            var lastRecord = Connector.UndoLog.Last();
+            if(lastRecord.Type == Models.UndoLogType.Score)
+            {
+                UndoFoulScoreRequest apiRequest = new UndoFoulScoreRequest
+                {
+                    ApiToken = Connector.CurrentApiToken,
+                    LeagueKey = Connector.League.LeagueKey,
+                    Id = lastRecord.Id
+                };
+
+                string errorMsg = "";
+                var undoString = this.ApiClient.Post<string>("Scoring/UndoScore", JsonConvert.SerializeObject(apiRequest), ref errorMsg);
+
+                if (undoString != null)
+                {
+                    Connector.GameScore = GetUpdatedGameScore(Connector.Game.GameId);
+                    await this.HubContext.Clients.All.SendAsync("updateScore", Connector.GameScore);
+                    Connector.UndoLog.Remove(Connector.UndoLog.Last());
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Undo Error");
+                }
+            }
+            else if (lastRecord.Type == Models.UndoLogType.Foul)
+            {
+                UndoFoulScoreRequest apiRequest = new UndoFoulScoreRequest
+                {
+                    ApiToken = Connector.CurrentApiToken,
+                    LeagueKey = Connector.League.LeagueKey,
+                    Id = lastRecord.Id
+                };
+
+                string errorMsg = "";
+                var undoString = this.ApiClient.Post<string>("Scoring/UndoFoul", JsonConvert.SerializeObject(apiRequest), ref errorMsg);
+
+                if (undoString != null)
+                {
+                    Connector.GameScore = GetUpdatedGameScore(Connector.Game.GameId);
+                    await this.HubContext.Clients.All.SendAsync("updateScore", Connector.GameScore);
+                    Connector.UndoLog.Remove(Connector.UndoLog.Last());
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Undo Error");
+                }
+            }
+
+
+            return new OkObjectResult("Success");
+        }
+
         [HttpPost("RecordScore")]
         public async Task<ActionResult> RecordScore(LocalRecordScoreRequest request)
         {
@@ -376,6 +438,40 @@ namespace ScoreboardClient.Controllers
             //}
 
             //return new BadRequestObjectResult(errorMsg);
+        }
+
+        private GameScore GetUpdatedGameScore(int gameId)
+        {
+            string errorMsg = "";
+            Parameter[] paramList = new Parameter[2];
+            paramList[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList[1] = new Parameter("gameId", gameId, ParameterType.QueryString);
+
+            var score = ApiClient.Get<GameScoreResponse>("Scoring/Score", paramList, ref errorMsg);
+
+            Parameter[] paramList2 = new Parameter[2];
+            paramList2[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
+            paramList2[1] = new Parameter("gameId", gameId, ParameterType.QueryString);
+
+            var fouls = ApiClient.Get<GameFoulsResponse>("Scoring/Fouls", paramList, ref errorMsg);
+
+            var homeTeamTimeouts = Connector.GameScore.HomeTeamTimeoutsRemaining;
+            var awayTeamTimeouts = Connector.GameScore.AwayTeamTimeoutsRemaining;
+
+            if (score != null && fouls != null)
+            {
+                return new GameScore()
+                {
+                    HomeTeamFouls = fouls.HomeTeamFouls,
+                    AwayTeamFouls = fouls.AwayTeamFouls,
+                    HomeTeamScore = score.HomeTeamScore,
+                    AwayTeamScore = score.AwayTeamScore,
+                    HomeTeamTimeoutsRemaining = homeTeamTimeouts,
+                    AwayTeamTimeoutsRemaining = awayTeamTimeouts
+                };
+            }
+
+            return null;
         }
     }
 }

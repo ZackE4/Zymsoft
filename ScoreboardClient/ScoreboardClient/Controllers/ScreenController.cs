@@ -121,6 +121,7 @@ namespace ScoreboardClient.Controllers
 
             if (scoringLog != null)
             {
+                Connector.UndoLog.Add(new Models.UndoLogEntry() { Id = scoringLog.ScoringLogId, Type = Models.UndoLogType.Score, Points = scoringLog.Points });
                 return new OkObjectResult("Score Saved");
             }
 
@@ -158,6 +159,7 @@ namespace ScoreboardClient.Controllers
 
             if (foulLog != null)
             {
+                Connector.UndoLog.Add(new Models.UndoLogEntry() { Id = foulLog.FouldLogId, Type = Models.UndoLogType.Foul });
                 return new OkObjectResult("Foul Saved");
             }
 

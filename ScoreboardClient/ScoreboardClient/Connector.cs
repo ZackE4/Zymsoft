@@ -17,10 +17,31 @@ namespace ScoreboardClient
         private static GameScore _gameScore { get; set; }
         private static string _homeTeamTimeoutsRemaining { get; set; }
         private static string _awayTeamTimeoutsRemaining { get; set; }
+        private static List<UndoLogEntry> _undoLog { get; set; }
 
         public static IGame Game { get; set; }
         public static ITeam HomeTeam { get; set; }
         public static ITeam AwayTeam { get; set; }
+
+        public static List<UndoLogEntry> UndoLog
+        {
+            get
+            {
+                if (Game == null)
+                {
+                    return null;
+                }
+                if (_undoLog == null)
+                {
+                    _undoLog = new List<UndoLogEntry>();
+                }
+                return _undoLog;
+            }
+            set
+            {
+                _undoLog = value;
+            }
+        }
 
         public static GameScore GameScore {
             get
