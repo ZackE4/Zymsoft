@@ -9,13 +9,18 @@ using ScoreboardClient.Models.ViewModels;
 using RestSharp;
 using ScoreboardClient.Models.Request.Client;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.SignalR;
+using ScoreboardClient.Hubs;
 
 namespace ScoreboardClient.Controllers
 {
     public class ScreenController : BaseController
     {
-        public ScreenController(IConfiguration configuration) : base(configuration)
+        private IHubContext<ScoreboardHub> HubContext { get; set; }
+
+        public ScreenController(IConfiguration configuration, IHubContext<ScoreboardHub> hubContext) : base(configuration)
         {
+            this.HubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -26,7 +31,7 @@ namespace ScoreboardClient.Controllers
             }
             if (Connector.GameScreenOpen)
             {
-                return RedirectToAction("Index", "Game", new { errorMsg = "There is already an open scoreboard screen" });
+                await this.HubContext.Clients.All.SendAsync("NewScoreboardOpened");
             }
 
             await this.SetupGame();

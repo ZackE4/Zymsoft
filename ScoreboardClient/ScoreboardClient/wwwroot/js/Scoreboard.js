@@ -158,6 +158,11 @@ connection.on("RecieveShowImage", function (imgFileName) {
     $('#isVideoShowing').val("false"); 
 });
 
+connection.on("NewScoreboardOpened", function () {
+    alert("Another scoreboard screen has been opened, this screen will now be redirected");
+    window.location.href = "/Game?errorMsg=Another scoreboard screen was opened.";
+});
+
 function playHorn() {
     var audio = new Audio('/audio/buzzer.mp3');
     audio.play();
