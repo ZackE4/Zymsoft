@@ -2,6 +2,7 @@ package com.example.capstoneui.API;
 
 
 import com.example.capstoneui.Models.AvailableMedia;
+import com.example.capstoneui.Models.BasicRequest;
 import com.example.capstoneui.Models.PlayMedia;
 
 import retrofit2.Call;
@@ -22,6 +23,12 @@ public interface MediaControl {
 
     @POST("ShowImage")
     Call<String> showImage(@Body PlayMedia setMedia);
+
+    @POST("ShowMediaPage")
+    Call<String> showMedia(@Body BasicRequest setMedia);
+
+    @POST("ShowScoreboardPage")
+    Call<String> showScoreboard(@Body BasicRequest setMedia);
 
 
 }

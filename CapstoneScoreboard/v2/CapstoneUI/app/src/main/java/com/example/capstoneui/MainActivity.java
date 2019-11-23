@@ -37,13 +37,6 @@ public class MainActivity extends AppCompatActivity {
                 .create();
 
         ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/MediaControl/")
-                .client(ViewControllerContainer.ViewController.okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        ViewControllerContainer.ViewController.getAvailMedia();
-
-        ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/Scoreboard/")
                 .client(ViewControllerContainer.ViewController.okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -54,6 +47,22 @@ public class MainActivity extends AppCompatActivity {
         ViewControllerContainer.ViewController.timerRunning = false;//set timer is running
         ViewControllerContainer.ViewController.grabTeamScores();//update to current game scores
 
+
+        ViewControllerContainer.ViewController.getAvailMedia();
+    }
+
+    @Override
+    protected void onResume() {
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
+                .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/Scoreboard/")
+                .client(ViewControllerContainer.ViewController.okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        super.onResume();
     }
 
     public void setScore(View view) {

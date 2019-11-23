@@ -526,6 +526,14 @@ public class ViewControllerContainer {
         public static AvailableMedia currentMedia;
 
         public static void getAvailMedia() {
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+            ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
+                    .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/MediaControl/")
+                    .client(ViewControllerContainer.ViewController.okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
             //create our api with retrofit
             MediaControl mediaControl = retrofit
                     .create(MediaControl.class);
@@ -603,6 +611,8 @@ public class ViewControllerContainer {
             MediaControl mediaControl = retrofit
                     .create(MediaControl.class);
 
+            Log.e("apiMedia", ""+mediaName);
+
             PlayMedia media = new PlayMedia();
             media.apiToken=apiKey;
             media.setFileName(mediaName);
@@ -624,10 +634,86 @@ public class ViewControllerContainer {
                     Log.e("APICall2", t.getMessage());
                 }
             });
+            ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
+                    .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/Scoreboard/")
+                    .client(ViewControllerContainer.ViewController.okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
         }
 
 
+        public static void showScoreboard() {
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
 
+            ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
+                    .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/MediaControl/")
+                    .client(ViewControllerContainer.ViewController.okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
 
+            //create our api with retrofit
+            MediaControl mediaControl = retrofit
+                    .create(MediaControl.class);
+
+            BasicRequest media = new BasicRequest();
+            media.apiToken=apiKey;
+            Call<String> call = mediaControl.showScoreboard(media);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("APICall", "Code: " + response.code() + " Message: " + response.errorBody());
+                        return;
+                    }
+                    String gets = response.body();
+                    Log.e("API", " " + gets);
+
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.e("APICall2", t.getMessage());
+                }
+            });
+        }
+
+        public static void showMedia() {
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+
+            ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
+                    .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/MediaControl/")
+                    .client(ViewControllerContainer.ViewController.okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+
+            //create our api with retrofit
+            MediaControl mediaControl = retrofit
+                    .create(MediaControl.class);
+
+            BasicRequest media = new BasicRequest();
+            media.apiToken=apiKey;
+            Call<String> call = mediaControl.showMedia(media);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("APICall", "Code: " + response.code() + " Message: " + response.errorBody());
+                        return;
+                    }
+                    String gets = response.body();
+                    Log.e("API", " " + gets);
+
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.e("APICall2", t.getMessage());
+                }
+            });
+        }
     }
 }
