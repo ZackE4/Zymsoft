@@ -2,18 +2,25 @@ package com.example.capstoneui.Controller;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import com.example.capstoneui.API.MediaControl;
 import com.example.capstoneui.API.TeamInfoAPI;
+import com.example.capstoneui.Models.AvailableMedia;
 import com.example.capstoneui.Models.BasicRequest;
 import com.example.capstoneui.Models.CallTimeout;
 import com.example.capstoneui.Models.Game;
+import com.example.capstoneui.Models.PlayMedia;
 import com.example.capstoneui.Models.RecordFoul;
 import com.example.capstoneui.Models.RecordScore;
 import com.example.capstoneui.Models.SetGameClock;
 import com.example.capstoneui.Models.SetShotClock;
 import com.example.capstoneui.Models.SetTimeout;
+import com.example.capstoneui.Models.Timer;
 import com.example.capstoneui.R;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,6 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ViewControllerContainer {
     public static class ViewController {
@@ -49,6 +57,7 @@ public class ViewControllerContainer {
         public static Integer playerId;
 
         public static String connectionStat;
+        public static String ipAddress;
 
 
         public static void playHorn() {
@@ -122,22 +131,23 @@ public class ViewControllerContainer {
 
             BasicRequest startTimer = new BasicRequest();
             startTimer.apiToken = apiKey;
-            Call<Integer> call = teamInfo.startTimer(startTimer);
-            Log.e("API", " " + apiKey);
-            call.enqueue(new Callback<Integer>() {
+            Call<Timer> call = teamInfo.startTimer(startTimer);
+            call.enqueue(new Callback<Timer>() {
                 @Override
-                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                public void onResponse(Call<Timer> call, Response<Timer> response) {
                     if (!response.isSuccessful()) {
                         Log.e("APICall", "Code: " + response.code());
                         return;
                     }
+                    Log.e("apiStartrequest", "Timer is :"+response.body().isTimerRunning());
+                    timerRunning = true;
 
-                    period = response.body();
-                    Log.e("APICall", " " + period);
+
+                    period = response.body().getPeriod();
                 }
 
                 @Override
-                public void onFailure(Call<Integer> call, Throwable t) {
+                public void onFailure(Call<Timer> call, Throwable t) {
                     Log.e("APICall", t.getMessage());
                 }
             });
@@ -151,22 +161,30 @@ public class ViewControllerContainer {
 
             BasicRequest startTimer = new BasicRequest();
             startTimer.apiToken = apiKey;
-            Call<Integer> call = teamInfo.stopTimer(startTimer);
-            Log.e("API", " " + apiKey);
-            call.enqueue(new Callback<Integer>() {
+            Call<Timer> call = teamInfo.stopTimer(startTimer);
+            call.enqueue(new Callback<Timer>() {
                 @Override
-                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                public void onResponse(Call<Timer> call, Response<Timer> response) {
                     if (!response.isSuccessful()) {
                         Log.e("APICall", "Code: " + response.code());
                         return;
                     }
 
-                    period = response.body();
-                    Log.e("APICall", " " + period);
+                    Log.e("apiStopRequest first", "Timer is :"+response.body().isTimerRunning());
+                    if (!(response.body().isTimerRunning()))
+                    {
+                        ViewController.startTimer();
+                        Log.e("apiStop call start", "Timer is:"+response.body().isTimerRunning());
+                    }
+                    Log.e("apiStop end Stop", "Timer is:"+response.body().isTimerRunning());
+                    timerRunning = (response.body().isTimerRunning());
+
+                    period = response.body().getPeriod();
+
                 }
 
                 @Override
-                public void onFailure(Call<Integer> call, Throwable t) {
+                public void onFailure(Call<Timer> call, Throwable t) {
                     Log.e("APICall", t.getMessage());
                 }
             });
@@ -487,15 +505,13 @@ public class ViewControllerContainer {
             //create our api with retrofit
             TeamInfoAPI teamInfo = retrofit
                     .create(TeamInfoAPI.class);
-
-            BasicRequest checkConn = new BasicRequest();
-            checkConn.apiToken = apiKey;
-            Call<String> call = teamInfo.checkConnection(checkConn);
+            Log.e("api", "" + apiKey);
+            Call<String> call = teamInfo.checkConnection(apiKey);
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (!response.isSuccessful()) {
-                        Log.e("APICall", "Code: " + response.code() + " Message: " + response.errorBody());
+                        Log.e("APICall", "Code:" + response.code() + " Message: " + response.errorBody());
                         return;
                     }
                     connectionStat = response.body();
@@ -507,28 +523,104 @@ public class ViewControllerContainer {
             });
         }
 
+        public static AvailableMedia currentMedia;
+
         public static void getAvailMedia() {
             //create our api with retrofit
-            TeamInfoAPI teamInfo = retrofit
-                    .create(TeamInfoAPI.class);
+            MediaControl mediaControl = retrofit
+                    .create(MediaControl.class);
 
-            BasicRequest requestHorn = new BasicRequest();
-            requestHorn.apiToken = apiKey;
-            Call<BasicRequest> call = teamInfo.playHorn(requestHorn);
+            Call<AvailableMedia> call = mediaControl.getAvailableMedia(apiKey);
             Log.e("API", " " + apiKey);
-            call.enqueue(new Callback<BasicRequest>() {
+            call.enqueue(new Callback<AvailableMedia>() {
                 @Override
-                public void onResponse(Call<BasicRequest> call, Response<BasicRequest> response) {
+                public void onResponse(Call<AvailableMedia> call, Response<AvailableMedia> response) {
                     if (!response.isSuccessful()) {
                         Log.e("APICall", "Code: " + response.code() + " Message: " + response.errorBody());
                         return;
                     }
-                    BasicRequest gets = response.body();
-                    Log.e("API", " " + gets.apiToken);
+                    currentMedia = response.body();
                 }
 
                 @Override
-                public void onFailure(Call<BasicRequest> call, Throwable t) {
+                public void onFailure(Call<AvailableMedia> call, Throwable t) {
+                    Log.e("APICall2", t.getMessage());
+                }
+            });
+        }
+
+        public static void playVideoMedia(String mediaName) {
+            //create our api with retrofit
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+
+            ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
+                    .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/MediaControl/")
+                    .client(ViewControllerContainer.ViewController.okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+
+            MediaControl mediaControl = retrofit
+                    .create(MediaControl.class);
+
+            Log.e("apiname", ""+mediaName);
+            PlayMedia media = new PlayMedia();
+            media.apiToken=apiKey;
+            media.setFileName(mediaName);
+            Call<String> call = mediaControl.playVideo(media);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("APICall", "Code: " + response.code() + " Message: " + response.errorBody());
+                        return;
+                    }
+                    String gets = response.body();
+                    Log.e("API", " " + gets);
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.e("APICall2", t.getMessage());
+                }
+            });
+        }
+
+
+        public static void playAvailImage(String mediaName) {
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+
+            ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
+                    .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/MediaControl/")
+                    .client(ViewControllerContainer.ViewController.okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+
+            //create our api with retrofit
+            MediaControl mediaControl = retrofit
+                    .create(MediaControl.class);
+
+            PlayMedia media = new PlayMedia();
+            media.apiToken=apiKey;
+            media.setFileName(mediaName);
+            Call<String> call = mediaControl.showImage(media);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("APICall", "Code: " + response.code() + " Message: " + response.errorBody());
+                        return;
+                    }
+                    String gets = response.body();
+                    Log.e("API", " " + gets);
+
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
                     Log.e("APICall2", t.getMessage());
                 }
             });

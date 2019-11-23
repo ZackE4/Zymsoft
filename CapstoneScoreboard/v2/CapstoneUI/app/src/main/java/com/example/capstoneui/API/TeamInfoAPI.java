@@ -8,6 +8,7 @@ import com.example.capstoneui.Models.RecordScore;
 import com.example.capstoneui.Models.SetGameClock;
 import com.example.capstoneui.Models.SetShotClock;
 import com.example.capstoneui.Models.SetTimeout;
+import com.example.capstoneui.Models.Timer;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -23,17 +24,17 @@ public interface TeamInfoAPI {
     );
 
     @GET("CheckConnection")
-    Call<String> checkConnection(@Query("apiToken") BasicRequest APIToken
+    Call<String> checkConnection(@Query("apiToken") String APIToken
     );
 
     @POST("PlayHorn")
     Call<BasicRequest> playHorn(@Body BasicRequest requestHorn);
 
     @POST("StartTimer")
-    Call<Integer> startTimer(@Body BasicRequest startTimerRequest);
+    Call<Timer> startTimer(@Body BasicRequest startTimerRequest);
 
     @POST("StopTimer")
-    Call<Integer> stopTimer(@Body BasicRequest stopTimerRequest);
+    Call<Timer> stopTimer(@Body BasicRequest stopTimerRequest);
 
     @POST("SetGameClock")
     Call<String> setGameClock(@Body SetGameClock setGameClock);
@@ -55,5 +56,7 @@ public interface TeamInfoAPI {
 
     @POST("SetTimeouts")
     Call<String> setTimeout(@Body SetTimeout callTimeout);
+
+
 
 }

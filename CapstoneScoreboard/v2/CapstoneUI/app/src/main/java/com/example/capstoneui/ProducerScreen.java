@@ -1,18 +1,30 @@
 package com.example.capstoneui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.capstoneui.Controller.ViewControllerContainer;
+import com.example.capstoneui.Models.AvailableMedia;
+import com.example.capstoneui.Models.AvailableVideo;
+import com.example.capstoneui.Models.AwayTeamRoster;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +35,7 @@ public class ProducerScreen extends AppCompatActivity {
     private ListView lvImages;
     private Button btnVideos;
     private Button btnImages;
+    private Switch mediaChoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +45,44 @@ public class ProducerScreen extends AppCompatActivity {
         btnImages = (Button) findViewById(R.id.btnImages);
         btnVideos = (Button) findViewById(R.id.btnVideos);
 
+        btnVideos.setBackgroundColor(Color.DKGRAY);
+
         lvVideos = (ListView) findViewById(R.id.dyListVideos);
         lvImages = (ListView) findViewById(R.id.dyListImages);
 
-        List<String> imagesList = new ArrayList<String>();
-        List<String> videosList = new ArrayList<String>();
 
-        for (int i = 1; i < 4;i++)
+        mediaChoice = (Switch) findViewById(R.id.mediaSwitch);
+        lvVideos.setVisibility(View.INVISIBLE);
+        mediaChoice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+        });
+
+
+
+        final List<String> imagesList = new ArrayList<String>();
+        final List<String> videosList = new ArrayList<String>();
+
+
+        for (int i = 0; i < ViewControllerContainer.ViewController.currentMedia.getAvailableImages().size(); i++)
         {
-            imagesList.add("" + i);
-            videosList.add("" + i);
+            imagesList.add(""+ ViewControllerContainer.ViewController.currentMedia.getAvailableImages().get(i));
+
+        }
+
+        final List<AvailableVideo> videos = ViewControllerContainer.ViewController.currentMedia.getAvailableVideos();
+        for (int i = 0; i < ViewControllerContainer.ViewController.currentMedia.getAvailableVideos().size(); i++)
+        {
+            videosList.add(""+ videos.get(i).getFilename() + " Duration: " + videos.get(i).getDuration());
         }
 
 
@@ -65,14 +106,14 @@ public class ProducerScreen extends AppCompatActivity {
         lvVideos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
+                ViewControllerContainer.ViewController.playVideoMedia(videos.get(position).getFilename());
 
             }
         });
         lvImages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
+                ViewControllerContainer.ViewController.playAvailImage(imagesList.get(position));
 
             }
         });
@@ -80,6 +121,20 @@ public class ProducerScreen extends AppCompatActivity {
 
     public void switchImages(View view) {
         view.setBackgroundColor(Color.DKGRAY);
+        btnVideos.setBackgroundColor(Color.GRAY);
+        lvVideos.setVisibility(View.INVISIBLE);
+        lvImages.setVisibility(View.VISIBLE);
 
+    }
+
+    public void switchVideos(View view) {
+        view.setBackgroundColor(Color.DKGRAY);
+        btnImages.setBackgroundColor(Color.GRAY);
+        lvVideos.setVisibility(View.VISIBLE);
+        lvImages.setVisibility(View.INVISIBLE);
+    }
+
+    public void returnScoreBoard(View view) {
+        finish();
     }
 }

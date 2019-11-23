@@ -10,10 +10,11 @@
         android:id="@+id/mediaSwitch"
         android:layout_width="125dp"
         android:layout_height="60dp"
-        android:layout_marginStart="88dp"
+        android:layout_marginStart="236dp"
         android:layout_marginTop="16dp"
-        android:text="Media"
+        android:text="Scoreboard"
         android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/txtMedia"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,18 +23,20 @@
         android:layout_width="125dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="72dp"
+        android:layout_marginEnd="244dp"
         android:gravity="center"
-        android:text="Scoreboard"
+        android:text="Media"
         android:textAlignment="gravity"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/mediaSwitch"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnVideos"
         android:layout_width="211dp"
         android:layout_height="42dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="148dp"
+        android:onClick="switchVideos"
         android:text="Video"
         app:layout_constraintEnd_toStartOf="@+id/btnImages"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,9 +46,9 @@
         android:id="@+id/btnImages"
         android:layout_width="194dp"
         android:layout_height="42dp"
-        android:layout_marginTop="16dp"
-        android:text="Images"
+        android:layout_marginEnd="172dp"
         android:onClick="switchImages"
+        android:text="Images"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnVideos"
         app:layout_constraintTop_toBottomOf="@+id/txtMedia" />
@@ -53,17 +56,29 @@
     <ListView
         android:id="@+id/dyListVideos"
         android:layout_width="409dp"
-        android:layout_height="565dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="btnVideos"
-        app:layout_constraintTop_toBottomOf="@+id/btnVideos" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mediaSwitch" />
 
     <ListView
         android:id="@+id/dyListImages"
         android:layout_width="409dp"
-        android:layout_height="565dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnVideos"
-        tools:layout_editor_absoluteY="699dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mediaSwitch" />
+
+    <Button
+        android:id="@+id/btnReturn"
+        android:layout_width="110dp"
+        android:layout_height="45dp"
+        android:onClick="returnScoreBoard"
+        android:text="Back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

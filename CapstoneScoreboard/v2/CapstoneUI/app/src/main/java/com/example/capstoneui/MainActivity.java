@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -19,33 +20,40 @@ import android.widget.TextView;
 
 import com.example.capstoneui.Controller.UnsafeOkHttpClient;
 import com.example.capstoneui.Controller.ViewControllerContainer;
-
-import java.util.Locale;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class MainActivity extends AppCompatActivity {
 
 
-    public static String apiKey = "168de16b";
-
-    public static String ipaddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ViewControllerContainer.ViewController.point = false;//false for home
-        ViewControllerContainer.ViewController.apiKey = apiKey;
-        ViewControllerContainer.ViewController.context=this;
-        ViewControllerContainer.ViewController.okHttpClient = UnsafeOkHttpClient.getUnsafeOkHttpClient();
-        //Retrofit allows the connection to post man/webapi
-        Log.e("api", "http://" + ipaddress + "/api/Scoreboard/");
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
         ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + ipaddress + "/api/Scoreboard/")
+                .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/MediaControl/")
                 .client(ViewControllerContainer.ViewController.okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-        ViewControllerContainer.ViewController.timerRunning = false;
-        ViewControllerContainer.ViewController.grabTeamScores();
+        ViewControllerContainer.ViewController.getAvailMedia();
+
+        ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
+                .baseUrl("http://" + ViewControllerContainer.ViewController.ipAddress + "/api/Scoreboard/")
+                .client(ViewControllerContainer.ViewController.okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        ViewControllerContainer.ViewController.point = false;//false for home
+        ViewControllerContainer.ViewController.context=this;//set current context
+        ViewControllerContainer.ViewController.timerRunning = false;//set timer is running
+        ViewControllerContainer.ViewController.grabTeamScores();//update to current game scores
+
     }
 
     public void setScore(View view) {
@@ -101,15 +109,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toggleTime(View view) {
-        if(ViewControllerContainer.ViewController.timerRunning)
+        if((ViewControllerContainer.ViewController.timerRunning))
         {
             ViewControllerContainer.ViewController.stopTimer();
-            ViewControllerContainer.ViewController.timerRunning=false;
         }
         else
         {
             ViewControllerContainer.ViewController.startTimer();
-            ViewControllerContainer.ViewController.timerRunning=true;
+            ViewControllerContainer.ViewController.startTimer();
         }
     }
 
@@ -118,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static Integer minutes;
+
     public void setTimer(View view) {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -126,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
+        input.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "59")});
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setView(input);
 
@@ -138,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Set an EditText view to get user input
                 final EditText input2 = new EditText(MainActivity.this);
+                input2.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "59")});
                 input2.setInputType(InputType.TYPE_CLASS_NUMBER);
                 alert2.setView(input2);
 
@@ -174,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
+        input.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "24")});
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setView(input);
 
@@ -191,5 +202,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         alert.show();
+    }
+
+    public void switchMedia(View view) {
+        Intent intent = new Intent(this, ProducerScreen.class);//new intent
+        startActivity(intent);//gets into intent
     }
 }
