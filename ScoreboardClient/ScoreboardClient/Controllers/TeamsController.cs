@@ -245,7 +245,7 @@ namespace ScoreboardClient.Controllers
                 return RedirectToAction("Index", "Teams", new { errorMsg = "Error updating team." });
             }
 
-            if(teamList != null && teamList.Where(x=>x.TeamName.ToUpper() == team.TeamName.ToUpper()).FirstOrDefault() != null)
+            if(teamList != null && teamList.Where(x=>x.TeamName.ToUpper() == team.TeamName.ToUpper() && x.TeamId != team.TeamId).FirstOrDefault() != null)
             {
                 return RedirectToAction("Index", "Teams", new { errorMsg = "A team with that name already exists" });
             }
