@@ -84,7 +84,8 @@ namespace ScoreboardClient.Controllers
                 response = new AvailableMediaResponse()
                 {
                     AvailableVideos = videos,
-                    AvailableImages = imageFileNames
+                    AvailableImages = imageFileNames,
+                    MediaScreenShowing = Connector.MediaScreenShowing
                 };
             }
             catch(Exception ex)
@@ -107,8 +108,13 @@ namespace ScoreboardClient.Controllers
             {
                 return new BadRequestObjectResult("Game Not Available");
             }
+            if (!Connector.GameScreenOpen)
+            {
+                return new BadRequestObjectResult("No Scoreboard Screen Available");
+            }
 
             await this.HubContext.Clients.All.SendAsync("RecievePlayVideo", request.FileName);
+            Connector.MediaScreenShowing = true;
 
             return new OkObjectResult("Success");
         }
@@ -124,8 +130,13 @@ namespace ScoreboardClient.Controllers
             {
                 return new BadRequestObjectResult("Game Not Available");
             }
+            if (!Connector.GameScreenOpen)
+            {
+                return new BadRequestObjectResult("No Scoreboard Screen Available");
+            }
 
             await this.HubContext.Clients.All.SendAsync("RecieveShowImage", request.FileName);
+            Connector.MediaScreenShowing = true;
 
             return new OkObjectResult("Success");
         }
@@ -138,6 +149,7 @@ namespace ScoreboardClient.Controllers
                 return new BadRequestObjectResult("UnAuthorized");
             }
             await this.HubContext.Clients.All.SendAsync("RecieveSwitchMediaPage");
+            Connector.MediaScreenShowing = true;
 
             return new OkObjectResult("Success");
         }
@@ -150,6 +162,7 @@ namespace ScoreboardClient.Controllers
                 return new BadRequestObjectResult("UnAuthorized");
             }
             await this.HubContext.Clients.All.SendAsync("RecieveSwitchScoreboardPage");
+            Connector.MediaScreenShowing = false;
 
             return new OkObjectResult("Success");
         }

@@ -72,6 +72,7 @@ namespace ScoreboardClient
 
         public static bool GameScreenOpen { get; set; }
         public static bool TimerRunning { get; set; }
+        public static bool MediaScreenShowing { get; set; }
 
         public static void SetBaseApiAddress(string baseApiAddress)
         {
