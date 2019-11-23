@@ -9,6 +9,7 @@ namespace ScoreboardClient.Models.Response.Host
     {
         public virtual List<AvailableVideo> AvailableVideos { get; set; }
         public virtual List<string> AvailableImages { get; set; }
+        public virtual bool MediaScreenShowing { get; set; }
     }
 
     public class AvailableVideo

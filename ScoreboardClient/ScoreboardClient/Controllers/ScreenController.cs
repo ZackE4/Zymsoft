@@ -63,7 +63,7 @@ namespace ScoreboardClient.Controllers
             }
 
             Connector.TimerRunning = false;
-
+            Connector.MediaScreenShowing = false;
 
             return View(viewModel);
         }
