@@ -37,8 +37,8 @@ public class ConfigPage extends AppCompatActivity {
         //validation
         String ipaddress = edt1.getText().toString();
         String apiPass = edt2.getText().toString();
-        ipaddress="192.168.0.44";
-        apiPass="168de16b";
+//        ipaddress="192.168.0.44";
+//        apiPass="168de16b";
         ViewControllerContainer.ViewController.apiKey=""+apiPass;
         Gson gson = new GsonBuilder()
                 .setLenient()

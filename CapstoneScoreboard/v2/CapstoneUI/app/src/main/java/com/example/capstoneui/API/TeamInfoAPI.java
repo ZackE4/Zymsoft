@@ -57,6 +57,6 @@ public interface TeamInfoAPI {
     @POST("SetTimeouts")
     Call<String> setTimeout(@Body SetTimeout callTimeout);
 
-
-
+    @POST("Undo")
+    Call<String> undoFunciton(@Body BasicRequest undoFunc);
 }

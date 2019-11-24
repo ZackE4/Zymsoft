@@ -8,14 +8,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.capstoneui.Models.AvailableVideo;
+
+import java.util.List;
+
 import androidx.annotation.NonNull;
 
 public class CustomAdapter extends ArrayAdapter<String> {
 
 
-        String A[],B[];
+        String A[];
+        List<AvailableVideo> B;
         LayoutInflater mInfalter;
-        public CustomAdapter(Context context, String[] A, String B[])
+        public CustomAdapter(Context context, String[] A, List<AvailableVideo> B)
         {
             super(context,R.layout.medialist,A);
             this.A = A;
@@ -35,13 +40,17 @@ public class CustomAdapter extends ArrayAdapter<String> {
                 holder = new ViewHolder();
                 holder.tv1 = (TextView)convertView.findViewById(R.id.txtMediaName);
                 holder.tv2 = (TextView)convertView.findViewById(R.id.txtMediaDuration);
+                holder.tv1.setGravity(View.FOCUS_LEFT);
+                holder.tv2.setGravity(View.FOCUS_RIGHT);
+                holder.tv2.setPadding(20,10,0,10);
+                holder.tv1.setPadding(0,10,20,10);
                 convertView.setTag(holder);
             }else{
                 holder = (ViewHolder)convertView.getTag();
             }
 
-            holder.tv1.setText(A[position]);
-            holder.tv2.setText(B[position]);
+            holder.tv1.setText(B.get(position).getFilename());
+            holder.tv2.setText(B.get(position).getDuration());
             return convertView;
         }
         static class ViewHolder

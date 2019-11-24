@@ -6,6 +6,15 @@ public class AvailableMedia {
 
     private List<AvailableVideo> availableVideos = null;
     private List<String> availableImages = null;
+    private Boolean mediaScreenShowing;
+
+    public Boolean getMediaScreenShowing() {
+        return mediaScreenShowing;
+    }
+
+    public void setMediaScreenShowing(Boolean mediaScreenShowing) {
+        this.mediaScreenShowing = mediaScreenShowing;
+    }
 
     public List<AvailableVideo> getAvailableVideos() {
         return availableVideos;

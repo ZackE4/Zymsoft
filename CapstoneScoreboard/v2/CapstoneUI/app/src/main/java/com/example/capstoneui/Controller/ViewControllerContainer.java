@@ -18,6 +18,8 @@ import com.example.capstoneui.Models.SetGameClock;
 import com.example.capstoneui.Models.SetShotClock;
 import com.example.capstoneui.Models.SetTimeout;
 import com.example.capstoneui.Models.Timer;
+import com.example.capstoneui.Models.UndoLogEntry;
+import com.example.capstoneui.Models.UndoType;
 import com.example.capstoneui.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,6 +35,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ViewControllerContainer {
     public static class ViewController {
@@ -58,6 +61,8 @@ public class ViewControllerContainer {
 
         public static String connectionStat;
         public static String ipAddress;
+
+        public static List<UndoLogEntry> undoLogs;
 
 
         public static void playHorn() {
@@ -190,9 +195,42 @@ public class ViewControllerContainer {
             });
         }
 
+
+        public static void requestUndo() {
+            //create our api with retrofit
+            TeamInfoAPI teamInfo = retrofit
+                    .create(TeamInfoAPI.class);
+
+
+            BasicRequest requestU = new BasicRequest();
+            requestU.apiToken = apiKey;
+            Call<String> call = teamInfo.undoFunciton(requestU);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("APICall", "Code: " + response.code());
+                        return;
+                    }
+                    Log.e("apiundo", ""+response.body());
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.e("APICall", t.getMessage());
+                }
+            });
+        }
+
+
         public static void updateScore(){
             score1.setText("Home Score: " + currentGame.getGameScore().getHomeTeamScore());
             score2.setText("Away Score: " + currentGame.getGameScore().getAwayTeamScore());
+            UndoLogEntry newLogEnt = new UndoLogEntry();
+            newLogEnt.setType(UndoType.Score);
+            newLogEnt.setValue(scoring);
+            newLogEnt.setSide(point);
+            undoLogs.add(newLogEnt);
         }
 
         public static void fillBoard() {
@@ -241,7 +279,9 @@ public class ViewControllerContainer {
             }
             recordScore.setPlayerId(playerId);
             Call<String> call = teamInfo.recordScore(recordScore);
+            Log.e("API", "there is a request " + recordScore.getSide() + "||" + recordScore.getPlayerId() + "||" +recordScore.getPoints());
             call.enqueue(new Callback<String>() {
+
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (!response.isSuccessful()) {
@@ -249,13 +289,13 @@ public class ViewControllerContainer {
                         return;
                     }
                     String info = response.body();
-                    Log.e("API", info);
-
+                    Log.e("API", "there is a request" +info);
                 }
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
                     Log.e("APICall2", t.getMessage());
+                    t.printStackTrace();
                 }
             });
 
@@ -270,6 +310,11 @@ public class ViewControllerContainer {
             foulssum = currentGame.getGameScore().getAwayTeamFouls().get(0) + currentGame.getGameScore().getAwayTeamFouls().get(1)
                     + currentGame.getGameScore().getAwayTeamFouls().get(2) + currentGame.getGameScore().getAwayTeamFouls().get(3);
             fouls2.setText("Away Fouls: " + foulssum);
+            UndoLogEntry newLogEnt = new UndoLogEntry();
+            newLogEnt.setType(UndoType.Foul);
+            newLogEnt.setValue(scoring);
+            newLogEnt.setSide(point);
+            undoLogs.add(newLogEnt);
         }
 
         public static void recordFoul() {

@@ -175,6 +175,18 @@
         app:layout_constraintTop_toBottomOf="@+id/btnShotClock" />
 
     <Button
+        android:id="@+id/btnUndo"
+        android:layout_width="226dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/roundbutton"
+        android:onClick="undoCall"
+        android:text="Undo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnHorn"
+        app:layout_constraintTop_toBottomOf="@+id/txtTeam2Fouls" />
+
+    <Button
         android:id="@+id/btnMedia"
         android:layout_width="226dp"
         android:layout_height="38dp"

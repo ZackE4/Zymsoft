@@ -52,15 +52,18 @@ public class ProducerScreen extends AppCompatActivity {
         lvVideos = (ListView) findViewById(R.id.dyListVideos);
         lvImages = (ListView) findViewById(R.id.dyListImages);
 
+        lvImages.setVisibility(View.INVISIBLE);
+
 
         mediaChoice = (Switch) findViewById(R.id.mediaSwitch);
-        lvImages.setVisibility(View.INVISIBLE);
+
         mediaChoice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
                 {
                     ViewControllerContainer.ViewController.showMedia();
+                    ViewControllerContainer.ViewController.currentMedia.setMediaScreenShowing(true);
 
                 }
                 else
@@ -74,6 +77,33 @@ public class ProducerScreen extends AppCompatActivity {
     loadData();
     }
 
+    @Override
+    protected void onResume() {
+        Log.e("apiScreen", ""+ViewControllerContainer.ViewController.currentMedia.getMediaScreenShowing());
+        if(ViewControllerContainer.ViewController.currentMedia.getMediaScreenShowing())
+        {
+
+            mediaChoice.setOnCheckedChangeListener (null);
+            mediaChoice.setChecked(true);
+            mediaChoice.setOnCheckedChangeListener (new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked)
+                    {
+                        ViewControllerContainer.ViewController.showMedia();
+                        ViewControllerContainer.ViewController.currentMedia.setMediaScreenShowing(true);
+
+                    }
+                    else
+                    {
+                        ViewControllerContainer.ViewController.showScoreboard();
+                    }
+                }
+            });
+        }
+
+        super.onResume();
+    }
 
     public void loadData()
     {
@@ -104,10 +134,8 @@ public class ProducerScreen extends AppCompatActivity {
                 android.R.layout.simple_list_item_1,
                 imagesList);
 
-        ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                videosList);
+        CustomAdapter arrayAdapter2 = new CustomAdapter(
+                this, new String[videos.size()], videos);
 
         lvVideos.setAdapter(arrayAdapter2);
         lvImages.setAdapter(arrayAdapter);
@@ -125,6 +153,7 @@ public class ProducerScreen extends AppCompatActivity {
                         if (isChecked)
                         {
                             ViewControllerContainer.ViewController.showMedia();
+                            ViewControllerContainer.ViewController.currentMedia.setMediaScreenShowing(true);
 
                         }
                         else
@@ -148,7 +177,7 @@ public class ProducerScreen extends AppCompatActivity {
                         if (isChecked)
                         {
                             ViewControllerContainer.ViewController.showMedia();
-
+                            ViewControllerContainer.ViewController.currentMedia.setMediaScreenShowing(true);
                         }
                         else
                         {

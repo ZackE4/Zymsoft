@@ -20,8 +20,15 @@ import android.widget.TextView;
 
 import com.example.capstoneui.Controller.UnsafeOkHttpClient;
 import com.example.capstoneui.Controller.ViewControllerContainer;
+import com.example.capstoneui.Models.AwayTeam;
+import com.example.capstoneui.Models.AwayTeamRoster;
+import com.example.capstoneui.Models.UndoLogEntry;
+import com.example.capstoneui.Models.UndoType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ViewControllerContainer.ViewController.undoLogs = new ArrayList<UndoLogEntry>();
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -216,5 +225,74 @@ public class MainActivity extends AppCompatActivity {
     public void switchMedia(View view) {
         Intent intent = new Intent(this, ProducerScreen.class);//new intent
         startActivity(intent);//gets into intent
+    }
+
+    public void undoCall(View view) {
+        if(ViewControllerContainer.ViewController.undoLogs.size() > 0)
+        {
+            String lastOb = ViewControllerContainer.ViewController.undoLogs.get(ViewControllerContainer.ViewController.undoLogs.size()-1).getSide() + "||" + ViewControllerContainer.ViewController.undoLogs.get(ViewControllerContainer.ViewController.undoLogs.size()-1).getType() + "||" + ViewControllerContainer.ViewController.undoLogs.get(ViewControllerContainer.ViewController.undoLogs.size()-1).getValue();
+            Log.e("UndoFeature", ""+lastOb);
+
+            if (ViewControllerContainer.ViewController.undoLogs.get(ViewControllerContainer.ViewController.undoLogs.size()-1).getType().equals(UndoType.Score))
+            {
+                if (ViewControllerContainer.ViewController.undoLogs.get(ViewControllerContainer.ViewController.undoLogs.size()-1).getSide())
+                {
+                    ViewControllerContainer.ViewController.requestUndo();
+                    TextView team = (TextView) findViewById(R.id.txtTeam1Score);
+                    ViewControllerContainer.ViewController.currentGame.getGameScore().setHomeTeamScore(ViewControllerContainer.ViewController.currentGame.getGameScore().getHomeTeamScore() - ViewControllerContainer.ViewController.undoLogs.get(ViewControllerContainer.ViewController.undoLogs.size()-1).getValue());
+                    team.setText("Home Score: " + ViewControllerContainer.ViewController.currentGame.getGameScore().getHomeTeamScore());
+
+                }
+                else
+                {
+                    ViewControllerContainer.ViewController.requestUndo();
+                    TextView team = (TextView) findViewById(R.id.txtTeam2Score);
+                    ViewControllerContainer.ViewController.currentGame.getGameScore().setAwayTeamScore(ViewControllerContainer.ViewController.currentGame.getGameScore().getAwayTeamScore() - ViewControllerContainer.ViewController.undoLogs.get(ViewControllerContainer.ViewController.undoLogs.size()-1).getValue());
+                    team.setText("Away Score: " + ViewControllerContainer.ViewController.currentGame.getGameScore().getAwayTeamScore());
+                }
+            }
+            else
+            {
+                int foulssum = 0;
+                if (ViewControllerContainer.ViewController.undoLogs.get(ViewControllerContainer.ViewController.undoLogs.size()-1).getSide())
+                {
+                    if (ViewControllerContainer.ViewController.currentGame.getGameScore().getHomeTeamFouls().get(ViewControllerContainer.ViewController.period-1) > 0) {
+
+
+                        TextView team1Fouls = (TextView) findViewById(R.id.txtTeam1Fouls);
+                      List<Integer> foulsLog = ViewControllerContainer.ViewController.currentGame.getGameScore().getHomeTeamFouls();
+                       foulsLog.set(ViewControllerContainer.ViewController.period, foulsLog.get(ViewControllerContainer.ViewController.period) - 1);
+                      ViewControllerContainer.ViewController.currentGame.getGameScore().setHomeTeamFouls(foulsLog);
+                      foulssum = ViewControllerContainer.ViewController.currentGame.getGameScore().getHomeTeamFouls().get(0) + ViewControllerContainer.ViewController.currentGame.getGameScore().getHomeTeamFouls().get(1)
+                               + ViewControllerContainer.ViewController.currentGame.getGameScore().getHomeTeamFouls().get(2) + ViewControllerContainer.ViewController.currentGame.getGameScore().getHomeTeamFouls().get(3);
+
+                       team1Fouls.setText("Home Fouls: " + foulssum);
+                        ViewControllerContainer.ViewController.requestUndo();
+                    }
+                }
+                else
+                {
+                    if (ViewControllerContainer.ViewController.currentGame.getGameScore().getAwayTeamFouls().get(ViewControllerContainer.ViewController.period-1) > 0)
+                    {
+                        ViewControllerContainer.ViewController.requestUndo();
+                        TextView team2Fouls = (TextView) findViewById(R.id.txtTeam2Fouls);
+                        List<Integer> foulsLog = ViewControllerContainer.ViewController.currentGame.getGameScore().getAwayTeamFouls();
+                        foulsLog.set(ViewControllerContainer.ViewController.period, foulsLog.get(ViewControllerContainer.ViewController.period)-1) ;
+                        ViewControllerContainer.ViewController.currentGame.getGameScore().setAwayTeamFouls(foulsLog);
+                        foulssum = ViewControllerContainer.ViewController.currentGame.getGameScore().getAwayTeamFouls().get(0) + ViewControllerContainer.ViewController.currentGame.getGameScore().getAwayTeamFouls().get(1)
+                                + ViewControllerContainer.ViewController.currentGame.getGameScore().getAwayTeamFouls().get(2) + ViewControllerContainer.ViewController.currentGame.getGameScore().getAwayTeamFouls().get(3);
+                        team2Fouls.setText("Away Fouls: " + foulssum);
+                    }
+
+
+                }
+            }
+            ViewControllerContainer.ViewController.undoLogs.remove(ViewControllerContainer.ViewController.undoLogs.size()-1);
+        }
+        else
+        {
+            Log.e("UndoFeature", "Empty");
+        }
+
     }
 }
