@@ -48,8 +48,8 @@
                     int teamTies = 0;
                     if (Model.LeagueCompleteGameList != null)
                     {
-                        teamWins = Model.LeagueCompleteGameList.Count(x => x.WinningTeamId == team.TeamId);
-                        teamLosses = Model.LeagueCompleteGameList.Count(x => x.LosingTeamId == team.TeamId);
+                        teamWins = Model.LeagueCompleteGameList.Count(x => x.WinningTeamId == team.TeamId && !x.TieFlag);
+                        teamLosses = Model.LeagueCompleteGameList.Count(x => x.LosingTeamId == team.TeamId && !x.TieFlag);
                         teamTies = Model.LeagueCompleteGameList.Count(x => (x.WinningTeamId == team.TeamId || x.LosingTeamId == team.TeamId) && x.TieFlag);
                     }
                     <tr>
