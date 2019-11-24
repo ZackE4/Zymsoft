@@ -259,8 +259,8 @@ namespace ScoreboardClient.Controllers
                     {
                         if (y != 0)
                         {
-                            var teamWins = games.Count(x => x.WinningTeamId == teams[y].TeamId);
-                            var prevTeamWins = games.Count(x => x.WinningTeamId == teams[y-1].TeamId);
+                            var teamWins = games.Count(x => x.WinningTeamId == teams[y].TeamId && !x.TieFlag);
+                            var prevTeamWins = games.Count(x => x.WinningTeamId == teams[y-1].TeamId && !x.TieFlag);
 
                             if(teamWins > prevTeamWins)
                             {
