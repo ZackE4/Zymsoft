@@ -1,12 +1,16 @@
 package com.example.capstoneui.Controller;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.capstoneui.API.MediaControl;
 import com.example.capstoneui.API.TeamInfoAPI;
+import com.example.capstoneui.ConfigPage;
+import com.example.capstoneui.MainActivity;
 import com.example.capstoneui.Models.AvailableMedia;
 import com.example.capstoneui.Models.BasicRequest;
 import com.example.capstoneui.Models.CallTimeout;
@@ -24,6 +28,7 @@ import com.example.capstoneui.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -550,7 +555,6 @@ public class ViewControllerContainer {
             //create our api with retrofit
             TeamInfoAPI teamInfo = retrofit
                     .create(TeamInfoAPI.class);
-            Log.e("api", "" + apiKey);
             Call<String> call = teamInfo.checkConnection(apiKey);
             call.enqueue(new Callback<String>() {
                 @Override
@@ -559,6 +563,7 @@ public class ViewControllerContainer {
                         Log.e("APICall", "Code:" + response.code() + " Message: " + response.errorBody());
                         return;
                     }
+                    Log.e("checkConn", "sends request");
                     connectionStat = response.body();
                 }
                 @Override

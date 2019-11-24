@@ -7,6 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -30,7 +31,7 @@ public class ConfigPage extends AppCompatActivity {
         edt1.setHintTextColor(R.style.TextAltColor);
         edt2 = (EditText) findViewById(R.id.edtPass);
         edt2.setHintTextColor(R.style.TextAltColor);
-
+        ViewControllerContainer.ViewController.okHttpClient = UnsafeOkHttpClient.getUnsafeOkHttpClient();
     }
 
     public void submitIP(View view) {
@@ -44,35 +45,25 @@ public class ConfigPage extends AppCompatActivity {
                 .setLenient()
                 .create();
 
-
-        ViewControllerContainer.ViewController.okHttpClient = UnsafeOkHttpClient.getUnsafeOkHttpClient();
         //Retrofit allows the connection to post man/webapi
         ViewControllerContainer.ViewController.retrofit = new Retrofit.Builder()
                 .baseUrl("http://" +  ipaddress + "/api/Scoreboard/")
                 .client(ViewControllerContainer.ViewController.okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-
         ViewControllerContainer.ViewController.checkConnection();
-        ViewControllerContainer.ViewController.checkConnection();
-        try {
-            if (ViewControllerContainer.ViewController.connectionStat.equals("Success"))
-            {
-                ViewControllerContainer.ViewController.ipAddress=ipaddress;
-                Intent intent = new Intent(this, MainActivity.class);//new intent
-                startActivity(intent);//gets into intent
-            }
-            else
-            {
+            try {
+                ViewControllerContainer.ViewController.ipAddress = ipaddress;
+                Log.e("TestConn", "checks conn string");
+                if (ViewControllerContainer.ViewController.connectionStat.equals("Success")) {
+                    Intent intent = new Intent(this, MainActivity.class);//new intent
+                    startActivity(intent);//gets into intent
+                } else {
+                    Toast.makeText(this, "Invalid Information Please try again", Toast.LENGTH_LONG);
+                }
+            } catch (Exception ex) {
                 Toast.makeText(this, "Invalid Information Please try again", Toast.LENGTH_LONG);
             }
+
         }
-        catch (Exception ex)
-        {
-            Toast.makeText(this, "Invalid Information Please try again", Toast.LENGTH_LONG);
-        }
-
-
-
-    }
 }
