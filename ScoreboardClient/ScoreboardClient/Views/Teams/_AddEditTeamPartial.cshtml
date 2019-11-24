@@ -37,11 +37,11 @@
             <h3>Last @(Model.TeamHistory.Count > 5 ? 5 : Model.TeamHistory.Count) Games</h3>
             @for (var x = 0; x < (Model.TeamHistory.Count > 5 ? 5 : Model.TeamHistory.Count); x++)
             {
-                if (Model.TeamHistory[x].WinningTeamId == Model.Team.TeamId)
+                if (Model.TeamHistory[x].WinningTeamId == Model.Team.TeamId && !Model.TeamHistory[x].TieFlag)
                 {
                     <p>- <a href="/Game/GameReport?gameId=@Model.TeamHistory[x].GameId">WIN</a> on @Model.TeamHistory[x].Date.ToString("dddd, dd MMMM yyyy")</p>
                 }
-                else if (Model.TeamHistory[x].LosingTeamId == Model.Team.TeamId)
+                else if (Model.TeamHistory[x].LosingTeamId == Model.Team.TeamId && !Model.TeamHistory[x].TieFlag)
                 {
                     <p>- <a href="/Game/GameReport?gameId=@Model.TeamHistory[x].GameId">LOSS</a> on @Model.TeamHistory[x].Date.ToString("dddd, dd MMMM yyyy")</p>
                 }
