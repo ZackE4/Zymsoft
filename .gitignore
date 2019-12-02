@@ -16,3 +16,6 @@ ScoreboardClient/ScoreboardClient/appsettings.json
 ScoreboardClient/ScoreboardClient/wwwroot/css/Scoreboard.css
 ScoreboardClient/ScoreboardClient/bin/Release/netcoreapp2.1/ScoreboardClient.Views.pdb
 ScoreboardClient/ScoreboardClient/bin/Release/netcoreapp2.1/ScoreboardClient.Views.dll
+CapstoneUI/.idea/codeStyles/Project.xml
+CapstoneScoreboard/v2/.idea/workspace.xml
+CapstoneScoreboard/v2/CapstoneUI/app/src/main/res/layout/activity_main.xml
