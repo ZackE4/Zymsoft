@@ -21,7 +21,7 @@ else
 @foreach (var player in Model.Players)
     {
     <tr>
-        <td>@($"{player.FirstName} {player.LastName}")</td>
+        <td><a href="/Teams/PlayerReport?playerId=@player.PlayerId">@($"{player.FirstName} {player.LastName}")</a></td>
         <td>@player.PlayerNum</td>
         <td>@player.Position</td>
         <td><a href="/Teams/EditPlayer?id=@player.PlayerId">Edit</a> @*| <a href="Teams/DeletePlayer?id=@team.TeamId">Delete</a>*@</td>

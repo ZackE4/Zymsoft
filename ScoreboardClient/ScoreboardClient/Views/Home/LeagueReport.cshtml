@@ -1,0 +1,65 @@
+﻿@model ScoreboardClient.Models.ViewModels.LeagueReportViewModel
+@using ScoreboardClient.Data.Entities.Concrete
+
+@{
+    ViewData["Title"] = "GameReport";
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+
+    Team topScoringPlayerTeam = null;
+    Team topFoulingPlayerTeam = null;
+
+    if(Model.TopScoringPlayer != null && Model.TopFoulingPlayer != null)
+    {
+        topScoringPlayerTeam = Model.LeagueTeamList.Where(x => x.TeamId == Model.TopScoringPlayer.TeamId).FirstOrDefault();
+        topFoulingPlayerTeam = Model.LeagueTeamList.Where(x => x.TeamId == Model.TopFoulingPlayer.TeamId).FirstOrDefault();
+    }
+}
+
+<div class="text-center">
+    <h2>League Summary Report</h2>
+    <h3>@Model.League.LeagueName</h3>
+    <br /><br />
+    <h4>Current Season</h4>
+    <b>Started: </b>@Model.Season.SeasonStart.ToString("dd MMMM yyyy")<br />
+    <b>Ends: </b>@Model.Season.SeasonEnd.ToString("dd MMMM yyyy")
+    <br /><br />
+    @if(topScoringPlayerTeam != null && topFoulingPlayerTeam != null)
+    {
+        <b>Most Points: </b>@($"{Model.TopScoringPlayer.FirstName} {Model.TopScoringPlayer.LastName} on {topScoringPlayerTeam.TeamName} with {Model.TopScoringPlayer.Points}")<br />
+        <b>Most Fouls: </b>@($"{Model.TopFoulingPlayer.FirstName} {Model.TopFoulingPlayer.LastName} on {topFoulingPlayerTeam.TeamName} with {Model.TopFoulingPlayer.Fouls}")
+        <br /><br />
+    }
+    @if (Model.LeagueTeamList != null && Model.LeagueTeamList.Count > 0)
+    {
+        <div style="padding: 40px;">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Ties</th>
+                    </tr>
+                </thead>
+                @foreach (var team in Model.LeagueTeamList)
+                {
+                    int teamWins = 0;
+                    int teamLosses = 0;
+                    int teamTies = 0;
+                    if (Model.LeagueCompleteGameList != null)
+                    {
+                        teamWins = Model.LeagueCompleteGameList.Count(x => x.WinningTeamId == team.TeamId && !x.TieFlag);
+                        teamLosses = Model.LeagueCompleteGameList.Count(x => x.LosingTeamId == team.TeamId && !x.TieFlag);
+                        teamTies = Model.LeagueCompleteGameList.Count(x => (x.WinningTeamId == team.TeamId || x.LosingTeamId == team.TeamId) && x.TieFlag);
+                    }
+                    <tr>
+                        <td class="text-left">@team.TeamName</td>
+                        <td class="text-left" style="padding-left:15px;">@teamWins</td>
+                        <td class="text-left" style="padding-left:15px;">@teamLosses</td>
+                        <td class="text-left" style="padding-left:15px;">@teamTies</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+</div>

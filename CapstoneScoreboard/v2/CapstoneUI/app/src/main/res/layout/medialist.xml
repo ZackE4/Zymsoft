@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txtMediaName"
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:text="TextView"
+        android:textAlignment="textStart"
+        android:textColor="#FFFFFF"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/txtMediaDuration"
+        android:layout_width="90dp"
+        android:layout_height="match_parent"
+        android:text="TextView"
+        android:textAlignment="viewEnd"
+        android:textColor="#FFFFFF"
+        android:textSize="18dp" />
+</LinearLayout>

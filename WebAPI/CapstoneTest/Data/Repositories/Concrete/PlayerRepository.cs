@@ -104,5 +104,55 @@ namespace CapstoneTest.Data.Repositories.Concrete
 
             return (await this.DataContext.QueryAsync<Player>(selectLastQuery, new { @PlayerId = player.PlayerId })).FirstOrDefault();
         }
+
+        public async Task<IPlayerWithPoints> GetTopScorerAsync(int seasonId)
+        {
+            string query = @"
+                            SELECT p.[PlayerId],
+	                            p.[PlayerNum],
+	                            p.[Position],
+	                            p.[FirstName],
+	                            p.[LastName],
+	                            p.[Picture],
+	                            p.[Team_TeamId] as TeamId,
+	                            x.[Points] as Points
+                            FROM Players p
+                            INNER JOIN (
+	                            Select TOP(1) p.[PlayerId], SUM(s.[Points]) as 'Points'
+	                            FROM Players p
+	                            INNER JOIN ScoringLogs s on s.[Player_PlayerId] = p.[PlayerId]
+	                            INNER JOIN Games g on s.[Game_GameId] = g.[GameId]
+	                            WHERE g.Season_SeasonId = @SeasonId
+                                AND g.[GameComplete] = 1
+	                            GROUP BY p.[PlayerId]
+	                            ORDER BY SUM(s.[Points]) DESC) x on x.PlayerId = p.PlayerId";
+
+            return (await this.DataContext.QueryAsync<PlayerWithPoints>(query, new { @SeasonId = seasonId })).FirstOrDefault();
+        }
+
+        public async Task<IPlayerWithFouls> GetTopFoulerAsync(int seasonId)
+        {
+            string query = @"
+                            SELECT p.[PlayerId],
+	                            p.[PlayerNum],
+	                            p.[Position],
+	                            p.[FirstName],
+	                            p.[LastName],
+	                            p.[Picture],
+	                            p.[Team_TeamId] as TeamId,
+	                            x.Fouls as Fouls
+                            FROM Players p
+                            INNER JOIN (
+	                            Select TOP(1) p.[PlayerId], Count(f.[FouldLogId]) as 'Fouls'
+	                            FROM Players p
+	                            INNER JOIN FoulLogs f on f.[Player_PlayerId] = p.[PlayerId]
+	                            INNER JOIN Games g on f.[Game_GameId] = g.[GameId]
+	                            WHERE g.Season_SeasonId = @SeasonId
+                                AND g.[GameComplete] = 1
+	                            GROUP BY p.[PlayerId]
+	                            ORDER BY Count(f.[FouldLogId]) DESC) x on x.PlayerId = p.PlayerId";
+
+            return (await this.DataContext.QueryAsync<PlayerWithFouls>(query, new { @SeasonId = seasonId })).FirstOrDefault();
+        }
     }
 }

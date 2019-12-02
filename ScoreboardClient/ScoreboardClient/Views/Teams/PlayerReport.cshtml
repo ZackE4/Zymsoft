@@ -1,0 +1,124 @@
+﻿@model ScoreboardClient.Models.ViewModels.PlayerReportViewModel
+@{
+    ViewData["Title"] = "GameReport";
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+
+
+    var seasonPoints = Model.SeasonScoringLogs.Sum(x => x.Points);
+    var seasonFouls = Model.SeasonFoulLogs.Count();
+
+    Dictionary<int, int> ScoreByGame = new Dictionary<int, int>();
+    Dictionary<int, int> FoulsByGame = new Dictionary<int, int>();
+
+    foreach(var scoringLog in Model.SeasonScoringLogs)
+    {
+        if (ScoreByGame.ContainsKey(scoringLog.GameId))
+        {
+            ScoreByGame[scoringLog.GameId] = ScoreByGame[scoringLog.GameId] + scoringLog.Points;
+        }
+        else
+        {
+            ScoreByGame[scoringLog.GameId] = scoringLog.Points;
+        }
+    }
+
+    foreach(var foulLog in Model.SeasonFoulLogs)
+    {
+        if (FoulsByGame.ContainsKey(foulLog.GameId))
+        {
+            FoulsByGame[foulLog.GameId] = FoulsByGame[foulLog.GameId] + 1;
+        }
+        else
+        {
+            FoulsByGame[foulLog.GameId] = 1;
+        }
+    }
+
+    foreach(var game in ScoreByGame.Keys)
+    {
+        if (!FoulsByGame.ContainsKey(game))
+        {
+            FoulsByGame[game] = 0;
+        }
+    }
+
+    foreach(var game in FoulsByGame.Keys)
+    {
+        if (!ScoreByGame.ContainsKey(game))
+        {
+            ScoreByGame[game] = 0;
+        }
+    }
+
+    var gameCount = 5;
+    if(Model.SeasonGamesPlayedIn.Count < gameCount)
+    {
+        gameCount = Model.SeasonGamesPlayedIn.Count;
+    }
+}
+
+<div class="text-center">
+    <h2>Season Player Report</h2>
+    <h4>in @Model.League.LeagueName</h4>
+    <br /><br />
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="row" id="PlayerNameRow">
+                <h3>@Model.Player.FirstName @Model.Player.LastName</h3>
+                <h4>#@Model.Player.PlayerNum</h4>
+                <h4>@Model.Player.Position on @Model.Team.TeamName</h4>
+            </div>
+            <div class="row logoRow" id="PlayerImageRow">
+                @if (!string.IsNullOrEmpty(Model.Player.Picture))
+                {
+                    <div class="logoContainer">
+                        <img src="@Model.Player.Picture" alt="playerPicture" />
+                    </div>
+                }
+                else
+                {
+                    <div class="logoContainer">
+                        <img src="https://image.shutterstock.com/image-vector/basketball-player-vector-silhouette-600w-530749927.jpg" alt="logo" />
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <br /><br />
+            <br /><br />
+            <h4><b>Points this season: </b>@seasonPoints</h4>
+            <h4><b>Fouls this season: </b>@seasonFouls</h4>
+        </div>
+        <div class="col-lg-6" style="padding-right:45px;">
+            <br /><br />
+            @if (gameCount > 0)
+            {
+                <h4>Last @gameCount Games:</h4>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Points</th>
+                            <th>Fouls</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var x = 0; x < gameCount; x++)
+                        {
+                            var game = Model.SeasonGamesPlayedIn[x];
+                            <tr>
+                                <td>@game.Date.ToString("MMMM dd yyyy")</td>
+                                <td>@ScoreByGame[game.GameId]</td>
+                                <td>@FoulsByGame[game.GameId]</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h4> This player hasn't scored or fouled in any games yet this season.</h4>
+            }
+        </div>
+    </div>
+</div>

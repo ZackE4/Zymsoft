@@ -18,11 +18,15 @@ namespace CapstoneTest.Controllers
     {
         protected IGameRepository GameRepository { get; set; }
         protected ITeamRepository TeamRepository { get; set; }
+        protected ICompleteGameRepository CompleteGameRepository { get; set; }
+        protected IScoringLogRepository ScoringLogRepository { get; set; }
 
         public GameController(IConfiguration configuration) : base(configuration)
         {
             this.GameRepository = new GameRepository(this.ConnectionString);
             this.TeamRepository = new TeamRepository(this.ConnectionString);
+            this.CompleteGameRepository = new CompleteGameRepository(this.ConnectionString);
+            this.ScoringLogRepository = new ScoringLogRepository(this.ConnectionString);
         }
 
         [HttpPost("Create")]
@@ -66,6 +70,28 @@ namespace CapstoneTest.Controllers
             return new OkObjectResult(await this.GameRepository.GetAsync(id));
         }
 
+        [HttpGet("CompleteBySeason")]
+        public async Task<ActionResult> GetCompleteGamesBySeason(string apiToken, int seasonId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            return new OkObjectResult(await this.CompleteGameRepository.GetCompleteGamesBySeason(seasonId));
+        }
+
+        [HttpGet("CompleteByTeam")]
+        public async Task<ActionResult> GetCompleteGamesByTeamAndSeason(string apiToken, int teamId, int seasonId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            return new OkObjectResult(await this.CompleteGameRepository.GetCompleteGamesByTeamAndSeason(teamId, seasonId));
+        }
+
         [HttpPost("CompleteGame")]
         public async Task<ActionResult> CompleteGame(CompleteGameRequest request)
         {
@@ -86,6 +112,47 @@ namespace CapstoneTest.Controllers
             if(game == null)
             {
                 return new BadRequestObjectResult("Game Not Found");
+            }
+
+            if (!game.GameComplete)
+            {
+
+                var homeTeamScoringLogs = await this.ScoringLogRepository.GetByTeamAndGameAsync(game.HomeTeamId, game.GameId);
+                var awayTeamScoringLogs = await this.ScoringLogRepository.GetByTeamAndGameAsync(game.AwayTeamId, game.GameId);
+
+                var homeTeamScore = homeTeamScoringLogs.Sum(x => x.Points);
+                var awayTeamScore = awayTeamScoringLogs.Sum(x => x.Points);
+
+                var completeGame = new CompleteGame()
+                {
+                    GameId = game.GameId,
+                    Date = game.Date,
+                    TieFlag = false
+                };
+            
+                if(homeTeamScore > awayTeamScore)
+                {
+                    completeGame.WinningTeamId = game.HomeTeamId;
+                    completeGame.LosingTeamId = game.AwayTeamId;
+                }
+                else if(awayTeamScore > homeTeamScore)
+                {
+                    completeGame.WinningTeamId = game.AwayTeamId;
+                    completeGame.LosingTeamId = game.HomeTeamId;
+                }
+                else
+                {
+                    completeGame.WinningTeamId = game.HomeTeamId;
+                    completeGame.LosingTeamId = game.AwayTeamId;
+                    completeGame.TieFlag = true;
+                }
+
+                var newCompleteGame = await CompleteGameRepository.CompleteGame(completeGame);
+
+                if(newCompleteGame == null)
+                {
+                    return new BadRequestObjectResult("Error Completing Game");
+                }
             }
 
             game.GameComplete = true;

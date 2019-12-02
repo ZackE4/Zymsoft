@@ -9,13 +9,18 @@ using ScoreboardClient.Models.ViewModels;
 using RestSharp;
 using ScoreboardClient.Models.Request.Client;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.SignalR;
+using ScoreboardClient.Hubs;
 
 namespace ScoreboardClient.Controllers
 {
     public class ScreenController : BaseController
     {
-        public ScreenController(IConfiguration configuration) : base(configuration)
+        private IHubContext<ScoreboardHub> HubContext { get; set; }
+
+        public ScreenController(IConfiguration configuration, IHubContext<ScoreboardHub> hubContext) : base(configuration)
         {
+            this.HubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -23,6 +28,10 @@ namespace ScoreboardClient.Controllers
             if (!await this.CheckLoginStatus())
             {
                 return RedirectToAction("Index", "Game", new { errorMsg = "Authorization Error" });
+            }
+            if (Connector.GameScreenOpen)
+            {
+                await this.HubContext.Clients.All.SendAsync("NewScoreboardOpened");
             }
 
             await this.SetupGame();
@@ -53,6 +62,9 @@ namespace ScoreboardClient.Controllers
                 viewModel.GameTime = new TimeSpan(0, 0, 0);
             }
 
+            Connector.TimerRunning = false;
+            Connector.MediaScreenShowing = false;
+
             return View(viewModel);
         }
 
@@ -62,7 +74,23 @@ namespace ScoreboardClient.Controllers
             var GameTime = new TimeSpan(0, (period-1) * 12, 0) + (new TimeSpan(0, 12, 0) - new TimeSpan(0,minutes,seconds));
             await SettingsUtil.SetSetting("GameTime", GameTime.ToString());
             Connector.GameScore.GameTime = GameTime;
+            Connector.TimerRunning = false;
             return new OkObjectResult("Game Time Saved");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateScreenOpen()
+        {
+            Connector.GameScreenOpen = true;
+            return new OkObjectResult("Screen Status Updated");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateScreenClose()
+        {
+            Connector.TimerRunning = false;
+            Connector.GameScreenOpen = false;
+            return new OkObjectResult("Screen Status Updated");
         }
 
         [HttpPost]
@@ -98,6 +126,7 @@ namespace ScoreboardClient.Controllers
 
             if (scoringLog != null)
             {
+                Connector.UndoLog.Add(new Models.UndoLogEntry() { Id = scoringLog.ScoringLogId, Type = Models.UndoLogType.Score, Points = scoringLog.Points });
                 return new OkObjectResult("Score Saved");
             }
 
@@ -135,6 +164,7 @@ namespace ScoreboardClient.Controllers
 
             if (foulLog != null)
             {
+                Connector.UndoLog.Add(new Models.UndoLogEntry() { Id = foulLog.FouldLogId, Type = Models.UndoLogType.Foul });
                 return new OkObjectResult("Foul Saved");
             }
 
@@ -143,27 +173,10 @@ namespace ScoreboardClient.Controllers
 
         protected async Task SetupGame()
         {
-            if(String.IsNullOrEmpty(await SettingsUtil.GetSetting("GameId")))
-            {
-                await SettingsUtil.SetSetting("GameId", "3");
-            }
-
-            string errorMsg = "";
-            Parameter[] parameters = new Parameter[2];
-            if (Connector.Game == null)
-            {
-                parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
-                parameters[1] = new Parameter("id", await SettingsUtil.GetSetting("GameId"), ParameterType.QueryString);
-                var oldGame = this.ApiClient.Get<Game>("Game", parameters, ref errorMsg);
-                if (oldGame.SeasonId == Connector.Season.SeasonId)
-                {
-                    Connector.Game = oldGame;
-                }
-            }
-
             if(Connector.Game != null)
             {
-                parameters = new Parameter[2];
+                string errorMsg = "";
+                var parameters = new Parameter[2];
                 parameters[0] = new Parameter("apiToken", Connector.CurrentApiToken, ParameterType.QueryString);
                 parameters[1] = new Parameter("id", Connector.Game.HomeTeamId, ParameterType.QueryString);
                 Connector.HomeTeam = this.ApiClient.Get<Team>("Teams", parameters, ref errorMsg);

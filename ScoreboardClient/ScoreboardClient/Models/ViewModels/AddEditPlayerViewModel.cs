@@ -15,5 +15,6 @@ namespace ScoreboardClient.Models.ViewModels
     {
         public virtual IPlayer Player { get; set; }
         public virtual AddEditPlayer AddEdit { get; set; }
+        public virtual List<ImageFile> PlayerImages { get; set; }
     }
 }

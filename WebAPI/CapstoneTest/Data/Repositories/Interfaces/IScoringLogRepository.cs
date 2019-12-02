@@ -10,12 +10,14 @@ namespace CapstoneTest.Data.Repositories.Interfaces
     {
         Task<IEnumerable<IScoringLog>> GetByGameAsync(int gameId);
 
-        Task<IEnumerable<IScoringLog>> GetByPlayerAsync(int playerId);
+        Task<IEnumerable<IScoringLog>> GetByPlayerAndSeasonAsync(int playerId, int seasonId);
 
         Task<IEnumerable<IScoringLog>> GetByPlayerAndGameAsync(int playerId, int gameId);
 
         Task<IEnumerable<IScoringLog>> GetByTeamAndGameAsync(int teamId, int gameId);
 
         Task<IScoringLog> RecordScore(IScoringLog score);
+
+        Task UndoScore(int scoringLogId);
     }
 }

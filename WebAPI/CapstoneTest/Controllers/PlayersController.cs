@@ -40,6 +40,28 @@ namespace CapstoneTest.Controllers
             return new OkObjectResult(await this.PlayerRepository.GetAsync(id));
         }
 
+        [HttpGet("TopScoring")]
+        public async Task<ActionResult> GetTopScoringPlayerByIdAndSeason(string apiToken, int seasonId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            return new OkObjectResult(await this.PlayerRepository.GetTopScorerAsync(seasonId));
+        }
+
+        [HttpGet("TopFouling")]
+        public async Task<ActionResult> GetTopFoulingPlayerByIdAndSeason(string apiToken, int seasonId)
+        {
+            if (!await this.IsAPITokenValid(apiToken))
+            {
+                return new BadRequestObjectResult("UnAuthorized");
+            }
+
+            return new OkObjectResult(await this.PlayerRepository.GetTopFoulerAsync(seasonId));
+        }
+
         [HttpGet("ByTeam")]
         public async Task<ActionResult> GetByTeam(string apiToken, int teamId)
         {

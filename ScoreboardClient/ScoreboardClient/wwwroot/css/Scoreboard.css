@@ -11,11 +11,27 @@
 
 body{
     padding: 0px !important;
+    padding-top: 0px !important;
 }
 
 .media-player-fullscreen {
     min-height: 100vh;
-    min-width: 100vw;
+}
+
+.mediaContainer{
+    text-align:center;
+    margin:0 auto;
+    background-color:black;
+}
+
+.imageAd {
+    min-height: 100vh;
+    max-height: 100vh;
+}
+
+#imageAdDiv{
+    display:none;
+    min-height: 100vh;
 }
 
 ::-webkit-scrollbar {
@@ -68,7 +84,7 @@ body {
     color: #e6f542;
     font-size: 8.75em;
     margin-left: 10%;
-    margin-right 10%;
+    margin-right: 10%;
     border-color: white;
     border-width: 2px;
     border-radius: 30%;
